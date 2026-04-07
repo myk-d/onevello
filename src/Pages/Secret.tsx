@@ -18,6 +18,7 @@ const Secret = () => {
 		register,
 		handleSubmit,
 		control,
+		reset,
 		formState: { errors },
 	} = useForm<CreateMessageType>({
 		resolver: zodResolver(CreateMessageSchema),
@@ -55,7 +56,13 @@ const Secret = () => {
 		<>
 			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
 				{encryptedMessageId ? (
-					<EncryptedMessageLink id={encryptedMessageId} clearId={() => setEncryptedMessageId(null)} />
+					<EncryptedMessageLink
+						id={encryptedMessageId}
+						clearId={() => {
+							setEncryptedMessageId(null);
+							reset();
+						}}
+					/>
 				) : (
 					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
 						<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 ">
