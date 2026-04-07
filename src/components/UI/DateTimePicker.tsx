@@ -15,21 +15,25 @@ interface Props {
 	value: Dayjs;
 	onChange: (date: Dayjs) => void;
 	dateFormat?: string;
+	onBlur?: () => void;
 }
 
-const DateTimePicker: React.FC<Props> = ({ value, onChange, dateFormat = 'DD.MM.YYYY - HH:mm' }) => {
+const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChange, dateFormat = 'DD.MM.YYYY - HH:mm', onBlur }, ref) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const containerRef = useRef<HTMLDivElement>(null);
+
+	React.useImperativeHandle(ref, () => containerRef.current!);
 
 	useEffect(() => {
 		const handleClickOutside = (e: MouseEvent) => {
 			if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
 				setIsOpen(false);
+				if (isOpen) onBlur?.();
 			}
 		};
 		document.addEventListener('mousedown', handleClickOutside);
 		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
+	}, [isOpen, onBlur]);
 
 	const years = useMemo(() => {
 		const currentYear = dayjs().year();
@@ -56,12 +60,12 @@ const DateTimePicker: React.FC<Props> = ({ value, onChange, dateFormat = 'DD.MM.
 	}, [value]);
 
 	return (
-		<div className="relative inline-block font-sans" ref={containerRef}>
+		<div className="relative w-full inline-block font-sans" ref={containerRef}>
 			<div
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center justify-between min-w-[240px] px-4 py-2.5 border border-black rounded-xl cursor-pointer bg-white hover:bg-gray-50 transition-all shadow-sm"
+				className="flex items-center justify-between min-w-60 px-4 py-2.5 border border-black rounded-xl cursor-pointer bg-white hover:bg-gray-50 transition-all shadow-sm"
 			>
-				<span className="text-gray-800 italic font-medium">{value.format(dateFormat)}</span>
+				<span className="text-gray-800 font-medium">{value.format(dateFormat)}</span>
 				<svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						strokeLinecap="round"
@@ -114,6 +118,7 @@ const DateTimePicker: React.FC<Props> = ({ value, onChange, dateFormat = 'DD.MM.
 
 							return (
 								<button
+									type="button"
 									key={i}
 									onClick={() => onChange(value.date(date.date()).month(date.month()).year(date.year()))}
 									className={`
@@ -157,6 +162,7 @@ const DateTimePicker: React.FC<Props> = ({ value, onChange, dateFormat = 'DD.MM.
 			)}
 		</div>
 	);
-};
+});
 
+DateTimePicker.displayName = 'DateTimePicker';
 export default DateTimePicker;

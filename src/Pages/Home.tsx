@@ -1,4 +1,5 @@
 import { useNavigate } from 'react-router';
+import Button from '../components/UI/Button';
 import { UrlConfig } from '../constants/UrlConfig';
 
 const Home = () => {
@@ -25,10 +26,7 @@ const Home = () => {
 					Keep your sensitive information out of chats, emails, and logs - <strong>securely and effortlessly.</strong>
 				</p>
 
-				<button
-					className="bg-gray-900 text-white font-medium shadow-md py-4 px-6 rounded-full flex items-center gap-2 cursor-pointer hover:bg-gray-800 hover:scale-105"
-					onClick={HandleNavigateToSecret}
-				>
+				<Button type="button" onClick={HandleNavigateToSecret} variant="default" className="gap-2">
 					Create Secret
 					<svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<path
@@ -36,7 +34,7 @@ const Home = () => {
 							fill="white"
 						/>
 					</svg>
-				</button>
+				</Button>
 			</section>
 		</>
 	);
