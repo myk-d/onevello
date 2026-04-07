@@ -1,13 +1,11 @@
 import z from 'zod';
 
-// Спільні метадані (те, що є і в формі, і в базі)
 const MessageMetadata = {
 	createdAt: z.string(),
 	expiration: z.string(),
 	oneTime: z.boolean(),
 };
 
-// 1. Схема для бази даних (Firestore)
 export const MessageSchema = z.object({
 	id: z.string(),
 	...MessageMetadata,
@@ -17,11 +15,10 @@ export const MessageSchema = z.object({
 	saltB64: z.string(),
 	passwordSaltB64: z.string(),
 	seq: z.number(),
-	algo: z.string(),
+	algo: z.enum(['AES-GCM', 'AES-GCM-DET']),
 	ts: z.number(),
 });
 
-// 2. Схема для форми (те, що вводить користувач)
 export const CreateMessageSchema = z
 	.object({
 		text: z.string().trim().min(1, { message: 'Secret text is required' }),

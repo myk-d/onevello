@@ -1,7 +1,7 @@
 import React, { forwardRef } from 'react';
 import { cn } from '../../utils/cn';
 
-type ButtonVariant = 'default' | 'outline' | 'ghost' | 'danger' | 'link';
+type ButtonVariant = 'default' | 'outline' | 'ghost' | 'danger' | 'link' | 'disabled' | 'success' | 'warning' | 'info';
 type ButtonSize = 'sm' | 'md' | 'lg' | 'full';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -20,6 +20,10 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant 
 		ghost: 'bg-transparent text-black hover:bg-gray-100 rounded-xl',
 		danger: 'bg-red-600 text-white hover:bg-red-700 rounded-xl',
 		link: 'bg-transparent text-black underline-offset-4 hover:underline p-0',
+		success: 'bg-green-600 text-white hover:bg-green-700 rounded-xl',
+		warning: 'bg-yellow-600 text-white hover:bg-yellow-700 rounded-xl',
+		info: 'bg-blue-600 text-white hover:bg-blue-700 rounded-xl',
+		disabled: 'bg-gray-400 text-white cursor-not-allowed',
 	};
 
 	const sizes: Record<ButtonSize, string> = {
