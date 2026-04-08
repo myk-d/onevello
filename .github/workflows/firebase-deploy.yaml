@@ -1,0 +1,41 @@
+name: Build and deploy to Firebase
+
+on:
+    push:
+        branches:
+            - master
+
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v2
+
+            - name: Set up Node.js
+              uses: actions/setup-node@v1
+              with:
+                  node-version: 20
+
+            - name: Install dependencies
+              run: npm install
+
+            - name: Install Firebase tools
+              run: npm install -g firebase-tools
+
+            - name: Dedupe dependencies
+              run: npm dedupe
+
+            - name: Build project
+              env:
+                  NODE_ENV: production
+                  VITE_APP_FIRE_API_KEY: ${{ vars.VITE_APP_FIRE_API_KEY }}
+                  VITE_APP_FIRE_AUTH_DOMAIN: ${{ vars.VITE_APP_FIRE_AUTH_DOMAIN }}
+                  VITE_APP_FIRE_PROJECT_ID: ${{ vars.VITE_APP_FIRE_PROJECT_ID }}
+                  VITE_APP_FIRE_STORAGE_BUCKET: ${{ vars.VITE_APP_FIRE_STORAGE_BUCKET }}
+                  VITE_APP_FIRE_MESSAGING_SENDER_ID: ${{ vars.VITE_APP_FIRE_MESSAGING_SENDER_ID }}
+                  VITE_APP_FIRE_APP_ID: ${{ vars.VITE_APP_FIRE_APP_ID }}
+              run: npm run build
+
+            - name: Deploy project
+              run: firebase deploy --only hosting --token ${{ secrets.FIREBASE_TOKEN }}
