@@ -9,6 +9,7 @@ import Checkbox from '../components/UI/Checkbox';
 import DateTimePicker from '../components/UI/DateTimePicker';
 import Input from '../components/UI/Input';
 import { dbMessages } from '../config/firebase.config';
+import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { ToastService } from '../helpers/services/ToastService';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
@@ -38,6 +39,8 @@ const Secret = () => {
 	const onSubmit: SubmitHandler<CreateMessageType> = async (data) => {
 		try {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
+
+			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
 
 			const messageToSave: Omit<MessageType, 'id'> = {
 				...encryptedPkg,
