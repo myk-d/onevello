@@ -1,13 +1,22 @@
+import { useCallback, useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import Button from '../components/UI/Button';
+import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { UrlConfig } from '../constants/UrlConfig';
 
 const Home = () => {
 	const navigate = useNavigate();
 
-	const HandleNavigateToSecret = () => {
+	const HandleNavigateToSecret = useCallback(() => {
 		navigate(UrlConfig.secret);
-	};
+	}, [navigate]);
+
+	useEffect(() => {
+		if (localStorage.getItem(isSecretWasCreatedOnDeviceStorageKey) === 'true') {
+			HandleNavigateToSecret();
+		}
+	}, [HandleNavigateToSecret]);
+
 	return (
 		<>
 			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 h-[70dvh]">
