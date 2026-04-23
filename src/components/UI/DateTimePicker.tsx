@@ -63,10 +63,10 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 		<div className="relative w-full inline-block font-sans" ref={containerRef}>
 			<div
 				onClick={() => setIsOpen(!isOpen)}
-				className="flex items-center justify-between min-w-60 px-4 py-2.5 border border-black rounded-xl cursor-pointer bg-white hover:bg-gray-50 transition-all shadow-sm"
+				className="flex items-center justify-between min-w-60 px-4 py-2.5 border border-brand rounded-xl cursor-pointer bg-page-bg hover:bg-brand-bg transition-all duration-300 shadow-sm"
 			>
-				<span className="text-gray-800 font-medium">{value.format(dateFormat)}</span>
-				<svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+				<span className="text-page-text font-medium">{value.format(dateFormat)}</span>
+				<svg className="w-5 h-5 text-brand" fill="none" stroke="currentColor" viewBox="0 0 24 24">
 					<path
 						strokeLinecap="round"
 						strokeLinejoin="round"
@@ -77,12 +77,12 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 			</div>
 
 			{isOpen && (
-				<div className="absolute z-50 mt-2 p-4 bg-white border border-gray-200 rounded-2xl shadow-2xl w-[320px]">
+				<div className="absolute z-50 mt-2 p-4 bg-page-bg border border-brand rounded-2xl shadow-2xl w-[320px] transition-colors duration-300">
 					<div className="flex gap-2 mb-4">
 						<select
 							value={value.year()}
 							onChange={(e) => onChange(value.year(parseInt(e.target.value)))}
-							className="flex-1 p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold outline-none focus:border-black cursor-pointer"
+							className="flex-1 p-2 bg-brand-bg border border-brand/20 rounded-lg text-sm font-semibold outline-none focus:border-brand text-page-text cursor-pointer transition-all"
 						>
 							{years.map((y) => (
 								<option key={y} value={y}>
@@ -93,7 +93,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 						<select
 							value={value.month()}
 							onChange={(e) => onChange(value.month(parseInt(e.target.value)))}
-							className="flex-1 p-2 bg-gray-50 border border-gray-200 rounded-lg text-sm font-semibold outline-none focus:border-black cursor-pointer"
+							className="flex-1 p-2 bg-brand-bg border border-brand/20 rounded-lg text-sm font-semibold outline-none focus:border-brand text-page-text cursor-pointer transition-all"
 						>
 							{months.map((m, i) => (
 								<option key={m} value={i}>
@@ -105,7 +105,7 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 
 					<div className="grid grid-cols-7 mb-2">
 						{['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map((d) => (
-							<div key={d} className="text-center text-[11px] font-bold text-gray-400 uppercase py-1">
+							<div key={d} className="text-center text-[11px] font-bold text-page-text/40 uppercase py-1">
 								{d}
 							</div>
 						))}
@@ -122,9 +122,9 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 									key={i}
 									onClick={() => onChange(value.date(date.date()).month(date.month()).year(date.year()))}
 									className={`
-                    h-9 w-9 text-sm rounded-lg flex items-center justify-center transition-all
-                    ${!isCurrentMonth ? 'text-gray-300' : 'text-gray-700 font-medium'}
-                    ${isSelected ? 'bg-black text-white' : 'hover:bg-gray-100'}
+                    h-9 w-9 text-sm rounded-lg flex items-center justify-center transition-all duration-200
+                    ${!isCurrentMonth ? 'text-page-text/20' : 'text-page-text font-medium'}
+                    ${isSelected ? 'bg-brand text-page-bg' : 'hover:bg-brand-bg'}
                   `}
 								>
 									{date.date()}
@@ -133,28 +133,28 @@ const DateTimePicker = React.forwardRef<HTMLDivElement, Props>(({ value, onChang
 						})}
 					</div>
 
-					<div className="mt-4 pt-4 border-t border-gray-100 flex items-center justify-center gap-3">
+					<div className="mt-4 pt-4 border-t border-brand/10 flex items-center justify-center gap-3">
 						<div className="text-center">
-							<p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Hours</p>
+							<p className="text-[10px] text-page-text/40 uppercase font-bold mb-1">Hours</p>
 							<input
 								type="number"
 								min="0"
 								max="23"
 								value={value.hour()}
 								onChange={(e) => onChange(value.hour(parseInt(e.target.value) || 0))}
-								className="w-14 p-2 text-center bg-gray-50 border border-gray-200 rounded-lg font-mono text-sm focus:border-black outline-none"
+								className="w-14 p-2 text-center bg-brand-bg border border-brand/20 rounded-lg font-mono text-sm focus:border-brand text-page-text outline-none transition-all"
 							/>
 						</div>
-						<span className="text-xl font-bold text-gray-300 mt-4">:</span>
+						<span className="text-xl font-bold text-brand/30 mt-4">:</span>
 						<div className="text-center">
-							<p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Minutes</p>
+							<p className="text-[10px] text-page-text/40 uppercase font-bold mb-1">Minutes</p>
 							<input
 								type="number"
 								min="0"
 								max="59"
 								value={value.minute()}
 								onChange={(e) => onChange(value.minute(parseInt(e.target.value) || 0))}
-								className="w-14 p-2 text-center bg-gray-50 border border-gray-200 rounded-lg font-mono text-sm focus:border-black outline-none"
+								className="w-14 p-2 text-center bg-brand-bg border border-brand/20 rounded-lg font-mono text-sm focus:border-brand text-page-text outline-none transition-all"
 							/>
 						</div>
 					</div>

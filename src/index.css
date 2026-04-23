@@ -1,5 +1,107 @@
 @import 'tailwindcss';
 
+@theme {
+	--color-brand: var(--brand-color);
+	--color-brand-hover: var(--brand-hover);
+	--color-brand-bg: var(--brand-bg);
+	--color-page-bg: var(--bg-page);
+	--color-page-text: var(--text-main);
+}
+
+/* --- LIGHT THEMES  --- */
+:root {
+	--brand-color: #18181b;
+	--brand-hover: #000000;
+	--brand-bg: #f4f4f5;
+	--bg-page: #fafafa;
+	--text-main: #18181b;
+}
+[data-theme='blue-light'] {
+	--brand-color: #2563eb;
+	--brand-hover: #1d4ed8;
+	--brand-bg: #dbeafe;
+	--bg-page: #f0f7ff;
+	--text-main: #1e3a8a;
+}
+[data-theme='green-light'] {
+	--brand-color: #16a34a;
+	--brand-hover: #15803d;
+	--brand-bg: #dcfce7;
+	--bg-page: #f0fdf4;
+	--text-main: #14532d;
+}
+[data-theme='purple-light'] {
+	--brand-color: #9333ea;
+	--brand-hover: #7e22ce;
+	--brand-bg: #f3e8ff;
+	--bg-page: #faf5ff;
+	--text-main: #581c87;
+}
+[data-theme='red-light'] {
+	--brand-color: #dc2626;
+	--brand-hover: #b91c1c;
+	--brand-bg: #fee2e2;
+	--bg-page: #fef2f2;
+	--text-main: #7f1d1d;
+}
+[data-theme='yellow-light'] {
+	--brand-color: #d97706;
+	--brand-hover: #b45309;
+	--brand-bg: #fef3c7;
+	--bg-page: #fffbeb;
+	--text-main: #713f12;
+}
+
+/* --- DARK THEMES --- */
+[data-theme='dark'] {
+	--brand-color: #ffffff;
+	--brand-hover: #f4f4f5;
+	--brand-bg: #27272a;
+	--bg-page: #16161b;
+	--text-main: #f4f4f5;
+}
+[data-theme='blue-dark'] {
+	--brand-color: #60a5fa;
+	--brand-hover: #93c5fd;
+	--brand-bg: #1e3a8a;
+	--bg-page: #0f172a;
+	--text-main: #f1f5f9;
+}
+[data-theme='green-dark'] {
+	--brand-color: #4ade80;
+	--brand-hover: #86efac;
+	--brand-bg: #14532d;
+	--bg-page: #061f10;
+	--text-main: #f0fdf4;
+}
+[data-theme='purple-dark'] {
+	--brand-color: #c084fc;
+	--brand-hover: #d8b4fe;
+	--brand-bg: #581c87;
+	--bg-page: #1a1033;
+	--text-main: #faf5ff;
+}
+[data-theme='red-dark'] {
+	--brand-color: #f87171;
+	--brand-hover: #fca5a5;
+	--brand-bg: #7f1d1d;
+	--bg-page: #1a0505;
+	--text-main: #fef2f2;
+}
+[data-theme='yellow-dark'] {
+	--brand-color: #fbbf24;
+	--brand-hover: #fcd34d;
+	--brand-bg: #713f12;
+	--bg-page: #1c1505;
+	--text-main: #fffbeb;
+}
+
+body {
+	background-color: var(--bg-page);
+	color: var(--text-main);
+	@apply transition-colors duration-300;
+}
+
 * {
 	@apply transition-all duration-200 ease-in-out box-border;
 }

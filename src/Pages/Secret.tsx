@@ -8,6 +8,7 @@ import Button from '../components/UI/Button';
 import Checkbox from '../components/UI/Checkbox';
 import DateTimePicker from '../components/UI/DateTimePicker';
 import Input from '../components/UI/Input';
+import { themeHexColors, useAppTheme } from '../components/UI/Theme/ThemeContext';
 import { dbMessages } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { ToastService } from '../helpers/services/ToastService';
@@ -16,6 +17,9 @@ import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 import { cn } from '../utils/cn';
 
 const Secret = () => {
+	const { theme } = useAppTheme();
+	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
+
 	const {
 		register,
 		handleSubmit,
@@ -118,7 +122,7 @@ const Secret = () => {
 											onClick={generateRandomPassphrase}
 										>
 											<svg
-												fill="#000000"
+												fill="currentColor"
 												width="32px"
 												height="32px"
 												viewBox="0 0 32 32"
@@ -176,12 +180,12 @@ const Secret = () => {
 							{/* buttons */}
 							<div className="flex justify-between gap-6 flex-wrap">
 								<div
-									className="flex-1 min-w-0 flex flex-col items-start py-4 px-6 text-zinc-400 bg-zinc-50 rounded-xl"
+									className="flex-1 min-w-0 flex flex-col items-start py-4 px-6 text-brand bg-brand-bg rounded-xl transition-all duration-300"
 									style={{
-										backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23A1A1AA' stroke-width='1.5' stroke-dasharray='12%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
+										backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23${currentHex}' stroke-width='1.5' stroke-dasharray='12%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
 									}}
 								>
-									<p className="truncate w-full text-left">https://onevello.myslennya.com/secret/...</p>
+									<p className="truncate w-full text-left font-bold">https://onevello.myslennya.com/secret/...</p>
 								</div>
 
 								<Button type="submit" variant="default" size="full" className="flex-1">

@@ -12,17 +12,19 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(({ className, variant = 'default', size = 'md', isLoading, children, ...props }, ref) => {
 	const baseStyles =
-		'cursor-pointer inline-flex items-center justify-center font-bold transition-all active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none outline-none focus:ring-2 focus:ring-zinc-300 focus:ring-offset-2';
+		'cursor-pointer inline-flex items-center justify-center font-bold transition-all duration-300 active:scale-[0.98] disabled:opacity-50 disabled:pointer-events-none outline-none focus:ring-2 focus:ring-brand focus:ring-offset-2';
 
 	const variants: Record<ButtonVariant, string> = {
-		default: 'bg-black text-white hover:bg-zinc-800 shadow-sm rounded-xl',
-		outline: 'bg-transparent border border-black text-black hover:bg-gray-50 rounded-xl',
-		ghost: 'bg-transparent text-black hover:bg-gray-100 rounded-xl',
+		default: 'bg-brand text-page-bg hover:bg-brand-hover shadow-sm rounded-xl',
+		outline: 'bg-transparent border border-brand text-brand hover:bg-brand-bg rounded-xl',
+		ghost: 'bg-transparent text-brand hover:bg-brand-bg rounded-xl',
+		link: 'bg-transparent text-brand underline-offset-4 hover:underline p-0',
+
 		danger: 'bg-red-600 text-white hover:bg-red-700 rounded-xl',
-		link: 'bg-transparent text-black underline-offset-4 hover:underline p-0',
 		success: 'bg-green-600 text-white hover:bg-green-700 rounded-xl',
 		warning: 'bg-yellow-600 text-white hover:bg-yellow-700 rounded-xl',
-		info: 'bg-blue-600 text-white hover:bg-blue-700 rounded-xl',
+
+		info: 'bg-brand text-page-bg hover:opacity-90 rounded-xl',
 		disabled: 'bg-gray-400 text-white cursor-not-allowed',
 	};
 
