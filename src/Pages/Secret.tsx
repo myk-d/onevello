@@ -159,9 +159,11 @@ const Secret = () => {
 
 							{/* one time access */}
 							<div className="flex items-center gap-3">
-								<Checkbox {...register('oneTime')} />
+								<Checkbox {...register('oneTime')} id="oneTimeCheckbox" />
 
-								<label className="block text-base font-bold uppe tracking-wider">One time link access *</label>
+								<label htmlFor="oneTimeCheckbox" className="block text-base font-bold uppe tracking-wider cursor-pointer">
+									One time link access *
+								</label>
 							</div>
 
 							{/* one time access message */}
