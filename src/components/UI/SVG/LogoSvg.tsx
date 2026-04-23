@@ -1,0 +1,18 @@
+import { CustomSVGProps } from '../../../models/Shared/props';
+
+const LogoSvg: React.FC<CustomSVGProps> = ({ color, ...rest }) => {
+	const strokeColor = color ?? 'currentColor';
+
+	return (
+		<svg width="57" height="31" viewBox="0 0 57 31" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
+			<line y1="15.6702" x2="56.8948" y2="15.6702" stroke={strokeColor} strokeWidth="2" />
+			<path d="M0 1H20.1885L36.6126 29.4474H56.8948" stroke={strokeColor} strokeWidth="2" />
+			<path d="M0 8.34126H20.1885L36.6126 23.0238H56.8948" stroke={strokeColor} strokeWidth="2" />
+			<path d="M0 23.0238H20.1885L36.6126 8.34126H56.8948" stroke={strokeColor} strokeWidth="2" />
+			<path d="M0 29.4474H20.1885L36.6126 1H56.8948" stroke={strokeColor} strokeWidth="2" />
+			<line x1="28.1788" y1="0.102898" x2="28.1788" y2="30.3355" stroke={strokeColor} strokeWidth="2" />
+		</svg>
+	);
+};
+
+export default LogoSvg;

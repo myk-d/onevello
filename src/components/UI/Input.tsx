@@ -18,9 +18,9 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ className, type, ...pr
 				type={inputType}
 				className={cn(
 					'min-w-60 px-4 py-2.5 w-full',
-					'border border-black rounded-xl',
-					'bg-white text-gray-800 font-medium placeholder:text-gray-400',
-					'transition-all shadow-sm hover:bg-gray-50 focus:bg-gray-50 outline-none',
+					'border border-brand rounded-xl',
+					'bg-page-bg text-page-text font-medium placeholder:text-page-text/40',
+					'transition-all duration-300 shadow-sm hover:bg-brand-bg focus:bg-brand-bg outline-none focus:ring-1 focus:ring-brand',
 					isPassword && 'pr-12',
 					className,
 				)}
@@ -31,7 +31,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(({ className, type, ...pr
 				<button
 					type="button"
 					onClick={() => setShowPassword(!showPassword)}
-					className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-black transition-colors focus:outline-none"
+					className="absolute right-4 top-1/2 -translate-y-1/2 text-page-text/50 hover:text-brand transition-colors focus:outline-none cursor-pointer"
 					tabIndex={-1}
 				>
 					{showPassword ? (

@@ -11,6 +11,6 @@ describe('Button component', () => {
 	it('should have default variant', () => {
 		render(<Button variant="default">Button</Button>);
 		const button = screen.getByRole('button');
-		expect(button).toHaveClass('bg-black');
+		expect(button).toHaveClass('bg-brand');
 	});
 });

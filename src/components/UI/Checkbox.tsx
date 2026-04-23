@@ -14,15 +14,15 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({ className, label
 					ref={ref}
 					className={cn(
 						'peer appearance-none',
-						'w-5 h-5 border border-black rounded-lg bg-white',
-						'checked:bg-black transition-all duration-200',
-						'group-hover:bg-gray-50 peer-checked:group-hover:bg-black',
+						'w-5 h-5 border border-brand rounded-lg bg-page-bg',
+						'checked:bg-brand transition-all duration-300',
+						'group-hover:bg-brand-bg peer-checked:group-hover:bg-brand',
 						className,
 					)}
 					{...props}
 				/>
 				<svg
-					className="absolute w-4 h-4 text-white uppercase pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
+					className="absolute w-4 h-4 text-page-bg uppercase pointer-events-none opacity-0 peer-checked:opacity-100 transition-opacity duration-200"
 					fill="none"
 					stroke="currentColor"
 					viewBox="0 0 24 24"
@@ -31,7 +31,7 @@ const Checkbox = forwardRef<HTMLInputElement, CheckboxProps>(({ className, label
 					<path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
 				</svg>
 			</div>
-			{label && <span className="text-sm font-bold uppercase tracking-wider text-gray-800">{label}</span>}
+			{label && <span className="text-sm font-bold uppercase tracking-wider text-page-text transition-colors duration-300">{label}</span>}
 		</label>
 	);
 });
