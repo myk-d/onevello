@@ -2,6 +2,7 @@ import { lazy } from 'react';
 import { Route, Routes } from 'react-router';
 import MainLayout from './components/Layouts/MainLayout';
 import { UrlConfig } from './constants/UrlConfig';
+import HowItWorks from './Pages/HowItWorks';
 import Secret from './Pages/Secret';
 import SecretID from './Pages/SecretID';
 
@@ -12,6 +13,7 @@ function App() {
 		<Routes>
 			<Route path={UrlConfig.home} element={<MainLayout />}>
 				<Route index element={<Home />} />
+				<Route path={UrlConfig.about} element={<HowItWorks />} />
 				<Route path={UrlConfig.secret} element={<Secret />} />
 				<Route path={UrlConfig.secretID} element={<SecretID />} />
 			</Route>
