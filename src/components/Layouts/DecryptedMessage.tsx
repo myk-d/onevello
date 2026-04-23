@@ -48,6 +48,12 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 				</div>
 			)}
 
+			{isOneTime && (
+				<div className="bg-rose-100 py-2 px-3 rounded-md italic text-rose-800 border-l-[3px] border-cyan-800">
+					<p className="text-left text-sm">You can close this window when done.</p>
+				</div>
+			)}
+
 			{/* buttons */}
 			<div className="flex justify-between gap-6 flex-wrap">
 				{isCopied ? (
