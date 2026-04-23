@@ -1,6 +1,6 @@
 import { Link } from 'react-router';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
-import logo from '/logo.svg';
+import LogoSvg from '../UI/SVG/LogoSvg';
 
 const Header = () => {
 	return (
@@ -13,7 +13,7 @@ const Header = () => {
 						localStorage.removeItem(isSecretWasCreatedOnDeviceStorageKey);
 					}}
 				>
-					<img src={logo} className="h-8 w-8" alt="Logo" />
+					<LogoSvg className="h-8 w-8" />
 
 					<span className="font-bold text-2xl">OneVello</span>
 				</Link>
