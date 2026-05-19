@@ -15,6 +15,8 @@ const Secret = () => {
 	const { theme } = useAppTheme();
 	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
 
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+
 	const {
 		register,
 		handleSubmit,
@@ -36,6 +38,8 @@ const Secret = () => {
 	const [encryptedMessageId, setEncryptedMessageId] = useState<string | null>(null);
 
 	const onSubmit: SubmitHandler<CreateMessageType> = async (data) => {
+		setIsSubmitting(true);
+
 		try {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
 
@@ -53,6 +57,8 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -89,6 +95,8 @@ const Secret = () => {
 							control={control}
 							generateRandomPassphrase={generateRandomPassphrase}
 							currentHex={currentHex}
+							isDisabled={isSubmitting}
+							isLoading={isSubmitting}
 						/>
 					</form>
 				)}
