@@ -1,6 +1,6 @@
+import { Button } from 'perkslab-ui';
 import { useState } from 'react';
 import { UrlConfig } from '../../constants/UrlConfig';
-import Button from '../UI/Button';
 
 interface EncryptedMessageLinkProps {
 	id: string;

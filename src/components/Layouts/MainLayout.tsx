@@ -1,7 +1,7 @@
+import { SupportButton } from 'perkslab-ui';
 import { Outlet } from 'react-router';
 import Footer from '../Shared/Footer';
 import Header from '../Shared/Header';
-import { SupportButton } from '../UI/SupportButton';
 
 const MainLayout = () => {
 	return (
@@ -14,7 +14,7 @@ const MainLayout = () => {
 
 			<Footer />
 
-			<SupportButton />
+			<SupportButton supportEmail="support@myslennya.com" />
 		</div>
 	);
 };

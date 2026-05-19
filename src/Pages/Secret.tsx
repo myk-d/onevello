@@ -1,20 +1,21 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
+import { themeHexColors, ToastService, useAppTheme } from 'perkslab-ui';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { PasswordChannel } from 'secure-channel-sdk';
 import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
-import { themeHexColors, useAppTheme } from '../components/UI/Theme/ThemeContext';
 import { dbMessages } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
-import { ToastService } from '../helpers/services/ToastService';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const Secret = () => {
 	const { theme } = useAppTheme();
 	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
+
+	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 
 	const {
 		register,
@@ -37,6 +38,8 @@ const Secret = () => {
 	const [encryptedMessageId, setEncryptedMessageId] = useState<string | null>(null);
 
 	const onSubmit: SubmitHandler<CreateMessageType> = async (data) => {
+		setIsSubmitting(true);
+
 		try {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
 
@@ -54,6 +57,8 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
+		} finally {
+			setIsSubmitting(false);
 		}
 	};
 
@@ -90,6 +95,8 @@ const Secret = () => {
 							control={control}
 							generateRandomPassphrase={generateRandomPassphrase}
 							currentHex={currentHex}
+							isDisabled={isSubmitting}
+							isLoading={isSubmitting}
 						/>
 					</form>
 				)}

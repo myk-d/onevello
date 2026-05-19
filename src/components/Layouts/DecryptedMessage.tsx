@@ -1,8 +1,8 @@
+import { Button } from 'perkslab-ui';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { UrlConfig } from '../../constants/UrlConfig';
 import { cn } from '../../utils/cn';
-import Button from '../UI/Button';
 
 interface DecryptedMessageProps {
 	message: string;

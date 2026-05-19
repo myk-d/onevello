@@ -1,5 +1,5 @@
+import { Button } from 'perkslab-ui';
 import { Link } from 'react-router';
-import Button from '../components/UI/Button';
 import { UrlConfig } from '../constants/UrlConfig';
 import { cn } from '../utils/cn';
 

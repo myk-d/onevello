@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
+import { Button, Input } from 'perkslab-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
@@ -7,8 +8,6 @@ import { PasswordChannel } from 'secure-channel-sdk';
 import z from 'zod';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import ExpiredLink from '../components/Layouts/ExpiredLink';
-import Button from '../components/UI/Button';
-import Input from '../components/UI/Input';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
