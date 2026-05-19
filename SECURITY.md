@@ -13,8 +13,8 @@ We only provide security updates and patches for the latest stable release of On
 
 To ensure the integrity of the production environment and protect users' data, we enforce a strict branching and merging workflow:
 
-- **Development Target**: All Pull Requests from contributors must be targeted **only towards the `development` branch**. PRs opened directly against `main` or production branches will be automatically rejected or closed.
-- **Review & Merge**: Only the repository maintainer (@your-github-username) has the permissions to review, approve, and merge Pull Requests into the `development` and `main` branches.
+- **Development Target**: All Pull Requests from contributors must be targeted **only towards the `development` branch**. PRs opened directly against `master` or production branches will be automatically rejected or closed.
+- **Review & Merge**: Only the repository maintainer (@myk-d) has the permissions to review, approve, and merge Pull Requests into the `development` and `master` branches.
 - **Testing**: Any security patches or feature contributions must be thoroughly tested in the `development_messages` environment before being considered for a production release.
 
 ## Reporting a Vulnerability
