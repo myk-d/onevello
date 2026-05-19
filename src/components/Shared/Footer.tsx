@@ -34,6 +34,18 @@ const Footer = () => {
 					>
 						Home
 					</Link>
+					<Link
+						to={UrlConfig.privacyPolicy}
+						className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
+					>
+						Privacy Policy
+					</Link>
+					<Link
+						to={UrlConfig.termsOfUse}
+						className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
+					>
+						Terms of Use
+					</Link>
 				</nav>
 			</div>
 		</footer>
