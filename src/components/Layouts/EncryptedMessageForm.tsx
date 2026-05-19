@@ -1,12 +1,9 @@
 import dayjs from 'dayjs';
+import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
 import React from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
 import { CreateMessageType } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
-import Button from '../UI/Button';
-import Checkbox from '../UI/Checkbox';
-import DateTimePicker from '../UI/DateTimePicker';
-import Input from '../UI/Input';
 
 interface EncryptedMessageFormProps {
 	register: UseFormRegister<CreateMessageType>;

@@ -1,7 +1,7 @@
+import { ThemeSwitcher } from 'perkslab-ui';
 import { Link } from 'react-router';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
 import LogoSvg from '../UI/SVG/LogoSvg';
-import { ThemeSwitcher } from '../UI/Theme/ThemeSwitcher';
 
 const Header = () => {
 	return (

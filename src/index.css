@@ -1,4 +1,7 @@
 @import 'tailwindcss';
+@config "perkslab-ui/tailwind.config";
+
+@plugin "tailwindcss-animate";
 
 @theme {
 	--color-brand: var(--brand-color);

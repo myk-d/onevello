@@ -1,6 +1,6 @@
+import { Button } from 'perkslab-ui';
 import { useCallback, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router';
-import Button from '../components/UI/Button';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { UrlConfig } from '../constants/UrlConfig';
 

@@ -1,6 +1,6 @@
+import { Button } from 'perkslab-ui';
 import { useNavigate } from 'react-router-dom';
 import { UrlConfig } from '../../constants/UrlConfig';
-import Button from '../UI/Button';
 
 const ExpiredLink = () => {
 	const navigate = useNavigate();
