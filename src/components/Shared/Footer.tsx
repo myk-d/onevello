@@ -1,5 +1,6 @@
 import { Link } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
+import GitHubSVG from '../UI/SVG/GitHubSVG';
 
 const Footer = () => {
 	const currentYear = new Date().getFullYear();
@@ -45,6 +46,10 @@ const Footer = () => {
 						className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
 					>
 						Terms of Use
+					</Link>
+
+					<Link to={UrlConfig.repoURL} target="_blank" title="GitHub Repository">
+						<GitHubSVG className="h-8 w-8" />
 					</Link>
 				</nav>
 			</div>
