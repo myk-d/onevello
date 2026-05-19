@@ -11,11 +11,21 @@ interface EncryptedMessageFormProps {
 	generateRandomPassphrase: () => void;
 	control: Control<CreateMessageType>;
 	currentHex: string;
+	isDisabled?: boolean;
+	isLoading?: boolean;
 }
 
-const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({ register, errors, generateRandomPassphrase, control, currentHex }) => {
+const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
+	register,
+	errors,
+	generateRandomPassphrase,
+	control,
+	currentHex,
+	isDisabled = false,
+	isLoading = false,
+}) => {
 	return (
-		<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 ">
+		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
 			<div className="flex-1 flex flex-col items-start">
 				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">Secret text</label>
 				<textarea
@@ -106,11 +116,11 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({ register, e
 					<p className="truncate w-full text-left font-bold">https://onevello.myslennya.com/secret/...</p>
 				</div>
 
-				<Button type="submit" variant="default" size="full" className="flex-1">
+				<Button type="submit" variant="default" size="full" className="flex-1" disabled={isDisabled} isLoading={isLoading}>
 					Create link
 				</Button>
 			</div>
-		</div>
+		</fieldset>
 	);
 };
 
