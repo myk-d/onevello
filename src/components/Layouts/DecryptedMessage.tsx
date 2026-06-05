@@ -1,6 +1,6 @@
 import { Button } from 'perkslab-ui';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
 import { cn } from '../../utils/cn';
 

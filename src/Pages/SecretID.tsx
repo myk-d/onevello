@@ -5,19 +5,13 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useParams } from 'react-router';
 import { PasswordChannel } from 'secure-channel-sdk';
-import z from 'zod';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import ExpiredLink from '../components/Layouts/ExpiredLink';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
+import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
-
-export const PassphraseSchema = z.object({
-	passphrase: z.string().trim().min(3, { message: 'Passphrase is required' }),
-});
-
-export type PassphraseType = z.infer<typeof PassphraseSchema>;
 
 enum FetchStatus {
 	Loading = 'loading',
