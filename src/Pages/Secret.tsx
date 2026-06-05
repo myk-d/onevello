@@ -57,6 +57,7 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
+			ToastService.error('Failed to create secret. Please try again.');
 		} finally {
 			setIsSubmitting(false);
 		}
