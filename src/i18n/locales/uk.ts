@@ -1,6 +1,4 @@
-import type { Translations } from './en';
-
-const uk: Translations = {
+const uk = {
 	header: {
 		nav: {
 			howItWorks: 'Як це працює',
