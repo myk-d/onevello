@@ -1,6 +1,7 @@
 import { ThemeSwitcher } from 'perkslab-ui';
 import { Link } from 'react-router';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
+import LanguageSwitcher from '../UI/LanguageSwitcher';
 import LogoSvg from '../UI/SVG/LogoSvg';
 
 const Header = () => {
@@ -20,7 +21,10 @@ const Header = () => {
 				</Link>
 			</div>
 
-			<ThemeSwitcher />
+			<div className="flex items-center gap-3">
+				<LanguageSwitcher />
+				<ThemeSwitcher />
+			</div>
 		</header>
 	);
 };

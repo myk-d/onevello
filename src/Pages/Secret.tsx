@@ -3,6 +3,7 @@ import dayjs from 'dayjs';
 import { themeHexColors, ToastService, useAppTheme } from 'perkslab-ui';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { PasswordChannel } from 'secure-channel-sdk';
 import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
@@ -13,6 +14,7 @@ import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const Secret = () => {
 	const { theme } = useAppTheme();
+	const { t } = useTranslation();
 	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -56,7 +58,7 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
-			ToastService.error('Failed to create secret. Please try again.');
+			ToastService.error(t('toasts.failedToCreate'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -73,7 +75,7 @@ const Secret = () => {
 
 		setValue('passphrase', passphrase);
 		navigator.clipboard.writeText(passphrase);
-		ToastService.success('Passphrase copied to clipboard!');
+		ToastService.success(t('toasts.passphraseCopied'));
 	};
 
 	return (

@@ -1,5 +1,6 @@
 import { Button } from 'perkslab-ui';
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
 import { cn } from '../../utils/cn';
@@ -11,12 +12,9 @@ interface DecryptedMessageProps {
 
 const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime }) => {
 	const navigate = useNavigate();
+	const { t } = useTranslation();
 
 	const [isCopied, setIsCopied] = useState<boolean>(false);
-
-	const navigateToCreateSecret = () => {
-		navigate(UrlConfig.secret);
-	};
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(message);
@@ -32,25 +30,25 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 	return (
 		<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 ">
 			<div className="flex-1 flex flex-col items-start">
-				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">Secret text</label>
+				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('decryptedMessage.label')}</label>
 				<textarea
 					className={cn('w-full border rounded-xl p-4 resize-none')}
 					rows={20}
 					value={message}
 					readOnly
-					placeholder="some secret text here"
+					placeholder={t('decryptedMessage.label')}
 				></textarea>
 			</div>
 
 			{isOneTime && (
 				<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
-					<p className="text-left text-sm">This message is one-time access and will self-destruct after being viewed.</p>
+					<p className="text-left text-sm">{t('decryptedMessage.oneTimeWarning')}</p>
 				</div>
 			)}
 
 			{isOneTime && (
 				<div className="bg-rose-100 py-2 px-3 rounded-md italic text-rose-800 border-l-[3px] border-cyan-800">
-					<p className="text-left text-sm">You can close this window when done.</p>
+					<p className="text-left text-sm">{t('decryptedMessage.closeWindowNote')}</p>
 				</div>
 			)}
 
@@ -58,11 +56,11 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 			<div className="flex justify-between gap-6 flex-wrap">
 				{isCopied ? (
 					<Button type="button" variant="success" size="full" className="flex-1 gap-2">
-						Copied
+						{t('decryptedMessage.copied')}
 					</Button>
 				) : (
 					<Button type="button" variant="default" size="full" onClick={copyToClipboard} className="flex-1 gap-2">
-						Copy to clipboard
+						{t('decryptedMessage.copyToClipboard')}
 						<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
 							<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -83,8 +81,8 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 					</Button>
 				)}
 
-				<Button type="button" variant="outline" size="full" onClick={navigateToCreateSecret} className="flex-1 gap-2">
-					Create Secret
+				<Button type="button" variant="outline" size="full" onClick={() => navigate(UrlConfig.secret)} className="flex-1 gap-2">
+					{t('decryptedMessage.createSecret')}
 				</Button>
 			</div>
 		</div>

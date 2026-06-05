@@ -2,6 +2,7 @@ import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
 import React from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
+import { useTranslation } from 'react-i18next';
 import { CreateMessageType } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
 
@@ -24,14 +25,16 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	isDisabled = false,
 	isLoading = false,
 }) => {
+	const { t } = useTranslation();
+
 	return (
 		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
 			<div className="flex-1 flex flex-col items-start">
-				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">Secret text</label>
+				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.secretText')}</label>
 				<textarea
 					className={cn('w-full border rounded-xl p-4 resize-none', errors.text ? 'border-red-500' : '')}
 					rows={10}
-					placeholder="some secret text here"
+					placeholder={t('form.secretTextPlaceholder')}
 					{...register('text')}
 				></textarea>
 				{errors.text && <span className="text-red-500 text-xs mt-1">{errors.text.message}</span>}
@@ -40,12 +43,12 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 			<div className="flex justify-between gap-6 flex-wrap">
 				{/* passphrase */}
 				<div className="flex-1 flex flex-col items-start">
-					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">Passphrase</label>
+					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.passphrase')}</label>
 
 					<div className="w-full flex items-center gap-2">
 						<Input
 							type="password"
-							placeholder="Enter passphrase"
+							placeholder={t('form.passphrasePlaceholder')}
 							className={errors.passphrase ? 'border-red-500' : ''}
 							{...register('passphrase')}
 						/>
@@ -73,7 +76,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 
 				{/* expiration time */}
 				<div className="flex-1 flex flex-col items-start">
-					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">Expiration Date</label>
+					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.expirationDate')}</label>
 
 					<Controller
 						control={control}
@@ -96,13 +99,13 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				<Checkbox {...register('oneTime')} id="oneTimeCheckbox" />
 
 				<label htmlFor="oneTimeCheckbox" className="block text-base font-bold uppe tracking-wider cursor-pointer">
-					One time link access *
+					{t('form.oneTimeAccess')}
 				</label>
 			</div>
 
 			{/* one time access message */}
 			<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800">
-				<p className="text-left text-xs">* Your message will self-destruct after being viewed. The link can only be accessed once.</p>
+				<p className="text-left text-xs">{t('form.oneTimeNote')}</p>
 			</div>
 
 			{/* buttons */}
@@ -117,7 +120,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				</div>
 
 				<Button type="submit" variant="default" size="full" className="flex-1" disabled={isDisabled} isLoading={isLoading}>
-					Create link
+					{t('form.createLink')}
 				</Button>
 			</div>
 		</fieldset>
