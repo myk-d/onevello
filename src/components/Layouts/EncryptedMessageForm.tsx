@@ -27,9 +27,29 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 }) => {
 	const { t } = useTranslation();
 	const textValue = useWatch({ control, name: 'text' }) ?? '';
+	const passphraseValue = useWatch({ control, name: 'passphrase' }) ?? '';
 	const charCount = textValue.length;
 	const isNearLimit = charCount > MAX_SECRET_LENGTH * 0.9;
 	const [activePreset, setActivePreset] = useState<string>('d1');
+
+	const passphraseStrength = (() => {
+		if (passphraseValue.length < 3) return 0;
+		let score = 0;
+		if (passphraseValue.length >= 8) score++;
+		if (passphraseValue.length >= 12) score++;
+		if (/[A-Z]/.test(passphraseValue) && /[a-z]/.test(passphraseValue)) score++;
+		if (/\d/.test(passphraseValue)) score++;
+		if (/[^A-Za-z0-9]/.test(passphraseValue)) score++;
+		if (score <= 1) return 1;
+		if (score <= 3) return 2;
+		return 3;
+	})();
+
+	const strengthLabel = passphraseStrength === 1 ? 'weak' : passphraseStrength === 2 ? 'fair' : 'strong';
+	const strengthColor =
+		passphraseStrength === 1 ? 'bg-red-500' : passphraseStrength === 2 ? 'bg-yellow-500' : 'bg-green-500';
+	const strengthTextColor =
+		passphraseStrength === 1 ? 'text-red-500' : passphraseStrength === 2 ? 'text-yellow-500' : 'text-green-500';
 
 	const PRESETS = [
 		{ key: 'd1', amount: 1, unit: 'day' as const },
@@ -91,6 +111,24 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 							</svg>
 						</Button>
 					</div>
+					{passphraseValue.length >= 3 && (
+						<div className="flex items-center gap-2 mt-1.5 w-full">
+							<div className="flex gap-1 flex-1">
+								{[1, 2, 3].map((level) => (
+									<div
+										key={level}
+										className={cn(
+											'h-1 flex-1 rounded-full transition-colors duration-300',
+											passphraseStrength >= level ? strengthColor : 'bg-page-text/10',
+										)}
+									/>
+								))}
+							</div>
+							<span className={cn('text-xs font-bold', strengthTextColor)}>
+								{t(`form.strength.${strengthLabel}`)}
+							</span>
+						</div>
+					)}
 					{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
 				</div>
 

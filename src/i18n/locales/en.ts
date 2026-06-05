@@ -156,6 +156,11 @@ const en = {
 		oneTimeAccess: 'One time link access *',
 		oneTimeNote: '* Your message will self-destruct after being viewed. The link can only be accessed once.',
 		createLink: 'Create link',
+		strength: {
+			weak: 'Weak',
+			fair: 'Fair',
+			strong: 'Strong',
+		},
 		presets: {
 			h1: '1h',
 			d1: '24h',
