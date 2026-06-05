@@ -1,9 +1,9 @@
 import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
 import React from 'react';
-import { Control, Controller, FieldErrors, UseFormRegister } from 'react-hook-form';
+import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
-import { CreateMessageType } from '../../models/Message/message';
+import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
 
 interface EncryptedMessageFormProps {
@@ -26,6 +26,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	isLoading = false,
 }) => {
 	const { t } = useTranslation();
+	const textValue = useWatch({ control, name: 'text' }) ?? '';
+	const charCount = textValue.length;
+	const isNearLimit = charCount > MAX_SECRET_LENGTH * 0.9;
 
 	return (
 		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
@@ -37,7 +40,16 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 					placeholder={t('form.secretTextPlaceholder')}
 					{...register('text')}
 				></textarea>
-				{errors.text && <span className="text-red-500 text-xs mt-1">{errors.text.message}</span>}
+				<div className="w-full flex justify-between items-center mt-1">
+					{errors.text ? (
+						<span className="text-red-500 text-xs">{errors.text.message}</span>
+					) : (
+						<span />
+					)}
+					<span className={cn('text-xs tabular-nums', isNearLimit ? 'text-red-500' : 'text-page-text/40')}>
+						{charCount.toLocaleString()} / {MAX_SECRET_LENGTH.toLocaleString()}
+					</span>
+				</div>
 			</div>
 
 			<div className="flex justify-between gap-6 flex-wrap">

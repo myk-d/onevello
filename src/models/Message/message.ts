@@ -1,5 +1,7 @@
 import z from 'zod';
 
+export const MAX_SECRET_LENGTH = 10_000;
+
 const MessageMetadata = {
 	createdAt: z.string(),
 	expiration: z.string(),
@@ -23,7 +25,11 @@ export const MessageSchema = z.object({
 
 export const CreateMessageSchema = z
 	.object({
-		text: z.string().trim().min(1, { message: 'Secret text is required' }),
+		text: z
+			.string()
+			.trim()
+			.min(1, { message: 'Secret text is required' })
+			.max(MAX_SECRET_LENGTH, { message: `Max ${MAX_SECRET_LENGTH.toLocaleString()} characters` }),
 		passphrase: z.string().trim().min(3, { message: 'Passphrase is required' }),
 		...MessageMetadata,
 	})
