@@ -17,6 +17,8 @@ export const MessageSchema = z.object({
 	seq: z.number(),
 	algo: z.enum(['AES-GCM', 'AES-GCM-DET']),
 	ts: z.number(),
+	version: z.number().optional(),
+	keyLengthBits: z.union([z.literal(128), z.literal(192), z.literal(256)]).optional(),
 });
 
 export const CreateMessageSchema = z
