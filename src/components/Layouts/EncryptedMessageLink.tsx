@@ -1,5 +1,6 @@
 import { Button } from 'perkslab-ui';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
 import { UrlConfig } from '../../constants/UrlConfig';
 
 interface EncryptedMessageLinkProps {
@@ -9,6 +10,10 @@ interface EncryptedMessageLinkProps {
 
 const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({ id, clearId }) => {
 	const [isCopied, setIsCopied] = useState<boolean>(false);
+
+	useEffect(() => {
+		localStorage.removeItem(isSecretWasCreatedOnDeviceStorageKey);
+	}, []);
 
 	const copyToClipboard = () => {
 		const message = `${window.location.origin}${UrlConfig.secretID.replace(':id', id)}`;

@@ -43,8 +43,6 @@ const Secret = () => {
 		try {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
 
-			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
-
 			const messageToSave: Omit<MessageType, 'id'> = {
 				...encryptedPkg,
 				createdAt: data.createdAt,
@@ -54,6 +52,7 @@ const Secret = () => {
 
 			const result = await dbMessages.create(messageToSave);
 
+			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
