@@ -1,6 +1,7 @@
-import { lazy } from 'react';
+import { lazy, Suspense } from 'react';
 import { Route, Routes } from 'react-router';
 import MainLayout from './components/Layouts/MainLayout';
+import { SecretIDLoader } from './components/UI/SecretIDLoader';
 import { UrlConfig } from './constants/UrlConfig';
 
 const Home = lazy(() => import('./Pages/Home'));
@@ -12,18 +13,20 @@ const SecretID = lazy(() => import('./Pages/SecretID'));
 
 function App() {
 	return (
-		<Routes>
-			<Route path={UrlConfig.home} element={<MainLayout />}>
-				<Route index element={<Home />} />
-				<Route path={UrlConfig.about} element={<HowItWorks />} />
-				<Route path={UrlConfig.secret} element={<Secret />} />
-				<Route path={UrlConfig.secretID} element={<SecretID />} />
-				<Route path={UrlConfig.privacyPolicy} element={<PrivacyPolicy />} />
-				<Route path={UrlConfig.termsOfUse} element={<TermsOfUse />} />
-			</Route>
+		<Suspense fallback={<SecretIDLoader />}>
+			<Routes>
+				<Route path={UrlConfig.home} element={<MainLayout />}>
+					<Route index element={<Home />} />
+					<Route path={UrlConfig.about} element={<HowItWorks />} />
+					<Route path={UrlConfig.secret} element={<Secret />} />
+					<Route path={UrlConfig.secretID} element={<SecretID />} />
+					<Route path={UrlConfig.privacyPolicy} element={<PrivacyPolicy />} />
+					<Route path={UrlConfig.termsOfUse} element={<TermsOfUse />} />
+				</Route>
 
-			<Route path="*" element={<Home />} />
-		</Routes>
+				<Route path="*" element={<Home />} />
+			</Routes>
+		</Suspense>
 	);
 }
 

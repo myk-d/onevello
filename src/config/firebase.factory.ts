@@ -2,7 +2,6 @@ import {
 	DocumentData,
 	DocumentSnapshot,
 	Firestore,
-	OrderByDirection,
 	QueryDocumentSnapshot,
 	QueryFieldFilterConstraint,
 	addDoc,
@@ -14,14 +13,12 @@ import {
 	query,
 	updateDoc,
 } from 'firebase/firestore';
-import { FieldPath } from 'react-hook-form';
-
 interface ObjectWithId {
 	id: string;
 }
 type Collection = string;
 
-type GetAll<T> = (orderBy?: string | FieldPath<Record<string, unknown>>, orderDirection?: OrderByDirection) => Promise<T[]>;
+type GetAll<T> = () => Promise<T[]>;
 type GetById<T> = (id: string) => Promise<T | undefined>;
 type Create<T> = (data: Omit<T, 'id'>) => Promise<T>;
 type Update<T> = (data: Partial<T> & ObjectWithId) => Promise<void>;
@@ -74,8 +71,7 @@ export class FirebaseFactory<T extends ObjectWithId> {
 	create: Create<T> = async (data) => {
 		const col = collection(this.firestore, this.collectionName);
 		const createdDoc = await addDoc(col, data);
-		const docWithData = await getDoc(createdDoc);
-		return this.getOneDocWithId(docWithData);
+		return { ...data, id: createdDoc.id } as T;
 	};
 
 	update: Update<T> = async (data) => {

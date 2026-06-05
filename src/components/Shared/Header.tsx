@@ -1,6 +1,8 @@
 import { ThemeSwitcher } from 'perkslab-ui';
 import { Link } from 'react-router';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
+import { UrlConfig } from '../../constants/UrlConfig';
+import LanguageSwitcher from '../UI/LanguageSwitcher';
 import LogoSvg from '../UI/SVG/LogoSvg';
 
 const Header = () => {
@@ -8,7 +10,7 @@ const Header = () => {
 		<header className="flex items-center justify-between py-3 px-7 border-b border-brand transition-colors duration-300">
 			<div className="flex items-center gap-3.5">
 				<Link
-					to="/"
+					to={UrlConfig.home}
 					className="flex items-center gap-3 transition-transform active:scale-95"
 					onClick={() => {
 						localStorage.removeItem(isSecretWasCreatedOnDeviceStorageKey);
@@ -20,7 +22,10 @@ const Header = () => {
 				</Link>
 			</div>
 
-			<ThemeSwitcher />
+			<div className="flex items-center gap-3">
+				<LanguageSwitcher />
+				<ThemeSwitcher />
+			</div>
 		</header>
 	);
 };
