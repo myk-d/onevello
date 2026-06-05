@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
-import React from 'react';
+import React, { useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
@@ -29,6 +29,14 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	const textValue = useWatch({ control, name: 'text' }) ?? '';
 	const charCount = textValue.length;
 	const isNearLimit = charCount > MAX_SECRET_LENGTH * 0.9;
+	const [activePreset, setActivePreset] = useState<string>('d1');
+
+	const PRESETS = [
+		{ key: 'd1', amount: 1, unit: 'day' as const },
+		{ key: 'h1', amount: 1, unit: 'hour' as const },
+		{ key: 'd7', amount: 7, unit: 'day' as const },
+		{ key: 'd30', amount: 30, unit: 'day' as const },
+	] as const;
 
 	return (
 		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
@@ -95,12 +103,37 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 						name="expiration"
 						defaultValue={dayjs().toISOString()}
 						render={({ field }) => (
-							<DateTimePicker
-								value={dayjs(field.value)}
-								onChange={(date) => field.onChange(date.toISOString())}
-								onBlur={field.onBlur}
-								ref={field.ref}
-							/>
+							<div className="flex items-center gap-2 w-full">
+								<div className="flex gap-1.5 shrink-0">
+									{PRESETS.map((preset) => (
+										<button
+											key={preset.key}
+											type="button"
+											onClick={() => {
+												field.onChange(dayjs().add(preset.amount, preset.unit).toISOString());
+												setActivePreset(preset.key);
+											}}
+											className={cn(
+												'text-xs font-bold px-2.5 py-1 rounded-full border transition-colors',
+												activePreset === preset.key
+													? 'bg-brand text-white border-brand'
+													: 'text-page-text/60 border-page-text/20 hover:border-brand hover:text-brand',
+											)}
+										>
+											{t(`form.presets.${preset.key}`)}
+										</button>
+									))}
+								</div>
+								<DateTimePicker
+									value={dayjs(field.value)}
+									onChange={(date) => {
+										field.onChange(date.toISOString());
+										setActivePreset('');
+									}}
+									onBlur={field.onBlur}
+									ref={field.ref}
+								/>
+							</div>
 						)}
 					/>
 				</div>
