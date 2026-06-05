@@ -74,8 +74,7 @@ export class FirebaseFactory<T extends ObjectWithId> {
 	create: Create<T> = async (data) => {
 		const col = collection(this.firestore, this.collectionName);
 		const createdDoc = await addDoc(col, data);
-		const docWithData = await getDoc(createdDoc);
-		return this.getOneDocWithId(docWithData);
+		return { ...data, id: createdDoc.id } as T;
 	};
 
 	update: Update<T> = async (data) => {
