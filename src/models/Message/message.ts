@@ -24,6 +24,7 @@ export const MessageSchema = z.object({
 	fileUrl: z.string().optional(),
 	fileName: z.string().optional(),
 	fileType: z.string().optional(),
+	attempts: z.number().optional(),
 });
 
 export const CreateMessageSchema = z

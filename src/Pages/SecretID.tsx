@@ -14,16 +14,15 @@ import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
+const MAX_ATTEMPTS = 5;
+
 enum FetchStatus {
 	Loading = 'loading',
 	Expired = 'expired',
 	Ready = 'ready',
 }
 
-type FetchState =
-	| { status: FetchStatus.Loading }
-	| { status: FetchStatus.Expired }
-	| { status: FetchStatus.Ready; message: MessageType };
+type FetchState = { status: FetchStatus.Loading } | { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
 
 const SecretID = () => {
 	const { id } = useParams();
@@ -39,9 +38,7 @@ const SecretID = () => {
 		defaultValues: { passphrase: '' },
 	});
 
-	const [fetchState, setFetchState] = useState<FetchState>(() =>
-		id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired },
-	);
+	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired }));
 	const [decryptedText, setDecryptedText] = useState<string | null>(null);
 	const [currentPassphrase, setCurrentPassphrase] = useState<string | null>(null);
 
@@ -56,7 +53,7 @@ const SecretID = () => {
 
 				if (cancelled) return;
 
-				if (!message || dayjs(message.expiration).isBefore(dayjs())) {
+				if (!message || dayjs(message.expiration).isBefore(dayjs()) || (message.attempts ?? 0) >= MAX_ATTEMPTS) {
 					setFetchState({ status: FetchStatus.Expired });
 					if (message) {
 						await dbMessages.delete(message.id);
@@ -86,16 +83,41 @@ const SecretID = () => {
 	const onSubmit: SubmitHandler<PassphraseType> = async (data) => {
 		if (fetchState.status !== FetchStatus.Ready) return;
 
+		const { message } = fetchState;
+
 		try {
-			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, fetchState.message);
+			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
 			setDecryptedText(decryptedPkg);
 			setCurrentPassphrase(data.passphrase);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
-			const message = error instanceof Error ? error.message : '';
-			ToastService.error(
-				message.includes('Too many failed attempts') ? message : t('toasts.incorrectPassphrase'),
-			);
+
+			const newAttempts = (message.attempts ?? 0) + 1;
+
+			if (!message.oneTime) {
+				try {
+					await dbMessages.update({ id: message.id, attempts: newAttempts });
+				} catch (updateError) {
+					if (NODE_ENV_DEV) console.error('Failed to update attempts:', updateError);
+				}
+			}
+
+			if (newAttempts >= MAX_ATTEMPTS) {
+				if (!message.oneTime) {
+					try {
+						await dbMessages.delete(message.id);
+					} catch (deleteError) {
+						if (NODE_ENV_DEV) console.error('Failed to delete message:', deleteError);
+					}
+				}
+				setFetchState({ status: FetchStatus.Expired });
+				return;
+			}
+
+			setFetchState({ status: FetchStatus.Ready, message: { ...message, attempts: newAttempts } });
+
+			const errMsg = error instanceof Error ? error.message : '';
+			ToastService.error(errMsg.includes('Too many failed attempts') ? errMsg : t('toasts.incorrectPassphrase'));
 			reset();
 		}
 	};
@@ -155,10 +177,16 @@ const SecretID = () => {
 						</div>
 
 						<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
-							<p className="text-left text-sm">
-								{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}
-							</p>
+							<p className="text-left text-sm">{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}</p>
 						</div>
+
+						{(message.attempts ?? 0) > 0 && (
+							<div className="bg-amber-100 py-2 px-3 rounded-md italic text-amber-800 border-l-[3px] border-amber-500">
+								<p className="text-left text-sm">
+									{t('secretId.attemptsRemaining', { count: MAX_ATTEMPTS - (message.attempts ?? 0) })}
+								</p>
+							</div>
+						)}
 
 						<div className="flex justify-between gap-6 flex-wrap">
 							<Button type="submit" variant="default" size="full" className="flex-1 gap-2">
