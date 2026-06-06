@@ -172,6 +172,7 @@ const en = {
 		preview: 'Preview',
 		oneTimeWarning: 'This message is one-time access and will self-destruct after being viewed.',
 		regularWarning: 'This message can be viewed until it expires.',
+		attemptsRemaining: '{{count}} attempts remaining before this secret is permanently deleted.',
 	},
 	decryptedMessage: {
 		label: 'Secret text',

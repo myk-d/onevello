@@ -21,6 +21,7 @@ export const MessageSchema = z.object({
 	ts: z.number(),
 	version: z.number().optional(),
 	keyLengthBits: z.union([z.literal(128), z.literal(192), z.literal(256)]).optional(),
+	attempts: z.number().optional(),
 });
 
 export const CreateMessageSchema = z
