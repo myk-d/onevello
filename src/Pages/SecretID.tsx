@@ -9,7 +9,7 @@ import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import ExpiredLink from '../components/Layouts/ExpiredLink';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
-import { dbMessages } from '../config/firebase.config';
+import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
@@ -22,10 +22,7 @@ enum FetchStatus {
 	Ready = 'ready',
 }
 
-type FetchState =
-	| { status: FetchStatus.Loading }
-	| { status: FetchStatus.Expired }
-	| { status: FetchStatus.Ready; message: MessageType };
+type FetchState = { status: FetchStatus.Loading } | { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
 
 const SecretID = () => {
 	const { id } = useParams();
@@ -41,10 +38,9 @@ const SecretID = () => {
 		defaultValues: { passphrase: '' },
 	});
 
-	const [fetchState, setFetchState] = useState<FetchState>(() =>
-		id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired },
-	);
+	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired }));
 	const [decryptedText, setDecryptedText] = useState<string | null>(null);
+	const [currentPassphrase, setCurrentPassphrase] = useState<string | null>(null);
 
 	useEffect(() => {
 		if (!id) return;
@@ -61,6 +57,7 @@ const SecretID = () => {
 					setFetchState({ status: FetchStatus.Expired });
 					if (message) {
 						await dbMessages.delete(message.id);
+						if (message.fileUrl) await deleteImageFromStorage(message.fileUrl);
 					}
 					return;
 				}
@@ -91,6 +88,7 @@ const SecretID = () => {
 		try {
 			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
 			setDecryptedText(decryptedPkg);
+			setCurrentPassphrase(data.passphrase);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
 
@@ -129,10 +127,38 @@ const SecretID = () => {
 
 	const { message } = fetchState;
 
+	const handleDownloadFile = async () => {
+		if (!message.fileUrl || !message.fileName || !currentPassphrase) return;
+
+		const response = await fetch(message.fileUrl);
+		const encryptedPkg = await response.json();
+		const base64 = await PasswordChannel.decrypt(currentPassphrase, encryptedPkg);
+
+		const byteChars = atob(base64);
+		const byteArr = new Uint8Array(byteChars.length);
+		for (let i = 0; i < byteChars.length; i++) {
+			byteArr[i] = byteChars.charCodeAt(i);
+		}
+		const blob = new Blob([byteArr], { type: message.fileType });
+		const url = URL.createObjectURL(blob);
+		const link = document.createElement('a');
+		link.href = url;
+		link.download = message.fileName;
+		link.click();
+		URL.revokeObjectURL(url);
+
+		if (message.oneTime) await deleteImageFromStorage(message.fileUrl);
+	};
+
 	return (
 		<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
 			{decryptedText ? (
-				<DecryptedMessage message={decryptedText} isOneTime={message.oneTime} />
+				<DecryptedMessage
+					message={decryptedText}
+					isOneTime={message.oneTime}
+					fileName={message.fileName}
+					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
+				/>
 			) : (
 				<form onSubmit={handleSubmit(onSubmit)} className="w-full">
 					<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4">
@@ -151,9 +177,7 @@ const SecretID = () => {
 						</div>
 
 						<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
-							<p className="text-left text-sm">
-								{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}
-							</p>
+							<p className="text-left text-sm">{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}</p>
 						</div>
 
 						{(message.attempts ?? 0) > 0 && (

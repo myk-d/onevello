@@ -8,23 +8,36 @@ import { cn } from '../../utils/cn';
 interface DecryptedMessageProps {
 	message: string;
 	isOneTime?: boolean;
+	fileName?: string;
+	onDownloadFile?: () => Promise<void>;
 }
 
-const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime }) => {
+const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime, fileName, onDownloadFile }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
-	const [isCopied, setIsCopied] = useState<boolean>(false);
+	const [ui, setUi] = useState({ isCopied: false, isDownloading: false, isDownloaded: false });
 
 	const copyToClipboard = () => {
 		navigator.clipboard.writeText(message);
 
-		setIsCopied(true);
+		setUi((prev) => ({ ...prev, isCopied: true }));
 		const timeout = setTimeout(() => {
-			setIsCopied(false);
+			setUi((prev) => ({ ...prev, isCopied: false }));
 		}, 2000);
 
 		return () => clearTimeout(timeout);
+	};
+
+	const handleDownload = async () => {
+		if (!onDownloadFile || ui.isDownloaded) return;
+		setUi((prev) => ({ ...prev, isDownloading: true }));
+		try {
+			await onDownloadFile();
+			setUi((prev) => ({ ...prev, isDownloaded: true }));
+		} finally {
+			setUi((prev) => ({ ...prev, isDownloading: false }));
+		}
 	};
 
 	return (
@@ -40,6 +53,19 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 				></textarea>
 			</div>
 
+			{fileName && onDownloadFile && (
+				<div className="flex flex-col gap-1.5">
+					<div className="flex items-center gap-3 border rounded-xl px-4 py-3">
+						<svg className="h-5 w-5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+							<polyline points="14 2 14 8 20 8" />
+						</svg>
+						<span className="text-sm font-medium truncate flex-1">{fileName}</span>
+					</div>
+					{isOneTime && <p className="text-xs text-amber-600 font-medium px-1">{t('decryptedMessage.oneTimeFileWarning')}</p>}
+				</div>
+			)}
+
 			{isOneTime && (
 				<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
 					<p className="text-left text-sm">{t('decryptedMessage.oneTimeWarning')}</p>
@@ -47,14 +73,14 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 			)}
 
 			{isOneTime && (
-				<div className="bg-rose-100 py-2 px-3 rounded-md italic text-rose-800 border-l-[3px] border-cyan-800">
+				<div className="bg-rose-100 py-2 px-3 rounded-md italic text-rose-800 border-l-[3px] border-rose-800">
 					<p className="text-left text-sm">{t('decryptedMessage.closeWindowNote')}</p>
 				</div>
 			)}
 
 			{/* buttons */}
 			<div className="flex justify-between gap-6 flex-wrap">
-				{isCopied ? (
+				{ui.isCopied ? (
 					<Button type="button" variant="success" size="full" className="flex-1 gap-2">
 						{t('decryptedMessage.copied')}
 					</Button>
@@ -78,6 +104,20 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime 
 								></path>{' '}
 							</g>
 						</svg>
+					</Button>
+				)}
+
+				{fileName && onDownloadFile && (
+					<Button
+						type="button"
+						variant="outline"
+						size="full"
+						onClick={handleDownload}
+						isLoading={ui.isDownloading}
+						disabled={ui.isDownloaded}
+						className="flex-1 gap-2"
+					>
+						{t('decryptedMessage.downloadFile')}
 					</Button>
 				)}
 
