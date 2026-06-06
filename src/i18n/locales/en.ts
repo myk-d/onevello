@@ -5,6 +5,9 @@ const en = {
 			home: 'Home',
 			privacyPolicy: 'Privacy Policy',
 			termsOfUse: 'Terms of Use',
+			signIn: 'Sign in',
+			signOut: 'Sign out',
+			dashboard: 'My secrets',
 		},
 	},
 	home: {
@@ -25,8 +28,9 @@ const en = {
 				description: 'Set your message or file to disappear forever after it has been read or after a specific time.',
 			},
 			totalAnonymity: {
-				title: 'Total Anonymity',
-				description: 'No accounts required. No personal data collected. Just pure privacy for everyone.',
+				title: 'Your Privacy, Your Choice',
+				description:
+					'No account required to send or receive secrets. Optionally sign in with Google to track your sent secrets in a personal dashboard — your message content stays encrypted either way.',
 			},
 		},
 		trust: {
@@ -52,6 +56,7 @@ const en = {
 				details: [
 					'Client-Side Encryption: Your text and files are encrypted locally using the AES-GCM algorithm.',
 					'The Passphrase: Your secret key is used to lock data on your device and is never sent to our servers.',
+					'Optional Accounts: Signing in with Google only links your account ID to your secret — your message content stays encrypted and unreadable to us regardless.',
 				],
 			},
 			secureStorage: {
@@ -68,6 +73,7 @@ const en = {
 				details: [
 					'One-Time View: Messages and files can self-destruct immediately after the first time they are opened.',
 					'Expiration Date: Links become invalid after a precise date, marking data for permanent deletion.',
+					'Personal Dashboard: Sign in with Google to track the status of your sent secrets — see which have been opened, which are still waiting, and when they expire.',
 				],
 			},
 			localDecryption: {
@@ -95,7 +101,7 @@ const en = {
 			{
 				title: '2. Information We Collect',
 				paragraph:
-					'We do not collect personal information such as names, emails, or IP addresses. We only store encrypted "blobs" of text and file data provided by you, which are unreadable to us.',
+					'When you use OneVello anonymously, we store only encrypted blobs of your message content — completely unreadable to us. If you choose to sign in with Google, we receive your Google account ID, display name, and profile picture from Google\'s authentication service. This information is used solely to associate your created secrets with your account so you can review them in your personal dashboard. We do not collect IP addresses or any other tracking data.',
 			},
 			{
 				title: '3. Data Retention',
@@ -106,9 +112,9 @@ const en = {
 				],
 			},
 			{
-				title: '4. Cookies',
+				title: '4. Cookies & Local Storage',
 				paragraph:
-					'We do not use tracking or advertising cookies. Minimal local storage may be used to save your theme preferences.',
+					'We do not use tracking or advertising cookies. Local storage is used to save your theme preferences and, if you sign in with Google, to maintain your authentication session between visits.',
 			},
 			{
 				title: '5. Contact Us',
@@ -128,13 +134,14 @@ const en = {
 			{
 				title: '2. Description of Service',
 				paragraph:
-					'OneVello provides a platform for sending encrypted, self-destructing messages and file attachments. We do not store unencrypted data and do not have access to your decryption passphrases.',
+					'OneVello provides a platform for sending encrypted, self-destructing messages and file attachments. You may use the service anonymously or sign in with Google to access a personal dashboard where you can review the status of secrets you have created. We do not store unencrypted data and do not have access to your decryption passphrases.',
 			},
 			{
 				title: '3. User Responsibilities',
 				items: [
 					'You are solely responsible for the content you send.',
 					'You are responsible for remembering your passphrase; without it, data cannot be recovered.',
+					'If you sign in with Google, you are responsible for the security of your Google account.',
 					'You agree not to use the service for any illegal activities or to transmit harmful content.',
 				],
 			},
@@ -202,6 +209,27 @@ const en = {
 		fileUploadFailed: 'Failed to upload file. Please try again.',
 		passphraseCopied: 'Passphrase copied to clipboard!',
 		incorrectPassphrase: 'Incorrect passphrase. Please try again.',
+	},
+	dashboard: {
+		heading: 'My Secrets',
+		createNew: 'Create New Secret',
+		empty: 'No secrets yet. Create one to see it here.',
+		signInRequired: 'Sign in to view your secrets',
+		signInNote: 'Your message history is tied to your Google account.',
+		oneTime: 'One-time',
+		regular: 'Regular',
+		copyLink: 'Copy link',
+		col: {
+			type: 'Type',
+			file: 'File',
+			expires: 'Expires',
+			status: 'Status',
+		},
+		status: {
+			opened: 'Opened',
+			active: 'Waiting',
+			expired: 'Expired',
+		},
 	},
 } as const;
 

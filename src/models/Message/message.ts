@@ -25,6 +25,8 @@ export const MessageSchema = z.object({
 	fileName: z.string().optional(),
 	fileType: z.string().optional(),
 	attempts: z.number().optional(),
+	userId: z.string().optional(),
+	opened: z.boolean().optional(),
 });
 
 export const CreateMessageSchema = z

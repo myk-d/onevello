@@ -89,6 +89,14 @@ const SecretID = () => {
 			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
 			setDecryptedText(decryptedPkg);
 			setCurrentPassphrase(data.passphrase);
+
+			if (!message.oneTime && message.userId && !message.opened) {
+				try {
+					await dbMessages.update({ id: message.id, opened: true });
+				} catch (updateError) {
+					if (NODE_ENV_DEV) console.error('Failed to mark opened:', updateError);
+				}
+			}
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
 
