@@ -9,7 +9,7 @@ import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
 import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 

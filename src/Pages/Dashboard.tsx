@@ -6,7 +6,7 @@ import { useNavigate } from 'react-router';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages } from '../config/firebase.config';
 import { UrlConfig } from '../constants/UrlConfig';
-import { useAuth } from '../context/AuthContext';
+import { useAuth } from '../context/useAuth';
 import { MessageType } from '../models/Message/message';
 
 const getStatus = (message: MessageType): 'opened' | 'expired' | 'active' => {
