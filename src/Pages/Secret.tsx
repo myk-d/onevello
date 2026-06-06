@@ -7,10 +7,18 @@ import { useTranslation } from 'react-i18next';
 import { PasswordChannel } from 'secure-channel-sdk';
 import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
-import { dbMessages } from '../config/firebase.config';
+import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
+
+const fileToBase64 = (file: File): Promise<string> =>
+	new Promise((resolve, reject) => {
+		const reader = new FileReader();
+		reader.onload = () => resolve((reader.result as string).split(',')[1]);
+		reader.onerror = reject;
+		reader.readAsDataURL(file);
+	});
 
 const Secret = () => {
 	const { theme } = useAppTheme();
@@ -18,6 +26,7 @@ const Secret = () => {
 	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+	const [attachedFile, setAttachedFile] = useState<File | null>(null);
 
 	const {
 		register,
@@ -45,11 +54,29 @@ const Secret = () => {
 		try {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
 
+			let fileUrl: string | undefined;
+			let fileName: string | undefined;
+			let fileType: string | undefined;
+
+			if (attachedFile) {
+				const base64 = await fileToBase64(attachedFile);
+				const encryptedFile = await PasswordChannel.encrypt(data.passphrase, base64);
+				const storageName = `${Date.now()}_${attachedFile.name}`;
+				const blob = new Blob([JSON.stringify(encryptedFile)], { type: 'application/json' });
+				const fileObj = new File([blob], storageName, { type: 'application/json' });
+				fileUrl = await uploadImageToStorage(firebaseStorageDirectories.messageMedia, fileObj, storageName);
+				fileName = attachedFile.name;
+				fileType = attachedFile.type;
+			}
+
 			const messageToSave: Omit<MessageType, 'id'> = {
 				...encryptedPkg,
 				createdAt: data.createdAt,
 				expiration: data.expiration || dayjs().add(1, 'day').toISOString(),
 				oneTime: data.oneTime,
+				fileUrl,
+				fileName,
+				fileType,
 			};
 
 			const result = await dbMessages.create(messageToSave);
@@ -58,7 +85,7 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
-			ToastService.error(t('toasts.failedToCreate'));
+			ToastService.error(attachedFile ? t('toasts.fileUploadFailed') : t('toasts.failedToCreate'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -86,6 +113,7 @@ const Secret = () => {
 						id={encryptedMessageId}
 						clearId={() => {
 							setEncryptedMessageId(null);
+							setAttachedFile(null);
 							reset();
 						}}
 					/>
@@ -97,6 +125,8 @@ const Secret = () => {
 							control={control}
 							generateRandomPassphrase={generateRandomPassphrase}
 							currentHex={currentHex}
+							attachedFile={attachedFile}
+							onFileChange={setAttachedFile}
 							isDisabled={isSubmitting}
 							isLoading={isSubmitting}
 						/>

@@ -1,10 +1,18 @@
 import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
+
+const MAX_FILE_SIZE = 5 * 1024 * 1024;
+
+const formatFileSize = (bytes: number) => {
+	if (bytes < 1024) return `${bytes} B`;
+	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+};
 
 interface EncryptedMessageFormProps {
 	register: UseFormRegister<CreateMessageType>;
@@ -12,6 +20,8 @@ interface EncryptedMessageFormProps {
 	generateRandomPassphrase: () => void;
 	control: Control<CreateMessageType>;
 	currentHex: string;
+	attachedFile: File | null;
+	onFileChange: (file: File | null) => void;
 	isDisabled?: boolean;
 	isLoading?: boolean;
 }
@@ -22,10 +32,15 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	generateRandomPassphrase,
 	control,
 	currentHex,
+	attachedFile,
+	onFileChange,
 	isDisabled = false,
 	isLoading = false,
 }) => {
 	const { t } = useTranslation();
+	const fileInputRef = useRef<HTMLInputElement>(null);
+	const [fileTooLarge, setFileTooLarge] = useState(false);
+
 	const textValue = useWatch({ control, name: 'text' }) ?? '';
 	const passphraseValue = useWatch({ control, name: 'passphrase' }) ?? '';
 	const charCount = textValue.length;
@@ -46,17 +61,26 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	})();
 
 	const strengthLabel = passphraseStrength === 1 ? 'weak' : passphraseStrength === 2 ? 'fair' : 'strong';
-	const strengthColor =
-		passphraseStrength === 1 ? 'bg-red-500' : passphraseStrength === 2 ? 'bg-yellow-500' : 'bg-green-500';
-	const strengthTextColor =
-		passphraseStrength === 1 ? 'text-red-500' : passphraseStrength === 2 ? 'text-yellow-500' : 'text-green-500';
+	const strengthColor = passphraseStrength === 1 ? 'bg-red-500' : passphraseStrength === 2 ? 'bg-yellow-500' : 'bg-green-500';
+	const strengthTextColor = passphraseStrength === 1 ? 'text-red-500' : passphraseStrength === 2 ? 'text-yellow-500' : 'text-green-500';
 
 	const PRESETS = [
-		{ key: 'd1', amount: 1, unit: 'day' as const },
 		{ key: 'h1', amount: 1, unit: 'hour' as const },
+		{ key: 'd1', amount: 1, unit: 'day' as const },
 		{ key: 'd7', amount: 7, unit: 'day' as const },
 		{ key: 'd30', amount: 30, unit: 'day' as const },
 	] as const;
+
+	const handleFileInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const file = e.target.files?.[0] ?? null;
+		if (file && file.size > MAX_FILE_SIZE) {
+			setFileTooLarge(true);
+			e.target.value = '';
+			return;
+		}
+		setFileTooLarge(false);
+		onFileChange(file);
+	};
 
 	return (
 		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
@@ -69,15 +93,45 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 					{...register('text')}
 				></textarea>
 				<div className="w-full flex justify-between items-center mt-1">
-					{errors.text ? (
-						<span className="text-red-500 text-xs">{errors.text.message}</span>
-					) : (
-						<span />
-					)}
+					{errors.text ? <span className="text-red-500 text-xs">{errors.text.message}</span> : <span />}
 					<span className={cn('text-xs tabular-nums', isNearLimit ? 'text-red-500' : 'text-page-text/40')}>
 						{charCount.toLocaleString()} / {MAX_SECRET_LENGTH.toLocaleString()}
 					</span>
 				</div>
+			</div>
+
+			{/* file attachment */}
+			<div className="flex-1 flex flex-col items-start">
+				<input ref={fileInputRef} type="file" className="hidden" onChange={handleFileInputChange} />
+				{attachedFile ? (
+					<div className="flex items-center gap-3 w-full border rounded-xl px-4 py-3">
+						<svg className="h-5 w-5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+							<polyline points="14 2 14 8 20 8" />
+						</svg>
+						<span className="text-sm font-medium truncate flex-1">{attachedFile.name}</span>
+						<span className="text-xs text-page-text/40 shrink-0">{formatFileSize(attachedFile.size)}</span>
+						<button
+							type="button"
+							onClick={() => {
+								onFileChange(null);
+								if (fileInputRef.current) fileInputRef.current.value = '';
+							}}
+							className="text-xs font-bold text-page-text/40 hover:text-red-500 transition-colors shrink-0"
+						>
+							{t('form.removeFile')}
+						</button>
+					</div>
+				) : (
+					<button
+						type="button"
+						onClick={() => fileInputRef.current?.click()}
+						className="w-full border border-dashed rounded-xl px-4 py-3 text-sm text-page-text/40 hover:text-brand hover:border-brand transition-colors text-left"
+					>
+						{t('form.attachFile')}
+					</button>
+				)}
+				{fileTooLarge && <span className="text-red-500 text-xs mt-1">{t('form.fileTooLarge')}</span>}
 			</div>
 
 			<div className="flex justify-between gap-6 flex-wrap">
@@ -124,9 +178,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 									/>
 								))}
 							</div>
-							<span className={cn('text-xs font-bold', strengthTextColor)}>
-								{t(`form.strength.${strengthLabel}`)}
-							</span>
+							<span className={cn('text-xs font-bold', strengthTextColor)}>{t(`form.strength.${strengthLabel}`)}</span>
 						</div>
 					)}
 					{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
