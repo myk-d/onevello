@@ -9,6 +9,7 @@ import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
 import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
+import { useAuth } from '../context/AuthContext';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
@@ -23,6 +24,7 @@ const fileToBase64 = (file: File): Promise<string> =>
 const Secret = () => {
 	const { theme } = useAppTheme();
 	const { t } = useTranslation();
+	const { user } = useAuth();
 	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -74,9 +76,8 @@ const Secret = () => {
 				createdAt: data.createdAt,
 				expiration: data.expiration || dayjs().add(1, 'day').toISOString(),
 				oneTime: data.oneTime,
-				fileUrl,
-				fileName,
-				fileType,
+				...(fileUrl ? { fileUrl, fileName, fileType } : {}),
+				...(user ? { userId: user.uid, opened: false } : {}),
 			};
 
 			const result = await dbMessages.create(messageToSave);
