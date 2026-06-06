@@ -1,5 +1,7 @@
 import z from 'zod';
 
+export const MAX_SECRET_LENGTH = 10_000;
+
 const MessageMetadata = {
 	createdAt: z.string(),
 	expiration: z.string(),
@@ -19,11 +21,21 @@ export const MessageSchema = z.object({
 	ts: z.number(),
 	version: z.number().optional(),
 	keyLengthBits: z.union([z.literal(128), z.literal(192), z.literal(256)]).optional(),
+	fileUrl: z.string().optional(),
+	fileName: z.string().optional(),
+	fileType: z.string().optional(),
+	attempts: z.number().optional(),
+	userId: z.string().optional(),
+	opened: z.boolean().optional(),
 });
 
 export const CreateMessageSchema = z
 	.object({
-		text: z.string().trim().min(1, { message: 'Secret text is required' }),
+		text: z
+			.string()
+			.trim()
+			.min(1, { message: 'Secret text is required' })
+			.max(MAX_SECRET_LENGTH, { message: `Max ${MAX_SECRET_LENGTH.toLocaleString()} characters` }),
 		passphrase: z.string().trim().min(3, { message: 'Passphrase is required' }),
 		...MessageMetadata,
 	})
