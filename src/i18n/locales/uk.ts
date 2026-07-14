@@ -232,6 +232,9 @@ const uk = {
 			expired: 'Прострочено',
 		},
 	},
+	banner: {
+		cta: 'Спробувати {{appName}}',
+	},
 };
 
 export default uk;
