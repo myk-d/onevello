@@ -231,6 +231,9 @@ const en = {
 			expired: 'Expired',
 		},
 	},
+	banner: {
+		cta: 'Try {{appName}}',
+	},
 } as const;
 
 export default en;

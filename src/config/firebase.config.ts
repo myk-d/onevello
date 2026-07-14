@@ -2,6 +2,7 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
 import { getFirestore } from 'firebase/firestore';
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytes } from 'firebase/storage';
+import { BannerType } from '../models/Banner/banner';
 import { MessageType } from '../models/Message/message';
 import { NODE_ENV } from '../utils/NODE_ENV';
 import { dotenv, ENV } from './dotenv.config';
@@ -27,6 +28,7 @@ export const firebaseCollections = {
 
 	bannedUsers: `${NODE_ENV}_banned_users`,
 	users: `${NODE_ENV}_users`,
+	banners: 'banners',
 };
 
 export const firebaseStorageDirectories = {
@@ -34,6 +36,7 @@ export const firebaseStorageDirectories = {
 };
 
 export const dbMessages = new FirebaseFactory<MessageType>(firebaseFirestore, firebaseCollections.messages);
+export const dbBanners = new FirebaseFactory<BannerType>(firebaseFirestore, firebaseCollections.banners);
 
 type UploadImageToStorage = (directory: string, file: File, name: string) => Promise<string>;
 export const uploadImageToStorage: UploadImageToStorage = async (directory, file, name) => {
