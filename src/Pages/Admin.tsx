@@ -1,9 +1,10 @@
+import { FirebaseError } from 'firebase/app';
+import { where } from 'firebase/firestore';
 import dayjs from 'dayjs';
 import { Button, ToastService } from 'perkslab-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
-import { where } from 'firebase/firestore';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { UrlConfig } from '../constants/UrlConfig';
@@ -16,17 +17,23 @@ const Admin = () => {
 	const { t } = useTranslation();
 
 	const [messages, setMessages] = useState<MessageType[] | null>(null);
+	const [permissionDenied, setPermissionDenied] = useState(false);
 	const [deletingIds, setDeletingIds] = useState<Set<string>>(new Set());
 	const [deletingAll, setDeletingAll] = useState(false);
 
 	const loadExpired = useCallback(async () => {
 		setMessages(null);
+		setPermissionDenied(false);
 		try {
 			const docs = await dbMessages.query(where('expiration', '<', dayjs().toISOString()));
 			setMessages(docs.sort((a, b) => dayjs(a.expiration).valueOf() - dayjs(b.expiration).valueOf()));
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
-			ToastService.error(t('admin.toasts.loadFailed'));
+			if (error instanceof FirebaseError && error.code === 'permission-denied') {
+				setPermissionDenied(true);
+			} else {
+				ToastService.error(t('admin.toasts.loadFailed'));
+			}
 			setMessages([]);
 		}
 	}, [t]);
@@ -84,15 +91,29 @@ const Admin = () => {
 	return (
 		<section className="m-auto max-w-7xl flex flex-col gap-6 mt-4 px-2">
 			<div className="flex items-center justify-between flex-wrap gap-3">
-				<h1 className="text-2xl font-bold">{t('admin.heading')}</h1>
+				<div>
+					<h1 className="text-2xl font-bold">{t('admin.heading')}</h1>
+					<p className="text-sm text-gray-500 mt-1 max-w-2xl">{t('admin.description')}</p>
+				</div>
 				{messages !== null && messages.length > 0 && (
-					<Button variant="danger" isLoading={deletingAll} disabled={deletingAll} onClick={deleteAll}>
+					<Button
+						variant="danger"
+						isLoading={deletingAll}
+						disabled={deletingAll}
+						onClick={deleteAll}
+						title={t('admin.deleteAllHint')}
+					>
 						{t('admin.deleteAll')}
 					</Button>
 				)}
 			</div>
 
-			{messages === null ? (
+			{permissionDenied ? (
+				<div className="border border-amber-300 bg-amber-50 rounded-2xl py-8 px-6 flex flex-col items-center gap-2 text-center text-amber-800">
+					<p className="text-sm font-medium">{t('admin.permissionDenied.title')}</p>
+					<p className="text-xs max-w-md">{t('admin.permissionDenied.hint')}</p>
+				</div>
+			) : messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (
 				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-gray-500">
@@ -103,9 +124,15 @@ const Admin = () => {
 					<table className="w-full text-sm">
 						<thead>
 							<tr className="border-b text-left">
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('admin.col.id')}</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('admin.col.file')}</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('admin.col.expired')}</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.idHint')}>
+									{t('admin.col.id')}
+								</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.fileHint')}>
+									{t('admin.col.file')}
+								</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.expiredHint')}>
+									{t('admin.col.expired')}
+								</th>
 								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs"></th>
 							</tr>
 						</thead>
@@ -114,21 +141,31 @@ const Admin = () => {
 								const isDeleting = deletingIds.has(msg.id);
 								return (
 									<tr key={msg.id} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-										<td className="py-3 px-4 text-xs text-gray-600 font-mono truncate max-w-[160px]">{msg.id}</td>
+										<td className="py-3 px-4 text-xs text-gray-600 font-mono truncate max-w-[160px]" title={msg.id}>
+											{msg.id}
+										</td>
 										<td className="py-3 px-4">
 											{msg.fileName ? (
-												<span className="truncate max-w-[140px] text-xs text-gray-600">{msg.fileName}</span>
+												<span className="truncate max-w-[140px] text-xs text-gray-600" title={msg.fileName}>
+													{msg.fileName}
+												</span>
 											) : (
-												<span className="text-xs text-gray-400">—</span>
+												<span className="text-xs text-gray-400" title={t('admin.col.noFileHint')}>
+													—
+												</span>
 											)}
 										</td>
-										<td className="py-3 px-4 text-xs text-gray-600 whitespace-nowrap">
+										<td
+											className="py-3 px-4 text-xs text-gray-600 whitespace-nowrap"
+											title={t('admin.col.expiredDaysAgo', { count: Math.max(0, dayjs().diff(dayjs(msg.expiration), 'day')) })}
+										>
 											{dayjs(msg.expiration).format('MMM D, YYYY HH:mm')}
 										</td>
 										<td className="py-3 px-4">
 											<button
 												onClick={() => deleteMessage(msg)}
 												disabled={isDeleting || deletingAll}
+												title={t('admin.deleteHint')}
 												className="text-xs cursor-pointer text-red-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
 											>
 												{isDeleting ? t('admin.deleting') : t('admin.delete')}

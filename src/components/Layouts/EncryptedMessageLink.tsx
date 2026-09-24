@@ -37,7 +37,12 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({ id, clearId
 					{UrlConfig.secretID.replace(':id', id)}
 				</p>
 
-				<a href={`${window.location.origin}${UrlConfig.secretID.replace(':id', id)}`} target="_blank" rel="noreferrer">
+				<a
+					href={`${window.location.origin}${UrlConfig.secretID.replace(':id', id)}`}
+					target="_blank"
+					rel="noreferrer"
+					title={t('encryptedLink.tooltips.openLink')}
+				>
 					<svg width="25px" height="25px" viewBox="0 -0.5 25 25" fill="none" xmlns="http://www.w3.org/2000/svg">
 						<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
 						<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
@@ -59,7 +64,14 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({ id, clearId
 						{t('encryptedLink.copied')}
 					</Button>
 				) : (
-					<Button type="button" variant="default" size="full" onClick={copyToClipboard} className="flex-1 gap-2">
+					<Button
+						type="button"
+						variant="default"
+						size="full"
+						onClick={copyToClipboard}
+						title={t('encryptedLink.tooltips.copyToClipboard')}
+						className="flex-1 gap-2"
+					>
 						{t('encryptedLink.copyToClipboard')}
 						<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -81,7 +93,14 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({ id, clearId
 					</Button>
 				)}
 
-				<Button type="button" variant="outline" size="full" onClick={clearId} className="flex-1 gap-2">
+				<Button
+					type="button"
+					variant="outline"
+					size="full"
+					onClick={clearId}
+					title={t('encryptedLink.tooltips.createAnother')}
+					className="flex-1 gap-2"
+				>
 					{t('encryptedLink.createAnother')}
 				</Button>
 			</div>

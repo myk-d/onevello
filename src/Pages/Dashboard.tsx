@@ -77,10 +77,16 @@ const Dashboard = () => {
 					<table className="w-full text-sm">
 						<thead>
 							<tr className="border-b text-left">
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('dashboard.col.type')}</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.typeHint')}>
+									{t('dashboard.col.type')}
+								</th>
 								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('dashboard.col.file')}</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('dashboard.col.expires')}</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('dashboard.col.status')}</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.expiresHint')}>
+									{t('dashboard.col.expires')}
+								</th>
+								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.statusHint')}>
+									{t('dashboard.col.status')}
+								</th>
 								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs"></th>
 							</tr>
 						</thead>
@@ -91,11 +97,17 @@ const Dashboard = () => {
 									<tr key={msg.id} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
 										<td className="py-3 px-4">
 											{msg.oneTime ? (
-												<span className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium">
+												<span
+													className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium"
+													title={t('dashboard.oneTimeHint')}
+												>
 													{t('dashboard.oneTime')}
 												</span>
 											) : (
-												<span className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium">
+												<span
+													className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium"
+													title={t('dashboard.regularHint')}
+												>
 													{t('dashboard.regular')}
 												</span>
 											)}
@@ -124,23 +136,36 @@ const Dashboard = () => {
 										</td>
 										<td className="py-3 px-4">
 											{status === 'opened' && (
-												<span className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium">
+												<span
+													className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium"
+													title={t('dashboard.status.openedHint')}
+												>
 													{t('dashboard.status.opened')}
 												</span>
 											)}
 											{status === 'expired' && (
-												<span className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium">
+												<span
+													className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium"
+													title={t('dashboard.status.expiredHint')}
+												>
 													{t('dashboard.status.expired')}
 												</span>
 											)}
 											{status === 'active' && (
-												<span className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium">
+												<span
+													className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium"
+													title={t('dashboard.status.activeHint')}
+												>
 													{t('dashboard.status.active')}
 												</span>
 											)}
 										</td>
 										<td className="py-3 px-4">
-											<button onClick={() => copyLink(msg.id)} className="text-xs cursor-pointer text-brand hover:underline">
+											<button
+												onClick={() => copyLink(msg.id)}
+												title={t('dashboard.copyLinkHint')}
+												className="text-xs cursor-pointer text-brand hover:underline"
+											>
 												{t('dashboard.copyLink')}
 											</button>
 										</td>
