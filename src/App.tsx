@@ -12,6 +12,7 @@ const HowItWorks = lazy(() => import('./Pages/HowItWorks'));
 const Secret = lazy(() => import('./Pages/Secret'));
 const SecretID = lazy(() => import('./Pages/SecretID'));
 const Dashboard = lazy(() => import('./Pages/Dashboard'));
+const Admin = lazy(() => import('./Pages/Admin'));
 
 function App() {
 	return (
@@ -26,6 +27,7 @@ function App() {
 						<Route path={UrlConfig.privacyPolicy} element={<PrivacyPolicy />} />
 						<Route path={UrlConfig.termsOfUse} element={<TermsOfUse />} />
 						<Route path={UrlConfig.dashboard} element={<Dashboard />} />
+						<Route path={UrlConfig.admin} element={<Admin />} />
 					</Route>
 
 					<Route path="*" element={<Home />} />

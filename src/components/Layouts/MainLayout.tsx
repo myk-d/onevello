@@ -1,9 +1,9 @@
-import { SupportButton } from 'perkslab-ui';
 import { Outlet } from 'react-router';
 import { useBanners } from '../../hooks/useBanners';
 import Footer from '../Shared/Footer';
 import Header from '../Shared/Header';
 import AdBanner from '../UI/AdBanner';
+import SupportButtonWithCopy from '../UI/SupportButtonWithCopy';
 
 const MainLayout = () => {
 	const { banners } = useBanners();
@@ -31,7 +31,7 @@ const MainLayout = () => {
 
 			<Footer />
 
-			<SupportButton supportEmail="support@myslennya.com" />
+			<SupportButtonWithCopy supportEmail="support@myslennya.com" />
 		</div>
 	);
 };

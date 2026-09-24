@@ -108,3 +108,14 @@ body {
 * {
 	@apply transition-all duration-200 ease-in-out box-border;
 }
+
+/*
+ * The DateTimePicker popup (from perkslab-ui) is absolutely positioned with no
+ * viewport-boundary check, so it can extend past the bottom of the screen and
+ * force the whole page to scroll. Cap its height and let it scroll internally
+ * instead.
+ */
+.date-picker-anchor > div.relative > div.absolute {
+	max-height: min(50vh, 400px);
+	overflow-y: auto;
+}

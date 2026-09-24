@@ -6,6 +6,7 @@ export const UrlConfig = {
 	privacyPolicy: '/privacy-policy',
 	termsOfUse: '/terms-of-use',
 	dashboard: '/dashboard',
+	admin: '/admin',
 
 	repoURL: 'https://github.com/myk-d/onevello',
 };

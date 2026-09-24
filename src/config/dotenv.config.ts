@@ -18,6 +18,11 @@ export class DotenvConfig {
 		}
 		return value;
 	}
+
+	getOptional(key: ENV): string | undefined {
+		const mutatedKey = key.includes(this.envPrefix) ? key : `${this.envPrefix}${key}`;
+		return this.config[mutatedKey] || undefined;
+	}
 }
 
 export enum ENV {
@@ -29,6 +34,7 @@ export enum ENV {
 	FIRE_APP_ID = 'FIRE_APP_ID',
 	//
 	API_URL = 'API_URL',
+	ADMIN_EMAILS = 'ADMIN_EMAILS',
 }
 
 export const dotenv = new DotenvConfig();

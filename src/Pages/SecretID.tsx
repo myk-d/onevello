@@ -172,7 +172,12 @@ const SecretID = () => {
 					<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4">
 						<div className="flex justify-between gap-6 flex-wrap">
 							<div className="flex-1 flex flex-col items-start">
-								<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.passphrase')}</label>
+								<label
+									className="block text-sm font-bold mb-2 uppercase tracking-wider"
+									title={t('secretId.tooltips.passphrase')}
+								>
+									{t('form.passphrase')}
+								</label>
 
 								<Input
 									type="password"
@@ -197,7 +202,13 @@ const SecretID = () => {
 						)}
 
 						<div className="flex justify-between gap-6 flex-wrap">
-							<Button type="submit" variant="default" size="full" className="flex-1 gap-2">
+							<Button
+								type="submit"
+								variant="default"
+								size="full"
+								className="flex-1 gap-2"
+								title={t('secretId.tooltips.preview', { max: MAX_ATTEMPTS })}
+							>
 								{t('secretId.preview')}
 								<svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path

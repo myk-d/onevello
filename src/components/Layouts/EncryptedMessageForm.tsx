@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
@@ -39,7 +39,31 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 }) => {
 	const { t } = useTranslation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
+	const datePickerAnchorRef = useRef<HTMLDivElement>(null);
 	const [fileTooLarge, setFileTooLarge] = useState(false);
+
+	// The DateTimePicker popup (perkslab-ui) has no viewport-boundary check, so it can
+	// extend past the bottom of the screen and force the whole page to scroll. Clamp its
+	// height to whatever space is actually left below it and let it scroll internally instead.
+	useEffect(() => {
+		const anchor = datePickerAnchorRef.current;
+		if (!anchor) return;
+
+		const clampPopup = (popup: HTMLElement) => {
+			const margin = 16;
+			const availableHeight = window.innerHeight - popup.getBoundingClientRect().top - margin;
+			popup.style.maxHeight = `${Math.max(160, availableHeight)}px`;
+			popup.style.overflowY = 'auto';
+		};
+
+		const observer = new MutationObserver(() => {
+			const popup = anchor.querySelector<HTMLElement>('div.absolute');
+			if (popup) clampPopup(popup);
+		});
+		observer.observe(anchor, { childList: true, subtree: true });
+
+		return () => observer.disconnect();
+	}, []);
 
 	const textValue = useWatch({ control, name: 'text' }) ?? '';
 	const passphraseValue = useWatch({ control, name: 'passphrase' }) ?? '';
@@ -85,7 +109,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	return (
 		<fieldset className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4" disabled={isDisabled}>
 			<div className="flex-1 flex flex-col items-start">
-				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.secretText')}</label>
+				<label className="block text-sm font-bold mb-2 uppercase tracking-wider" title={t('form.tooltips.secretText')}>
+					{t('form.secretText')}
+				</label>
 				<textarea
 					className={cn('w-full border rounded-xl p-4 resize-none', errors.text ? 'border-red-500' : '')}
 					rows={10}
@@ -94,7 +120,10 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				></textarea>
 				<div className="w-full flex justify-between items-center mt-1">
 					{errors.text ? <span className="text-red-500 text-xs">{errors.text.message}</span> : <span />}
-					<span className={cn('text-xs tabular-nums', isNearLimit ? 'text-red-500' : 'text-page-text/40')}>
+					<span
+						className={cn('text-xs tabular-nums', isNearLimit ? 'text-red-500' : 'text-page-text/40')}
+						title={t('form.tooltips.charCount')}
+					>
 						{charCount.toLocaleString()} / {MAX_SECRET_LENGTH.toLocaleString()}
 					</span>
 				</div>
@@ -117,6 +146,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 								onFileChange(null);
 								if (fileInputRef.current) fileInputRef.current.value = '';
 							}}
+							title={t('form.tooltips.removeFile')}
 							className="text-xs font-bold text-page-text/40 hover:text-red-500 transition-colors shrink-0"
 						>
 							{t('form.removeFile')}
@@ -126,6 +156,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 					<button
 						type="button"
 						onClick={() => fileInputRef.current?.click()}
+						title={t('form.tooltips.attachFile')}
 						className="w-full border border-dashed rounded-xl px-4 py-3 text-sm text-page-text/40 hover:text-brand hover:border-brand transition-colors text-left"
 					>
 						{t('form.attachFile')}
@@ -137,7 +168,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 			<div className="flex justify-between gap-6 flex-wrap">
 				{/* passphrase */}
 				<div className="flex-1 flex flex-col items-start">
-					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.passphrase')}</label>
+					<label className="block text-sm font-bold mb-2 uppercase tracking-wider" title={t('form.tooltips.passphrase')}>
+						{t('form.passphrase')}
+					</label>
 
 					<div className="w-full flex items-center gap-2">
 						<Input
@@ -148,7 +181,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 						/>
 
 						<Button
-							title="Random passphrase"
+							title={t('form.tooltips.randomPassphrase')}
 							type="button"
 							variant="outline"
 							size="full"
@@ -178,7 +211,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 									/>
 								))}
 							</div>
-							<span className={cn('text-xs font-bold', strengthTextColor)}>{t(`form.strength.${strengthLabel}`)}</span>
+							<span className={cn('text-xs font-bold', strengthTextColor)} title={t('form.tooltips.passphraseStrength')}>
+								{t(`form.strength.${strengthLabel}`)}
+							</span>
 						</div>
 					)}
 					{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
@@ -186,7 +221,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 
 				{/* expiration time */}
 				<div className="flex-1 flex flex-col items-start">
-					<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('form.expirationDate')}</label>
+					<label className="block text-sm font-bold mb-2 uppercase tracking-wider" title={t('form.tooltips.expirationDate')}>
+						{t('form.expirationDate')}
+					</label>
 
 					<Controller
 						control={control}
@@ -214,15 +251,17 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 										</button>
 									))}
 								</div>
-								<DateTimePicker
-									value={dayjs(field.value)}
-									onChange={(date) => {
-										field.onChange(date.toISOString());
-										setActivePreset('');
-									}}
-									onBlur={field.onBlur}
-									ref={field.ref}
-								/>
+								<div className="date-picker-anchor" ref={datePickerAnchorRef}>
+									<DateTimePicker
+										value={dayjs(field.value)}
+										onChange={(date) => {
+											field.onChange(date.toISOString());
+											setActivePreset('');
+										}}
+										onBlur={field.onBlur}
+										ref={field.ref}
+									/>
+								</div>
 							</div>
 						)}
 					/>
@@ -231,9 +270,13 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 
 			{/* one time access */}
 			<div className="flex items-center gap-3">
-				<Checkbox {...register('oneTime')} id="oneTimeCheckbox" />
+				<Checkbox {...register('oneTime')} id="oneTimeCheckbox" title={t('form.tooltips.oneTimeAccess')} />
 
-				<label htmlFor="oneTimeCheckbox" className="block text-base font-bold uppe tracking-wider cursor-pointer">
+				<label
+					htmlFor="oneTimeCheckbox"
+					className="block text-base font-bold uppe tracking-wider cursor-pointer"
+					title={t('form.tooltips.oneTimeAccess')}
+				>
 					{t('form.oneTimeAccess')}
 				</label>
 			</div>

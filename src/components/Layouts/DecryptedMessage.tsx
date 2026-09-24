@@ -43,7 +43,12 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 	return (
 		<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 ">
 			<div className="flex-1 flex flex-col items-start">
-				<label className="block text-sm font-bold mb-2 uppercase tracking-wider">{t('decryptedMessage.label')}</label>
+				<label
+					className="block text-sm font-bold mb-2 uppercase tracking-wider"
+					title={t('decryptedMessage.tooltips.label')}
+				>
+					{t('decryptedMessage.label')}
+				</label>
 				<textarea
 					className={cn('w-full border rounded-xl p-4 resize-none')}
 					rows={20}
@@ -85,7 +90,14 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 						{t('decryptedMessage.copied')}
 					</Button>
 				) : (
-					<Button type="button" variant="default" size="full" onClick={copyToClipboard} className="flex-1 gap-2">
+					<Button
+						type="button"
+						variant="default"
+						size="full"
+						onClick={copyToClipboard}
+						title={t('decryptedMessage.tooltips.copyToClipboard')}
+						className="flex-1 gap-2"
+					>
 						{t('decryptedMessage.copyToClipboard')}
 						<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
 							<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
@@ -115,13 +127,21 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 						onClick={handleDownload}
 						isLoading={ui.isDownloading}
 						disabled={ui.isDownloaded}
+						title={isOneTime ? t('decryptedMessage.tooltips.downloadFileOneTime') : t('decryptedMessage.tooltips.downloadFile')}
 						className="flex-1 gap-2"
 					>
 						{t('decryptedMessage.downloadFile')}
 					</Button>
 				)}
 
-				<Button type="button" variant="outline" size="full" onClick={() => navigate(UrlConfig.secret)} className="flex-1 gap-2">
+				<Button
+					type="button"
+					variant="outline"
+					size="full"
+					onClick={() => navigate(UrlConfig.secret)}
+					title={t('decryptedMessage.tooltips.createSecret')}
+					className="flex-1 gap-2"
+				>
 					{t('decryptedMessage.createSecret')}
 				</Button>
 			</div>
