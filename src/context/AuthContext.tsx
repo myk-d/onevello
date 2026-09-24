@@ -1,6 +1,7 @@
 import { onAuthStateChanged, signInWithPopup, signOut as firebaseSignOut, User } from 'firebase/auth';
 import { ReactNode, useEffect, useState } from 'react';
 import { firebaseAuth, firebaseProvider } from '../config/firebase.config';
+import { isAdminEmail } from '../constants/admin';
 import { AuthContext } from './authContext';
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -23,5 +24,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 		await firebaseSignOut(firebaseAuth);
 	};
 
-	return <AuthContext.Provider value={{ user, loading, signIn, signOut }}>{children}</AuthContext.Provider>;
+	const isAdmin = isAdminEmail(user?.email);
+
+	return <AuthContext.Provider value={{ user, loading, isAdmin, signIn, signOut }}>{children}</AuthContext.Provider>;
 };

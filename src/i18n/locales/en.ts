@@ -8,6 +8,7 @@ const en = {
 			signIn: 'Sign in',
 			signOut: 'Sign out',
 			dashboard: 'My secrets',
+			admin: 'Admin',
 		},
 	},
 	home: {
@@ -229,6 +230,24 @@ const en = {
 			opened: 'Opened',
 			active: 'Waiting',
 			expired: 'Expired',
+		},
+	},
+	admin: {
+		heading: 'Expired Secrets',
+		empty: 'No expired secrets to clean up.',
+		delete: 'Delete',
+		deleting: 'Deleting…',
+		deleteAll: 'Delete all',
+		confirmDeleteAll: 'Delete {{count}} expired secret(s)? This cannot be undone.',
+		col: {
+			id: 'ID',
+			file: 'File',
+			expired: 'Expired',
+		},
+		toasts: {
+			loadFailed: 'Failed to load expired secrets.',
+			deleteFailed: 'Failed to delete secret. Please try again.',
+			deleteAllSuccess: 'Expired secrets deleted.',
 		},
 	},
 	banner: {

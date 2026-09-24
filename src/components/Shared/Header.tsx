@@ -8,7 +8,7 @@ import LanguageSwitcher from '../UI/LanguageSwitcher';
 import LogoSvg from '../UI/SVG/LogoSvg';
 
 const Header = () => {
-	const { user, signIn, signOut } = useAuth();
+	const { user, isAdmin, signIn, signOut } = useAuth();
 	const { t } = useTranslation();
 
 	return (
@@ -33,6 +33,11 @@ const Header = () => {
 						<Link to={UrlConfig.dashboard} className="text-sm font-medium text-page-text hover:text-brand transition-colors duration-200">
 							{t('header.nav.dashboard')}
 						</Link>
+						{isAdmin && (
+							<Link to={UrlConfig.admin} className="text-sm font-medium text-page-text hover:text-brand transition-colors duration-200">
+								{t('header.nav.admin')}
+							</Link>
+						)}
 						<button
 							onClick={signOut}
 							className="text-sm cursor-pointer font-medium text-page-text hover:text-brand transition-colors duration-200"
