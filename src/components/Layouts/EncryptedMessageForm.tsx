@@ -1,6 +1,6 @@
 import dayjs from 'dayjs';
 import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useRef, useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
@@ -39,31 +39,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 }) => {
 	const { t } = useTranslation();
 	const fileInputRef = useRef<HTMLInputElement>(null);
-	const datePickerAnchorRef = useRef<HTMLDivElement>(null);
 	const [fileTooLarge, setFileTooLarge] = useState(false);
-
-	// The DateTimePicker popup (perkslab-ui) has no viewport-boundary check, so it can
-	// extend past the bottom of the screen and force the whole page to scroll. Clamp its
-	// height to whatever space is actually left below it and let it scroll internally instead.
-	useEffect(() => {
-		const anchor = datePickerAnchorRef.current;
-		if (!anchor) return;
-
-		const clampPopup = (popup: HTMLElement) => {
-			const margin = 16;
-			const availableHeight = window.innerHeight - popup.getBoundingClientRect().top - margin;
-			popup.style.maxHeight = `${Math.max(160, availableHeight)}px`;
-			popup.style.overflowY = 'auto';
-		};
-
-		const observer = new MutationObserver(() => {
-			const popup = anchor.querySelector<HTMLElement>('div.absolute');
-			if (popup) clampPopup(popup);
-		});
-		observer.observe(anchor, { childList: true, subtree: true });
-
-		return () => observer.disconnect();
-	}, []);
 
 	const textValue = useWatch({ control, name: 'text' }) ?? '';
 	const passphraseValue = useWatch({ control, name: 'passphrase' }) ?? '';
@@ -251,7 +227,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 										</button>
 									))}
 								</div>
-								<div className="date-picker-anchor" ref={datePickerAnchorRef}>
+								<div className="flex-1 min-w-0">
 									<DateTimePicker
 										value={dayjs(field.value)}
 										onChange={(date) => {
