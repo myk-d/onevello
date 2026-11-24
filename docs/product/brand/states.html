@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OneVello States</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="icon" href="assets/favicon.svg">
+<script src="assets/brand.js" defer></script>
+</head>
+<body>
+<nav data-render="nav"></nav>
+<main class="page">
+	<section class="top">
+		<div class="eyebrow">ONE-2 · Screens · States · v0.1 · 24 Nov 2026</div>
+		<h1>When there is no secret</h1>
+		<p>Five honest states instead of today’s single "viewed or expired" screen. Telling them apart needs app changes (§8.6): the code sends every failure, including a network error, to the same screen. Burned and not found look the same to the server once the document is deleted; the burned screen needs a small record that the link was opened.</p>
+	</section>
+	<section class="group"><header><h2>Burned</h2><p>The broken seal. Tells the recipient what to do if it wasn’t them.</p></header><div data-render="screens" data-screens="gone:burned:Burned:needs app change" data-modes="dl,md"></div></section>
+	<section class="group"><header><h2>Expired</h2></header><div data-render="screens" data-screens="gone:expired:Expired:needs app change" data-modes="dl,md"></div></section>
+	<section class="group"><header><h2>Too many wrong passphrases</h2></header><div data-render="screens" data-screens="gone:locked:Locked out:needs app change" data-modes="dl,md"></div></section>
+	<section class="group"><header><h2>Not found</h2></header><div data-render="screens" data-screens="gone:notfound:Not found" data-modes="dl,md"></div></section>
+	<section class="group"><header><h2>Offline or load error</h2><p>The only state with "Try again": nothing was opened or deleted.</p></header><div data-render="screens" data-screens="gone:offline:Offline:needs app change" data-modes="dl,md"></div></section>
+</main>
+</body>
+</html>

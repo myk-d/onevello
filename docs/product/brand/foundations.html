@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OneVello Foundations</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="icon" href="assets/favicon.svg">
+<script src="assets/brand.js" defer></script>
+</head>
+<body>
+<nav data-render="nav"></nav>
+<main class="page">
+	<section class="top">
+		<div class="eyebrow">ONE-2 · Foundations · v0.1 · 24 Nov 2026</div>
+		<h1>Foundations</h1>
+		<p>Every colour is a <code>--color-&lt;role&gt;</code> token in <code>assets/brand.css</code>, with one light and one dark value. The contrast table below is computed live from those tokens with the WCAG 2.1 formula.</p>
+	</section>
+
+	<section class="group" id="palette">
+		<header><h2>Palette</h2><p>Paper and ink for the ground, navy as the action colour, burgundy wax (<code>--color-seal</code>) only for the mark and the seal moments. Danger stays an orange-red so it never reads as the wax.</p></header>
+		<div class="grid-2" data-render="swatches"></div>
+	</section>
+
+	<section class="group" id="contrast">
+		<header><h2>Contrast</h2><p>Text pairs need 4.5:1 (AA). Input borders, the focus ring and the seal mark are non-text and need 3:1.</p></header>
+		<div class="sheet" data-render="contrast"></div>
+	</section>
+
+	<section class="group" id="type">
+		<header><h2>Type</h2><p>Source Serif 4 (titles), IBM Plex Sans (interface), IBM Plex Mono (values).</p></header>
+		<div class="sheet" data-render="type"></div>
+	</section>
+
+	<section class="group" id="shape">
+		<header><h2>Shape, depth and motion</h2></header>
+		<div class="tablebox sheet">
+			<table class="data">
+				<thead><tr><th>Token</th><th>Value</th><th>Use</th></tr></thead>
+				<tbody>
+					<tr><td><code>--radius-chip</code></td><td class="num">6px</td><td>chips, tags, small badges</td></tr>
+					<tr><td><code>--radius-control</code></td><td class="num">10px</td><td>buttons, inputs, alerts, toasts</td></tr>
+					<tr><td><code>--radius-card</code></td><td class="num">14px</td><td>cards, dialogs, drop zone</td></tr>
+					<tr><td><code>--radius-full</code></td><td class="num">999px</td><td>presets, switches, avatars</td></tr>
+					<tr><td><code>--shadow-card</code></td><td>paper lift</td><td>the one card on a screen (compose, link ready, reveal)</td></tr>
+					<tr><td><code>--shadow-float</code></td><td>stronger lift</td><td>dialogs and toasts only</td></tr>
+					<tr><td><code>--duration-fast</code> / <code>-base</code> / <code>-slow</code></td><td class="num">150 / 250 / 400ms</td><td>hover and press / switches and copied / seal moments</td></tr>
+					<tr><td><code>--ease-out</code></td><td class="num">cubic-bezier(.2,.7,.2,1)</td><td>everything that enters</td></tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="sheet">
+			<span class="label">Motion moments</span>
+			<div class="tablebox">
+				<table class="data">
+					<thead><tr><th>Moment</th><th>What it shows</th><th>Duration</th><th>Reduced motion</th></tr></thead>
+					<tbody>
+						<tr><td>Sealing (create)</td><td>The card folds shut and the seal presses. It runs only while the real encrypt call runs and ends when the link exists. No fake steps.</td><td class="num">≤ 600ms</td><td>Button spinner, then crossfade to the link</td></tr>
+						<tr><td>Link copied</td><td>The button turns into a green "Copied" and the seal gives one short pulse. A toast reminds to send the passphrase separately.</td><td class="num">200ms</td><td>Instant state change</td></tr>
+						<tr><td>Reveal</td><td>The seal splits in two and the card opens to the text.</td><td class="num">350ms</td><td>Crossfade</td></tr>
+						<tr><td>Burned</td><td>A broken seal and an outlined, empty card.</td><td class="num">400ms</td><td>Static broken seal</td></tr>
+						<tr><td>Wrong passphrase</td><td>The field shakes once (4px), the counter <code>3/5</code> updates in mono.</td><td class="num">200ms</td><td>Border colour only</td></tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</section>
+
+	<section class="group" id="components">
+		<header><h2>Components</h2><p>Buttons with states, text input and textarea with counter, passphrase field with reveal toggle and generator, expiry presets, one-time switch, file drop zone, copy-link field, chips, alerts, toast, dialog, skeleton. Copy follows the language toggle in the nav.</p></header>
+		<div class="grid-2" data-render="components"></div>
+	</section>
+
+	<section class="group" id="dodont">
+		<header><h2>Do and don't</h2></header>
+		<div class="dodont">
+			<div><b class="do">Do</b><ul>
+				<li>Say what happens and in which order: "Opening breaks the seal and deletes it."</li>
+				<li>Put the limit next to the promise, in one short clause.</li>
+				<li>Show every copied value in mono, the link in groups of four.</li>
+				<li>Remind to send the passphrase separately on the share screen and in the copied toast.</li>
+				<li>Use the wax colour only for the mark and the seal moments.</li>
+				<li>Keep one card with <code>--shadow-card</code> per screen.</li>
+			</ul></div>
+			<div><b class="dont">Don't</b><ul>
+				<li>"Military-grade", "unhackable", "100% secure", "no trace", "zero logs".</li>
+				<li>Serif below 20 px, in buttons, inputs, chips or alerts.</li>
+				<li>Wax-coloured buttons or text: the wax is not an action colour.</li>
+				<li>Italic links, links in green, or the passphrase in proportional type.</li>
+				<li>Fake "securing…" progress or a scramble animation.</li>
+				<li>Exclamation marks and emoji in system messages.</li>
+			</ul></div>
+		</div>
+	</section>
+</main>
+</body>
+</html>

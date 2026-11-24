@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OneVello Brand</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="icon" href="assets/favicon.svg">
+<script src="assets/brand.js" defer></script>
+</head>
+<body>
+<nav data-render="nav"></nav>
+<main class="page">
+	<section class="top">
+		<div class="eyebrow">ONE-2 · OneVello brand · direction B "Seal" · v0.1 · 24 Nov 2026</div>
+		<h1>OneVello: the sealed letter</h1>
+		<p>The link is the envelope, the passphrase breaks the seal, and a seal breaks once. These pages hold the identity: tokens, components, logo, screens and the landing. The reasoning is in <a href="onevello-rebrand.md">onevello-rebrand.md</a>.</p>
+	</section>
+
+	<section class="group">
+		<header><h2>Owner decisions</h2></header>
+		<ul class="decision-list">
+			<li><b>Name:</b> stays "OneVello".</li>
+			<li><b>Direction:</b> B, Seal (Печатка), with C's mono treatment for every value the user copies (link, passphrase, counters).</li>
+			<li><b>Tagline:</b> stays "Share once. Trust always." / «Надішліть раз. Довіряйте завжди.» The landing keeps the plain "what it can't protect against" list next to it.</li>
+			<li><b>Logo:</b> S1, the broken seal (picked from five concepts after the first sketches were rejected). See <a href="logo.html">Logo</a>.</li>
+			<li><b>Where it lives:</b> static HTML in this folder (no Figma). Tokens in <code>assets/brand.css</code> as <code>--color-&lt;role&gt;</code>, so they can move into <code>src/index.css</code> as they are.</li>
+		</ul>
+	</section>
+
+	<section class="group">
+		<header><h2>The identity in one screen</h2><p>Paper, navy ink and burgundy wax. Serif for titles only, Plex Sans for the interface, Plex Mono for values.</p></header>
+		<div class="grid-2">
+			<div class="panel theme-light">
+				<span class="label">light</span>
+				<div class="ov-card">
+					<h3>Посилання готове</h3>
+					<div class="ov-copy"><output><span class="host">onevello.example/secret/</span><span class="grp">Xk7Q</span><span class="grp">m2pL</span><span class="grp">r9vT</span></output><button type="button" class="ov-btn ov-btn--primary" data-copy>Копіювати</button></div>
+					<div class="ov-chips"><span class="ov-chip">Одноразовий</span><span class="ov-chip">Спливає <span class="mono">25.11 14:00</span></span></div>
+					<div class="ov-alert ov-alert--info"><span><b>Парольну фразу надішліть окремо.</b> Її немає в посиланні.</span></div>
+				</div>
+			</div>
+			<div class="panel theme-dark">
+				<span class="label">dark</span>
+				<div class="ov-card">
+					<h3>Link ready</h3>
+					<div class="ov-copy"><output><span class="host">onevello.example/secret/</span><span class="grp">Xk7Q</span><span class="grp">m2pL</span><span class="grp">r9vT</span></output><button type="button" class="ov-btn ov-btn--primary" data-copy>Copy link</button></div>
+					<div class="ov-chips"><span class="ov-chip">One-time</span><span class="ov-chip">Expires <span class="mono">25.11 14:00</span></span></div>
+					<div class="ov-alert ov-alert--info"><span><b>Send the passphrase separately.</b> It isn't in the link.</span></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="group">
+		<header><h2>Pages</h2></header>
+		<div class="tablebox">
+			<table class="data">
+				<thead><tr><th>Page</th><th>What it holds</th><th>Group</th></tr></thead>
+				<tbody>
+					<tr><td><a href="foundations.html">Foundations</a></td><td>Palette light / dark with live contrast, type scale, components in both themes, do / don't</td><td>1 · ready for review</td></tr>
+					<tr><td><a href="logo.html">Logo</a></td><td>The broken seal: mark, app icon, 32 / 16 px versions, wordmark lockups, favicon; the other concepts for history</td><td>1 · done</td></tr>
+					<tr><td><a href="create.html">Create</a>, <a href="share.html">Share</a>, <a href="reveal.html">Reveal</a>, <a href="states.html">States</a></td><td>Screens at 1440 and 390, light and dark</td><td>2 · done</td></tr>
+					<tr><td><a href="landing-uk.html">Landing UK</a>, <a href="landing-en.html">Landing EN</a></td><td>Hero, how it works, what is and isn't protected, features, FAQ, open source, footer; OG images <code>assets/og-uk.svg</code>, <code>og-en.svg</code></td><td>3 · review</td></tr>
+					<tr><td><a href="directions.html">Directions</a></td><td>The three phase-1 directions, kept for history</td><td>research</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</section>
+</main>
+</body>
+</html>
