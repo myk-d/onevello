@@ -10,7 +10,24 @@ import LanguageSwitcher from '../UI/LanguageSwitcher';
 import LogoSvg from '../UI/SVG/LogoSvg';
 import ThemeSwitcher from '../UI/ThemeSwitcher';
 
-const NAV_ITEM = 'flex min-h-11 cursor-pointer items-center text-sm text-muted hover:text-text transition-colors md:min-h-0';
+const NAV_ITEM = 'flex min-h-11 cursor-pointer items-center whitespace-nowrap text-sm text-muted hover:text-text transition-colors lg:min-h-0';
+
+// Breakpoint where the full nav appears. The landing header has three extra links, so it collapses longer.
+// Class strings stay literal so Tailwind can see them.
+const LAYOUT = {
+	app: {
+		menuButton: 'lg:hidden',
+		nav: 'lg:static lg:flex lg:flex-row lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none',
+		tools: 'lg:flex-nowrap lg:gap-4 lg:border-0 lg:pt-0',
+		avatar: 'lg:block',
+	},
+	landing: {
+		menuButton: 'xl:hidden',
+		nav: 'xl:static xl:flex xl:flex-row xl:border-0 xl:bg-transparent xl:p-0 xl:shadow-none',
+		tools: 'xl:flex-nowrap xl:gap-4 xl:border-0 xl:pt-0',
+		avatar: 'xl:block',
+	},
+} as const;
 export const SECURITY_URL = `${UrlConfig.repoURL}/blob/master/SECURITY.md`;
 
 interface HeaderProps {
@@ -18,19 +35,20 @@ interface HeaderProps {
 	variant?: 'app' | 'landing';
 }
 
-// Below md the links, language and theme collapse into a menu so the header never overflows the viewport.
+// Below the breakpoint the links, language and theme collapse into a menu so the header never overflows the viewport.
 const Header = ({ variant = 'app' }: HeaderProps) => {
 	const { user, isAdmin, signIn, signOut } = useAuth();
 	const { t } = useTranslation();
 	const [open, setOpen] = useState(false);
 	const close = () => setOpen(false);
 	const landing = variant === 'landing';
+	const layout = LAYOUT[variant];
 	const external = { target: '_blank', rel: 'noopener noreferrer' } as const;
 
 	return (
 		<header className="relative border-b border-border">
 			<div
-				className={cn('flex items-center justify-between gap-4 py-3 md:py-4', landing ? 'lp-in' : 'px-4 md:px-12')}
+				className="flex items-center justify-between gap-4 px-4 py-3 md:px-12 md:py-4"
 			>
 				<Link
 					to={UrlConfig.home}
@@ -46,7 +64,7 @@ const Header = ({ variant = 'app' }: HeaderProps) => {
 
 				<button
 					type="button"
-					className="ov-btn ov-btn--secondary ov-btn--icon md:hidden"
+					className={cn('ov-btn ov-btn--secondary ov-btn--icon', layout.menuButton)}
 					aria-expanded={open}
 					aria-controls="site-menu"
 					aria-label={open ? t('header.menuClose') : t('header.menu')}
@@ -62,7 +80,7 @@ const Header = ({ variant = 'app' }: HeaderProps) => {
 						open
 							? 'absolute inset-x-0 top-full z-40 flex flex-col items-stretch gap-1 border-b border-border bg-bg px-4 pb-4 pt-2 shadow-card'
 							: 'hidden',
-						'md:static md:flex md:flex-row md:border-0 md:bg-transparent md:p-0 md:shadow-none',
+						layout.nav,
 					)}
 				>
 					<Link to={UrlConfig.about} className={NAV_ITEM} onClick={close}>
@@ -102,7 +120,7 @@ const Header = ({ variant = 'app' }: HeaderProps) => {
 								{t('header.nav.signOut')}
 							</button>
 							{user.photoURL && (
-								<img src={user.photoURL} alt={user.displayName ?? ''} className="hidden h-8 w-8 rounded-full md:block" referrerPolicy="no-referrer" />
+								<img src={user.photoURL} alt={user.displayName ?? ''} className={cn('hidden h-8 w-8 shrink-0 rounded-full', layout.avatar)} referrerPolicy="no-referrer" />
 							)}
 						</>
 					) : (
@@ -117,7 +135,7 @@ const Header = ({ variant = 'app' }: HeaderProps) => {
 							{t('header.nav.signIn')}
 						</button>
 					)}
-					<div className="flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3 md:gap-4 md:border-0 md:pt-0">
+					<div className={cn('flex flex-wrap items-center justify-between gap-3 border-t border-border pt-3', layout.tools)}>
 						<LanguageSwitcher />
 						<ThemeSwitcher />
 					</div>
