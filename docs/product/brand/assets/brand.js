@@ -367,7 +367,7 @@
 	const SCREENS = {
 		compose(mode, m, v) {
 			const sealing = v === 'sealing';
-			return `<div class="col">${title(s('newT'), s('newP'))}
+			return `<div class="col wide" style="max-width:960px">${title(s('newT'), s('newP'))}
 				<div class="ov-card${sealing ? ' is-sealing' : ''}">
 					<div class="ov-field"><label>${t('secretText')}</label><textarea class="ov-textarea" rows="${m ? 4 : 5}">${esc(S.sample)}</textarea><div class="ov-row" style="justify-content:space-between"><span class="ov-help">${t('secretHelp')}</span><span class="ov-counter">58 / 10 000</span></div></div>
 					<div class="ov-drop is-filled">${icon('file', 22)}<span class="ov-stack" style="gap:2px;flex:1;min-width:0"><span class="file">vpn-office.conf · 2 KB</span><span class="ov-help">${t('fileName')}</span></span>${m ? '' : `<button type="button" class="ov-btn ov-btn--ghost">${t('remove')}</button>`}</div>
