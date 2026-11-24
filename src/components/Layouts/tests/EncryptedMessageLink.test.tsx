@@ -65,4 +65,24 @@ describe('EncryptedMessageLink', () => {
 		expect(screen.getByText('encryptedLink.next.step3Desc|25.11.2026 14:00')).toBeInTheDocument();
 		expect(screen.queryByText('a.conf')).toBeNull();
 	});
+
+	it('has no open-in-new-tab link, shows the file chip with size, and the ghost My secrets only when given', () => {
+		const { rerender } = render(
+			<EncryptedMessageLink id="abcdefghij" summary={{ oneTime: false, expiration, fileName: 'a.conf', fileSize: 2048 }} clearId={() => {}} />,
+		);
+		expect(screen.queryByRole('link')).toBeNull();
+		expect(screen.getByText('a.conf · 2.0 KB')).toBeInTheDocument();
+		expect(screen.queryByText('dashboard.heading')).toBeNull();
+		const onShowMine = vi.fn();
+		rerender(<EncryptedMessageLink id="abcdefghij" summary={{ oneTime: false, expiration }} clearId={() => {}} onShowMine={onShowMine} />);
+		fireEvent.click(screen.getByText('dashboard.heading'));
+		expect(onShowMine).toHaveBeenCalled();
+	});
+
+	it('puts title and subtext outside the card and the copy button inline in the link field', () => {
+		const { container } = renderIt();
+		const card = container.querySelector('.ov-card') as HTMLElement;
+		expect(card.contains(screen.getByRole('heading', { level: 1 }))).toBe(false);
+		expect(screen.getByTestId('grouped-link').closest('.ov-copy')?.querySelector('button')).not.toBeNull();
+	});
 });

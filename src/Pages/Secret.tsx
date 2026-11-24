@@ -8,6 +8,8 @@ import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink, { CreatedSecretSummary } from '../components/Layouts/EncryptedMessageLink';
 import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
+import { useNavigate } from 'react-router';
+import { UrlConfig } from '../constants/UrlConfig';
 import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { encryptFileMeta, opaqueStorageName } from '../utils/fileMeta';
@@ -26,6 +28,7 @@ const fileToBase64 = (file: File): Promise<string> =>
 const Secret = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
+	const navigate = useNavigate();
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [attachedFile, setAttachedFile] = useState<File | null>(null);
@@ -82,7 +85,7 @@ const Secret = () => {
 			const result = await dbMessages.create(messageToSave);
 
 			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
-			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName: attachedFile?.name });
+			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName: attachedFile?.name, fileSize: attachedFile?.size });
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
@@ -113,6 +116,7 @@ const Secret = () => {
 					<EncryptedMessageLink
 						id={encryptedMessageId}
 						summary={summary}
+						onShowMine={user ? () => navigate(UrlConfig.dashboard) : undefined}
 						clearId={() => {
 							setEncryptedMessageId(null);
 							setSummary(null);

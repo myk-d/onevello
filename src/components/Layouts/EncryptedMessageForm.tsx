@@ -4,15 +4,10 @@ import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'rea
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
+import { formatFileSize } from '../../utils/formatFileSize';
 import { Button, DateTimeField } from '../UI/kit';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
-
-const formatFileSize = (bytes: number) => {
-	if (bytes < 1024) return `${bytes} B`;
-	if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
-	return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
-};
 
 interface EncryptedMessageFormProps {
 	register: UseFormRegister<CreateMessageType>;

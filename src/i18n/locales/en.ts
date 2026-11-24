@@ -376,7 +376,6 @@ const en = {
 			step3Desc: 'It can be opened more than once. After {{date}} it stops working and is deleted the next time anyone opens it.',
 		},
 		tooltips: {
-			openLink: 'Open the secret link in a new tab.',
 			copyToClipboard: 'Copy the secret link to your clipboard.',
 			createAnother: 'Discard this link and create another secret.',
 		},
