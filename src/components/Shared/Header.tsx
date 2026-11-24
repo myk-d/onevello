@@ -21,9 +21,9 @@ const Header = () => {
 						localStorage.removeItem(isSecretWasCreatedOnDeviceStorageKey);
 					}}
 				>
-					<LogoSvg className="h-8 w-8 text-brand transition-colors duration-300" />
+					<LogoSvg size={32} className="h-8 w-8 shrink-0" />
 
-					<span className="font-bold text-2xl text-page-text transition-colors duration-300">OneVello</span>
+					<span className="font-heading font-semibold text-2xl tracking-[-0.012em] text-text transition-colors duration-300">OneVello</span>
 				</Link>
 			</div>
 
