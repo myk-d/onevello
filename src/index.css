@@ -693,6 +693,39 @@
 			background-position: -200% 0;
 		}
 	}
+	.ov-copy {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-2);
+		align-items: stretch;
+	}
+	.ov-copy output {
+		flex: 1 1 240px;
+		min-width: 0;
+		padding: 10px 12px;
+		border-radius: var(--radius-control);
+		background: var(--color-surface-sunken);
+		border: 1px solid var(--color-border-strong);
+		font: 500 15px / 1.45 var(--font-mono);
+		color: var(--color-text);
+		word-break: break-all;
+	}
+	.ov-copy output .host {
+		color: var(--color-muted);
+	}
+	.ov-copy output .grp {
+		padding-right: 0.4em;
+	}
+	.ov-btn.is-copied {
+		background: transparent;
+		color: var(--color-success);
+		border-color: var(--color-success);
+	}
+	.ov-chips {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
 	.ov-toast {
 		box-shadow: var(--shadow-float);
 	}
@@ -830,14 +863,6 @@
 	}
 	.lp-card {
 		transform: rotate(-1.2deg);
-		display: flex;
-		flex-direction: column;
-		gap: 14px;
-		padding: 24px;
-		background: var(--color-surface-raised);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius-card);
-		box-shadow: var(--shadow-card);
 	}
 	.lp-card .label {
 		font: 600 var(--text-xs) / 1 var(--font-body);
@@ -849,10 +874,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 8px;
-	}
-	.lp-card p {
-		font-size: var(--text-sm);
-		color: var(--color-muted);
 	}
 	.lp-visual .seal-badge {
 		position: absolute;
@@ -1050,6 +1071,22 @@
 		color: var(--color-muted);
 		overflow-wrap: anywhere;
 	}
+	.lp-foot {
+		border-top: 1px solid var(--color-border);
+	}
+	.lp-foot .lp-in {
+		display: flex;
+		flex-direction: column;
+		gap: 16px;
+		padding-block: 28px;
+		font-size: var(--text-sm);
+		color: var(--color-muted);
+	}
+	.lp-foot nav {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0 20px;
+	}
 	.lp-final {
 		border-top: 1px solid var(--color-border);
 	}
@@ -1114,6 +1151,11 @@
 		.lp-oss {
 			grid-template-columns: 1.2fr 1fr;
 			padding: 32px;
+		}
+		.lp-foot .lp-in {
+			flex-direction: row;
+			flex-wrap: wrap;
+			justify-content: space-between;
 		}
 		.lp-final .lp-in {
 			padding-block: 80px;

@@ -1,7 +1,9 @@
 import { useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { Button } from '../components/UI/kit';
+import { Alert, Button, Icon } from '../components/UI/kit';
+import Footer from '../components/Shared/Footer';
+import Header from '../components/Shared/Header';
 import LogoSvg from '../components/UI/SVG/LogoSvg';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { UrlConfig } from '../constants/UrlConfig';
@@ -51,6 +53,8 @@ const Home = () => {
 	const list = <T,>(key: string) => t(key, { returnObjects: true }) as T[];
 	const facts = list<string>('landing.hero.facts');
 	const chips = list<string>('landing.hero.visual.chips');
+	const [linkHost, linkIds = ''] = t('landing.hero.visual.link').split(/(?<=\/secret\/)/);
+	const linkGroups = linkIds.split(' ').filter(Boolean);
 	const steps = list<Step>('landing.how.steps');
 	const yes = list<string>('landing.protection.yes');
 	const no = list<string>('landing.protection.no');
@@ -59,6 +63,7 @@ const Home = () => {
 
 	return (
 		<div className="lp">
+			<Header variant="landing" />
 			<section className="lp-hero">
 				<div className="lp-in">
 					<div>
@@ -81,17 +86,32 @@ const Home = () => {
 						</ul>
 					</div>
 					<div className="lp-visual" aria-hidden="true">
-						<div className="lp-card">
+						<div className="ov-card lp-card">
 							<span className="label">{t('landing.hero.visual.label')}</span>
-							<div className="ov-secret">{t('landing.hero.visual.link')}</div>
-							<div className="chips">
+							<div className="ov-copy">
+								<output>
+									<span className="host">{linkHost}</span>
+									{linkGroups.map((g) => (
+										<span key={g} className="grp">
+											{g}
+										</span>
+									))}
+								</output>
+								<span className="ov-btn ov-btn--primary">
+									<Icon name="copy" size={16} />
+									{t('encryptedLink.copyToClipboard')}
+								</span>
+							</div>
+							<div className="ov-chips">
 								{chips.map((c) => (
-									<span key={c} className="ov-chip ov-chip--info">
+									<span key={c} className="ov-chip">
 										{c}
 									</span>
 								))}
 							</div>
-							<p>{t('landing.hero.visual.note')}</p>
+							<Alert variant="info" title={t('landing.hero.visual.note')}>
+								{t('encryptedLink.reminder')}
+							</Alert>
 						</div>
 						<span className="seal-badge">
 							<LogoSvg size={96} />
@@ -166,7 +186,7 @@ const Home = () => {
 				</div>
 			</section>
 
-			<section className="lp-sec">
+			<section className="lp-sec" id="faq">
 				<div className="lp-in">
 					<h2>{t('landing.faq.title')}</h2>
 					<div className="lp-faq">
@@ -220,6 +240,7 @@ const Home = () => {
 					</Button>
 				</div>
 			</section>
+			<Footer variant="landing" />
 		</div>
 	);
 };

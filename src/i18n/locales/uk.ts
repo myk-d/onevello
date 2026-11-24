@@ -10,6 +10,8 @@ const uk = {
 			signOut: 'Вийти',
 			dashboard: 'Мої секрети',
 			admin: 'Адмін',
+			faq: 'Питання',
+			github: 'GitHub',
 		},
 		theme: {
 			label: 'Тема',
@@ -19,6 +21,13 @@ const uk = {
 		},
 		menu: 'Меню',
 		menuClose: 'Закрити меню',
+	},
+	footer: {
+		openSource: 'Відкритий код',
+		security: 'Безпека',
+		privacy: 'Приватність',
+		terms: 'Умови',
+		tagline: 'Надішліть раз. Довіряйте завжди.',
 	},
 	landing: {
 		hero: {

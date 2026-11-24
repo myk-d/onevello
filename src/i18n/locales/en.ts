@@ -10,6 +10,8 @@ const en = {
 			signOut: 'Sign out',
 			dashboard: 'My secrets',
 			admin: 'Admin',
+			faq: 'FAQ',
+			github: 'GitHub',
 		},
 		theme: {
 			label: 'Theme',
@@ -19,6 +21,13 @@ const en = {
 		},
 		menu: 'Menu',
 		menuClose: 'Close menu',
+	},
+	footer: {
+		openSource: 'Open source',
+		security: 'Security',
+		privacy: 'Privacy',
+		terms: 'Terms',
+		tagline: 'Share once. Trust always.',
 	},
 	landing: {
 		hero: {
