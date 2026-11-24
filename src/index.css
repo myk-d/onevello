@@ -527,6 +527,54 @@
 	.ov-counter.is-over {
 		color: var(--color-danger);
 	}
+	.ov-pass {
+		display: flex;
+		align-items: stretch;
+		border: 1px solid var(--color-border-strong);
+		border-radius: var(--radius-control);
+		background: var(--color-surface-raised);
+		overflow: hidden;
+	}
+	.ov-pass:focus-within {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 1px;
+	}
+	.ov-pass[data-invalid='true'] {
+		border-color: var(--color-danger);
+	}
+	.ov-pass input {
+		flex: 1;
+		min-width: 0;
+		border: 0;
+		background: transparent;
+		color: var(--color-text);
+		padding: 10px 12px;
+		font: 500 var(--text-md) var(--font-mono);
+		letter-spacing: 0.04em;
+		min-height: 44px;
+	}
+	.ov-pass input:focus {
+		outline: none;
+	}
+	.ov-pass button {
+		border: 0;
+		border-left: 1px solid var(--color-border);
+		background: transparent;
+		color: var(--color-primary);
+		font: 600 var(--text-xs) var(--font-body);
+		padding: 0 12px;
+		min-width: 44px;
+		cursor: pointer;
+	}
+	.ov-pass button:hover {
+		background: var(--color-surface-sunken);
+	}
+	.ov-meter-label {
+		display: flex;
+		justify-content: space-between;
+		font-size: var(--text-xs);
+		color: var(--color-muted);
+	}
 	.ov-meter {
 		display: grid;
 		grid-template-columns: repeat(3, 1fr);

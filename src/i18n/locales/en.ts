@@ -263,6 +263,11 @@ const en = {
 		footerLink: 'Privacy Policy',
 	},
 	form: {
+		title: 'New secret',
+		lead: 'The text and file are encrypted in this browser. You send the link and the passphrase separately.',
+		show: 'Show',
+		hide: 'Hide',
+		generate: 'Generate',
 		secretText: 'Secret text',
 		secretTextPlaceholder: 'some secret text here',
 		passphrase: 'Passphrase',

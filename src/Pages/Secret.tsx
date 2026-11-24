@@ -12,6 +12,7 @@ import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { encryptFileMeta, opaqueStorageName } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
+import { cn } from '../utils/cn';
 import { toast } from '../components/UI/kit';
 
 const fileToBase64 = (file: File): Promise<string> =>
@@ -107,7 +108,7 @@ const Secret = () => {
 
 	return (
 		<>
-			<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
+			<section className={cn("mx-auto flex w-full flex-col gap-5 px-4 py-8 md:py-14", encryptedMessageId && summary ? "max-w-[680px]" : "max-w-[960px]")}>
 				{encryptedMessageId && summary ? (
 					<EncryptedMessageLink
 						id={encryptedMessageId}
@@ -120,7 +121,11 @@ const Secret = () => {
 						}}
 					/>
 				) : (
-					<form onSubmit={handleSubmit(onSubmit)} className="w-full text-left">
+					<form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-5 text-left">
+						<div className="flex flex-col gap-2">
+							<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">{t('form.title')}</h1>
+							<p className="text-muted">{t('form.lead')}</p>
+						</div>
 						<EncryptedMessageForm
 							register={register}
 							errors={errors}

@@ -4,7 +4,7 @@ import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'rea
 import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
-import { Button, DateTimeField, Input } from '../UI/kit';
+import { Button, DateTimeField } from '../UI/kit';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -44,6 +44,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	const charCount = textValue.length;
 	const isNearLimit = charCount > MAX_SECRET_LENGTH * 0.9;
 	const [activePreset, setActivePreset] = useState<string>('d1');
+	const [showPassphrase, setShowPassphrase] = useState(false);
 
 	const passphraseStrength = (() => {
 		if (passphraseValue.length < 3) return 0;
@@ -132,89 +133,90 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				{fileTooLarge && <span className="ov-error">{t('form.fileTooLarge')}</span>}
 			</div>
 
-			{/* passphrase */}
-			<div className="ov-field">
-				<label htmlFor="secret-passphrase" title={t('form.tooltips.passphrase')}>
-					{t('form.passphrase')}
-				</label>
-				<div className="flex items-stretch gap-2">
-					<Input
-						id="secret-passphrase"
-						type="password"
-						autoComplete="new-password"
-						placeholder={t('form.passphrasePlaceholder')}
-						className="font-mono"
-						invalid={!!errors.passphrase}
-						{...register('passphrase')}
-					/>
-					<Button
-						title={t('form.tooltips.randomPassphrase')}
-						aria-label={t('form.tooltips.randomPassphrase')}
-						variant="secondary"
-						className="ov-btn--icon shrink-0"
-						onClick={generateRandomPassphrase}
-					>
-						<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" aria-hidden="true">
-							<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z" />
-							<path d="M4 7.5l8 4.5 8-4.5M12 12v9" />
-						</svg>
-					</Button>
-				</div>
-				{passphraseValue.length >= 3 && (
-					<div className="flex items-center gap-3">
-						<div className="ov-meter flex-1" data-level={passphraseStrength}>
-							<i />
-							<i />
-							<i />
-						</div>
-						<span className={cn('text-xs font-semibold', strengthTextColor)} title={t('form.tooltips.passphraseStrength')}>
-							{t(`form.strength.${strengthLabel}`)}
-						</span>
+			<div className="grid gap-4 md:grid-cols-2 md:gap-6">
+				{/* passphrase */}
+				<div className="ov-field">
+					<label htmlFor="secret-passphrase" title={t('form.tooltips.passphrase')}>
+						{t('form.passphrase')}
+					</label>
+					<div className="ov-pass" data-invalid={errors.passphrase ? 'true' : undefined}>
+						<input
+							id="secret-passphrase"
+							type={showPassphrase ? 'text' : 'password'}
+							autoComplete="new-password"
+							placeholder={t('form.passphrasePlaceholder')}
+							aria-invalid={errors.passphrase ? true : undefined}
+							{...register('passphrase')}
+						/>
+						<button
+							type="button"
+							aria-pressed={showPassphrase}
+							aria-controls="secret-passphrase"
+							onClick={() => setShowPassphrase((v) => !v)}
+						>
+							{showPassphrase ? t('form.hide') : t('form.show')}
+						</button>
+						<button type="button" title={t('form.tooltips.randomPassphrase')} onClick={generateRandomPassphrase}>
+							{t('form.generate')}
+						</button>
 					</div>
-				)}
-				{errors.passphrase && <span className="ov-error">{errors.passphrase.message}</span>}
-			</div>
-
-			{/* expiration time */}
-			<div className="ov-field">
-				<label htmlFor="secret-expiration" title={t('form.tooltips.expirationDate')}>
-					{t('form.expirationDate')}
-				</label>
-				<Controller
-					control={control}
-					name="expiration"
-					defaultValue={dayjs().toISOString()}
-					render={({ field }) => (
-						<div className="flex flex-col gap-2">
-							<div className="ov-presets">
-								{PRESETS.map((preset) => (
-									<button
-										key={preset.key}
-										type="button"
-										aria-pressed={activePreset === preset.key}
-										onClick={() => {
-											field.onChange(dayjs().add(preset.amount, preset.unit).toISOString());
-											setActivePreset(preset.key);
-										}}
-										className="ov-preset"
-									>
-										{t(`form.presets.${preset.key}`)}
-									</button>
-								))}
+					{passphraseValue.length >= 3 && (
+						<>
+							<div className="ov-meter" data-level={passphraseStrength}>
+								<i />
+								<i />
+								<i />
 							</div>
-							<DateTimeField
-								id="secret-expiration"
-								value={dayjs(field.value)}
-								onChange={(date) => {
-									field.onChange(date.toISOString());
-									setActivePreset('');
-								}}
-								onBlur={field.onBlur}
-								ref={field.ref}
-							/>
-						</div>
+							<div className="ov-meter-label">
+								<span title={t('form.tooltips.passphraseStrength')}>{t('form.passphrase')}</span>
+								<b className={strengthTextColor}>{t(`form.strength.${strengthLabel}`)}</b>
+							</div>
+						</>
 					)}
-				/>
+					{errors.passphrase && <span className="ov-error">{errors.passphrase.message}</span>}
+				</div>
+
+				{/* expiration time */}
+				<div className="ov-field">
+					<label htmlFor="secret-expiration" title={t('form.tooltips.expirationDate')}>
+						{t('form.expirationDate')}
+					</label>
+					<Controller
+						control={control}
+						name="expiration"
+						defaultValue={dayjs().toISOString()}
+						render={({ field }) => (
+							<div className="flex flex-col gap-2">
+								<div className="ov-presets">
+									{PRESETS.map((preset) => (
+										<button
+											key={preset.key}
+											type="button"
+											aria-pressed={activePreset === preset.key}
+											onClick={() => {
+												field.onChange(dayjs().add(preset.amount, preset.unit).toISOString());
+												setActivePreset(preset.key);
+											}}
+											className="ov-preset"
+										>
+											{t(`form.presets.${preset.key}`)}
+										</button>
+									))}
+								</div>
+								<DateTimeField
+									id="secret-expiration"
+									value={dayjs(field.value)}
+									onChange={(date) => {
+										field.onChange(date.toISOString());
+										setActivePreset('');
+									}}
+									onBlur={field.onBlur}
+									ref={field.ref}
+								/>
+							</div>
+						)}
+					/>
+				</div>
 			</div>
 
 			{/* one time access */}
@@ -228,12 +230,9 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 			</label>
 
 			{/* submit */}
-			<div className="flex flex-col gap-3">
-				<p className="ov-secret truncate text-left">https://onevello.myslennya.com/secret/...</p>
-				<Button type="submit" block disabled={isDisabled} isLoading={isLoading}>
-					{t('form.createLink')}
-				</Button>
-			</div>
+			<Button type="submit" block disabled={isDisabled} isLoading={isLoading}>
+				{t('form.createLink')}
+			</Button>
 		</fieldset>
 	);
 };
