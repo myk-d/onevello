@@ -34,4 +34,29 @@ describe('Header', () => {
 		expect(screen.getByRole('button', { name: 'header.menu' })).toHaveAttribute('aria-expanded', 'false');
 		vi.unstubAllGlobals();
 	});
+	it('keeps nav items on one line and collapses the longer landing nav until xl', () => {
+		vi.stubGlobal('matchMedia', () => ({ matches: false, addEventListener: vi.fn(), removeEventListener: vi.fn() }));
+		const { unmount } = render(
+			<MemoryRouter>
+				<ThemeProvider storageKey="t">
+					<Header />
+				</ThemeProvider>
+			</MemoryRouter>,
+		);
+		expect(screen.getByRole('button', { name: 'header.menu' })).toHaveClass('lg:hidden');
+		expect(screen.getByRole('link', { name: 'header.nav.dashboard' })).toHaveClass('whitespace-nowrap');
+		unmount();
+
+		render(
+			<MemoryRouter>
+				<ThemeProvider storageKey="t">
+					<Header variant="landing" />
+				</ThemeProvider>
+			</MemoryRouter>,
+		);
+		expect(screen.getByRole('button', { name: 'header.menu' })).toHaveClass('xl:hidden');
+		expect(document.getElementById('site-menu')).toHaveClass('xl:flex');
+		expect(screen.getByRole('link', { name: 'header.nav.faq' })).toHaveClass('whitespace-nowrap');
+		vi.unstubAllGlobals();
+	});
 });
