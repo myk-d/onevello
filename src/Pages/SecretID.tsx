@@ -12,6 +12,7 @@ import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
+import { cn } from '../utils/cn';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const MAX_ATTEMPTS = 5;
@@ -182,19 +183,19 @@ const SecretID = () => {
 								<Input
 									type="password"
 									placeholder={t('form.passphrasePlaceholder')}
-									className={errors.passphrase ? 'border-red-500' : ''}
+									className={cn('font-mono', errors.passphrase && 'border-danger')}
 									{...register('passphrase')}
 								/>
-								{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
+								{errors.passphrase && <span className="text-danger text-xs mt-1">{errors.passphrase.message}</span>}
 							</div>
 						</div>
 
-						<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
+						<div className="ov-alert ov-alert--info" role="status">
 							<p className="text-left text-sm">{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}</p>
 						</div>
 
 						{(message.attempts ?? 0) > 0 && (
-							<div className="bg-amber-100 py-2 px-3 rounded-md italic text-amber-800 border-l-[3px] border-amber-500">
+							<div className="ov-alert ov-alert--warning" role="alert">
 								<p className="text-left text-sm">
 									{t('secretId.attemptsRemaining', { count: MAX_ATTEMPTS - (message.attempts ?? 0) })}
 								</p>
@@ -213,7 +214,7 @@ const SecretID = () => {
 								<svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
 									<path
 										d="M20.7071 8.07106C21.0976 7.68054 21.0976 7.04737 20.7071 6.65685L14.3431 0.292885C13.9526 -0.0976396 13.3195 -0.0976396 12.9289 0.292885C12.5384 0.683409 12.5384 1.31657 12.9289 1.7071L18.5858 7.36395L12.9289 13.0208C12.5384 13.4113 12.5384 14.0445 12.9289 14.435C13.3195 14.8255 13.9526 14.8255 14.3431 14.435L20.7071 8.07106ZM0 7.36395V8.36395H20V7.36395V6.36395H0V7.36395Z"
-										fill="white"
+										fill="currentColor"
 									/>
 								</svg>
 							</Button>

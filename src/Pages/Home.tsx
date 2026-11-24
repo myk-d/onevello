@@ -42,7 +42,7 @@ const Home = () => {
 					/>
 				</h1>
 
-				<p className="text-xl md:text-2xl max-w-3xl text-page-text/80 font-medium">
+				<p className="text-xl md:text-2xl max-w-3xl text-page-text font-medium">
 					<Trans
 						i18nKey="home.hero.subheading"
 						components={{ bold: <span className="text-brand font-bold" /> }}

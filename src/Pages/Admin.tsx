@@ -93,7 +93,7 @@ const Admin = () => {
 			<div className="flex items-center justify-between flex-wrap gap-3">
 				<div>
 					<h1 className="text-2xl font-bold">{t('admin.heading')}</h1>
-					<p className="text-sm text-gray-500 mt-1 max-w-2xl">{t('admin.description')}</p>
+					<p className="text-sm text-muted mt-1 max-w-2xl">{t('admin.description')}</p>
 				</div>
 				{messages !== null && messages.length > 0 && (
 					<Button
@@ -109,14 +109,14 @@ const Admin = () => {
 			</div>
 
 			{permissionDenied ? (
-				<div className="border border-amber-300 bg-amber-50 rounded-2xl py-8 px-6 flex flex-col items-center gap-2 text-center text-amber-800">
+				<div className="ov-alert ov-alert--warning rounded-2xl py-8 px-6 flex-col items-center gap-2 text-center" role="alert">
 					<p className="text-sm font-medium">{t('admin.permissionDenied.title')}</p>
 					<p className="text-xs max-w-md">{t('admin.permissionDenied.hint')}</p>
 				</div>
 			) : messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (
-				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-gray-500">
+				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-muted">
 					<p className="text-sm">{t('admin.empty')}</p>
 				</div>
 			) : (
@@ -140,23 +140,23 @@ const Admin = () => {
 							{messages.map((msg) => {
 								const isDeleting = deletingIds.has(msg.id);
 								return (
-									<tr key={msg.id} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
-										<td className="py-3 px-4 text-xs text-gray-600 font-mono truncate max-w-[160px]" title={msg.id}>
+									<tr key={msg.id} className="border-b last:border-0 hover:bg-surface-sunken transition-colors">
+										<td className="py-3 px-4 text-xs text-muted font-mono truncate max-w-[160px]" title={msg.id}>
 											{msg.id}
 										</td>
 										<td className="py-3 px-4">
 											{msg.fileName ? (
-												<span className="truncate max-w-[140px] text-xs text-gray-600" title={msg.fileName}>
+												<span className="truncate max-w-[140px] text-xs text-muted" title={msg.fileName}>
 													{msg.fileName}
 												</span>
 											) : (
-												<span className="text-xs text-gray-400" title={t('admin.col.noFileHint')}>
+												<span className="text-xs text-muted" title={t('admin.col.noFileHint')}>
 													—
 												</span>
 											)}
 										</td>
 										<td
-											className="py-3 px-4 text-xs text-gray-600 whitespace-nowrap"
+											className="py-3 px-4 text-xs text-muted whitespace-nowrap"
 											title={t('admin.col.expiredDaysAgo', { count: Math.max(0, dayjs().diff(dayjs(msg.expiration), 'day')) })}
 										>
 											{dayjs(msg.expiration).format('MMM D, YYYY HH:mm')}
@@ -166,7 +166,7 @@ const Admin = () => {
 												onClick={() => deleteMessage(msg)}
 												disabled={isDeleting || deletingAll}
 												title={t('admin.deleteHint')}
-												className="text-xs cursor-pointer text-red-600 hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
+												className="text-xs cursor-pointer text-danger hover:underline disabled:opacity-50 disabled:cursor-not-allowed"
 											>
 												{isDeleting ? t('admin.deleting') : t('admin.delete')}
 											</button>

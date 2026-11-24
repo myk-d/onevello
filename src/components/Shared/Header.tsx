@@ -1,10 +1,10 @@
-import { ThemeSwitcher } from 'perkslab-ui';
 import { useTranslation } from 'react-i18next';
 import { Link } from 'react-router';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../../constants/constants';
 import { UrlConfig } from '../../constants/UrlConfig';
 import { useAuth } from '../../context/useAuth';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
+import ThemeSwitcher from '../UI/ThemeSwitcher';
 import LogoSvg from '../UI/SVG/LogoSvg';
 
 const Header = () => {

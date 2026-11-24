@@ -5,6 +5,16 @@
 		<link rel="icon" type="image/svg+xml" href="/logo.svg" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OneVello</title>
+		<script>
+			// Apply the saved theme before first paint (no flash). Keep the key in sync with src/constants/theme.ts.
+			(function () {
+				try {
+					var t = localStorage.getItem('onevello-theme');
+					if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					document.documentElement.setAttribute('data-theme', t);
+				} catch (e) {}
+			})();
+		</script>
 	</head>
 	<body>
 		<div id="root"></div>

@@ -10,6 +10,12 @@ const en = {
 			dashboard: 'My secrets',
 			admin: 'Admin',
 		},
+		theme: {
+			label: 'Theme',
+			auto: 'Auto',
+			light: 'Light',
+			dark: 'Dark',
+		},
 	},
 	home: {
 		hero: {
