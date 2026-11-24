@@ -8,6 +8,7 @@ import { useParams } from 'react-router';
 import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import ExpiredLink from '../components/Layouts/ExpiredLink';
+import SealedGate from '../components/Layouts/SealedGate';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
@@ -19,11 +20,15 @@ const MAX_ATTEMPTS = 5;
 
 enum FetchStatus {
 	Loading = 'loading',
+	Gate = 'gate',
 	Expired = 'expired',
 	Ready = 'ready',
 }
 
-type FetchState = { status: FetchStatus.Loading } | { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
+type FetchState =
+	| { status: FetchStatus.Loading }
+	| { status: FetchStatus.Gate; message: MessageType }
+	| { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
 
 const SecretID = () => {
 	const { id } = useParams();
@@ -63,8 +68,10 @@ const SecretID = () => {
 					return;
 				}
 
+				// One-time secrets wait behind the sealed gate: loading the page must never delete them.
 				if (message.oneTime) {
-					await dbMessages.delete(message.id);
+					setFetchState({ status: FetchStatus.Gate, message });
+					return;
 				}
 
 				setFetchState({ status: FetchStatus.Ready, message });
@@ -80,6 +87,30 @@ const SecretID = () => {
 			cancelled = true;
 		};
 	}, [id]);
+
+	const [opening, setOpening] = useState(false);
+	const [openFailed, setOpenFailed] = useState(false);
+
+	// The only place a one-time secret is deleted before reveal. If the delete fails, stay at the gate with the secret intact.
+	const handleBreakSeal = async () => {
+		if (fetchState.status !== FetchStatus.Gate || opening) return;
+
+		const { message } = fetchState;
+		setOpening(true);
+		setOpenFailed(false);
+
+		try {
+			await dbMessages.delete(message.id);
+		} catch (error) {
+			if (NODE_ENV_DEV) console.error(error);
+			setOpenFailed(true);
+			setOpening(false);
+			return;
+		}
+
+		setOpening(false);
+		setFetchState({ status: FetchStatus.Ready, message });
+	};
 
 	const onSubmit: SubmitHandler<PassphraseType> = async (data) => {
 		if (fetchState.status !== FetchStatus.Ready) return;
@@ -133,6 +164,9 @@ const SecretID = () => {
 
 	if (fetchState.status === FetchStatus.Expired) return <ExpiredLink />;
 	if (fetchState.status === FetchStatus.Loading) return <SecretIDLoader />;
+	if (fetchState.status === FetchStatus.Gate) {
+		return <SealedGate message={fetchState.message} opening={opening} failed={openFailed} onOpen={handleBreakSeal} />;
+	}
 
 	const { message } = fetchState;
 

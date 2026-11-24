@@ -28,3 +28,11 @@ describe('LogoSvg', () => {
 		expect(new Set(ids).size).toBe(4);
 	});
 });
+
+describe('LogoSvg intact', () => {
+	it('draws one whole seal without clip halves', () => {
+		const { container } = render(<LogoSvg intact />);
+		expect(container.querySelectorAll('clipPath')).toHaveLength(0);
+		expect(container.querySelectorAll('path[fill]')).toHaveLength(1);
+	});
+});
