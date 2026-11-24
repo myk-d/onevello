@@ -1,7 +1,7 @@
-import { Button } from 'perkslab-ui';
 import { useCallback } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { Button } from '../components/UI/kit';
 import FeatureCard from '../components/UI/FeatureCard';
 import { UrlConfig } from '../constants/UrlConfig';
 import { howItWorksSectionIcons, howItWorksSectionKeys } from '../content/howItWorks';
@@ -21,31 +21,30 @@ const HowItWorks = () => {
 	}));
 
 	return (
-		<section className="max-w-4xl mx-auto py-12 px-6 transition-colors duration-300">
-			<div className="text-center mb-16">
-				<h1 className="text-4xl md:text-5xl font-black text-page-text mb-4 uppercase tracking-tighter">
+		<section className="mx-auto w-full max-w-[980px] px-4 py-8 md:py-14">
+			<div className="mb-10 text-center md:mb-14">
+				<h1 className="mb-4 font-heading text-3xl font-semibold leading-10 tracking-tight md:text-5xl md:leading-[56px]">
 					<Trans
 						i18nKey="howItWorks.hero.heading"
-						components={{ brand: <span className="text-brand" /> }}
+						components={{ brand: <span className="text-seal" /> }}
 					/>
 				</h1>
-				<p className="text-lg text-page-text/70 max-w-2xl mx-auto font-medium">{t('howItWorks.hero.subheading')}</p>
+				<p className="mx-auto max-w-2xl text-lg text-muted">{t('howItWorks.hero.subheading')}</p>
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">
+			<div className="mb-10 grid grid-cols-1 gap-4 md:mb-14 md:grid-cols-2 md:gap-6">
 				{sections.map(({ key, ...rest }) => (
 					<FeatureCard
 						key={key}
 						{...rest}
-						className="rounded-2xl bg-brand-bg/30 group"
-						iconClassName="inline-block group-hover:scale-110 transition-transform rounded-xl"
+						className="md:last:odd:col-span-2"
 					/>
 				))}
 			</div>
 
-			<div className="text-center p-10 border-2 border-dashed border-brand/20 rounded-3xl bg-brand-bg/10">
-				<h2 className="text-2xl font-black text-page-text mb-6 uppercase">{t('howItWorks.cta.heading')}</h2>
-				<Button type="button" size="lg" className="px-12 shadow-xl" onClick={handleNavigateToSecret}>
+			<div className="ov-card is-empty items-center text-center">
+				<h2 className="font-heading text-2xl font-semibold leading-8">{t('howItWorks.cta.heading')}</h2>
+				<Button type="button" size="lg" onClick={handleNavigateToSecret}>
 					{t('howItWorks.cta.button')}
 				</Button>
 			</div>

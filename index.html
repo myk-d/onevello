@@ -2,9 +2,37 @@
 <html lang="en">
 	<head>
 		<meta charset="UTF-8" />
-		<link rel="icon" type="image/svg+xml" href="/logo.svg" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="icon" type="image/png" sizes="32x32" href="/icon-32.png" />
+		<link rel="icon" type="image/png" sizes="192x192" href="/icon-192.png" />
+		<link rel="icon" type="image/png" sizes="512x512" href="/icon-512.png" />
+		<link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OneVello</title>
+		<meta name="description" content="Share a secret once. The link opens nothing without the passphrase." />
+		<!-- og:image needs an absolute URL. Static meta is English only (crawlers do not run JS). -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://onevello.myslennya.com/" />
+		<meta property="og:site_name" content="OneVello" />
+		<meta property="og:title" content="OneVello" />
+		<meta property="og:description" content="Share once. Trust always. The link opens nothing without the passphrase." />
+		<meta property="og:image" content="https://onevello.myslennya.com/og-en.png" />
+		<meta property="og:image:width" content="1200" />
+		<meta property="og:image:height" content="630" />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content="OneVello" />
+		<meta name="twitter:description" content="Share once. Trust always. The link opens nothing without the passphrase." />
+		<meta name="twitter:image" content="https://onevello.myslennya.com/og-en.png" />
+		<script>
+			// Apply the saved theme before first paint (no flash). Keep the key in sync with src/constants/theme.ts.
+			(function () {
+				try {
+					var t = localStorage.getItem('onevello-theme');
+					if (t !== 'light' && t !== 'dark') t = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					document.documentElement.setAttribute('data-theme', t);
+				} catch (e) {}
+			})();
+		</script>
 	</head>
 	<body>
 		<div id="root"></div>

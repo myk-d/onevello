@@ -22,6 +22,8 @@ export const MessageSchema = z.object({
 	version: z.number().optional(),
 	keyLengthBits: z.union([z.literal(128), z.literal(192), z.literal(256)]).optional(),
 	fileUrl: z.string().optional(),
+	// New secrets: JSON of the encrypted {name, type} package (same passphrase). Legacy secrets: plain fileName/fileType.
+	fileMeta: z.string().optional(),
 	fileName: z.string().optional(),
 	fileType: z.string().optional(),
 	attempts: z.number().optional(),

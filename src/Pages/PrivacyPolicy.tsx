@@ -16,11 +16,11 @@ const PrivacyPolicy = () => {
 		<PolicyLayout title={t('privacyPolicy.title')}>
 			{sections.map((section) => (
 				<section key={section.title}>
-					<h2 className="text-xl font-bold text-brand uppercase mb-3">{section.title}</h2>
+					<h2 className="mb-3 font-heading text-xl font-semibold">{section.title}</h2>
 					{section.paragraph && (
 						<p>
 							{section.paragraph}
-							{section.email && <span className="text-brand font-bold ml-1">{section.email}</span>}
+							{section.email && <span className="ml-1 font-semibold text-primary">{section.email}</span>}
 						</p>
 					)}
 					{section.items && (

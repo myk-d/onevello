@@ -1,18 +1,19 @@
-import { Button } from 'perkslab-ui';
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
-import { cn } from '../../utils/cn';
+import { formatFileSize } from '../../utils/formatFileSize';
+import { Alert, Button, Icon } from '../UI/kit';
 
 interface DecryptedMessageProps {
 	message: string;
 	isOneTime?: boolean;
 	fileName?: string;
+	fileSize?: number;
 	onDownloadFile?: () => Promise<void>;
 }
 
-const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime, fileName, onDownloadFile }) => {
+const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime, fileName, fileSize, onDownloadFile }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
@@ -41,111 +42,62 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 	};
 
 	return (
-		<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 ">
-			<div className="flex-1 flex flex-col items-start">
-				<label
-					className="block text-sm font-bold mb-2 uppercase tracking-wider"
-					title={t('decryptedMessage.tooltips.label')}
-				>
-					{t('decryptedMessage.label')}
-				</label>
-				<textarea
-					className={cn('w-full border rounded-xl p-4 resize-none')}
-					rows={20}
-					value={message}
-					readOnly
-					placeholder={t('decryptedMessage.label')}
-				></textarea>
+		<>
+			<div className="flex flex-col gap-2 text-left">
+				<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">
+					{isOneTime ? t('decryptedMessage.title') : t('decryptedMessage.titleRegular')}
+				</h1>
 			</div>
+			<div className="ov-card text-left">
+				{isOneTime && <Alert variant="info">{t('decryptedMessage.oneTimeWarning')}</Alert>}
 
-			{fileName && onDownloadFile && (
-				<div className="flex flex-col gap-1.5">
-					<div className="flex items-center gap-3 border rounded-xl px-4 py-3">
-						<svg className="h-5 w-5 text-brand shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-							<polyline points="14 2 14 8 20 8" />
-						</svg>
-						<span className="text-sm font-medium truncate flex-1">{fileName}</span>
-					</div>
-					{isOneTime && <p className="text-xs text-amber-600 font-medium px-1">{t('decryptedMessage.oneTimeFileWarning')}</p>}
+				<div className="secret-box" role="textbox" aria-readonly="true" aria-label={t('decryptedMessage.label')} tabIndex={0}>
+					{message}
 				</div>
-			)}
 
-			{isOneTime && (
-				<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
-					<p className="text-left text-sm">{t('decryptedMessage.oneTimeWarning')}</p>
+				<div className="flex">
+					{ui.isCopied ? (
+						<Button variant="secondary" className="is-copied max-md:w-full">
+							<Icon name="check" size={16} />
+							{t('decryptedMessage.copied')}
+						</Button>
+					) : (
+						<Button onClick={copyToClipboard} className="max-md:w-full">
+							<Icon name="copy" size={16} />
+							{t('decryptedMessage.copyToClipboard')}
+						</Button>
+					)}
 				</div>
-			)}
-
-			{isOneTime && (
-				<div className="bg-rose-100 py-2 px-3 rounded-md italic text-rose-800 border-l-[3px] border-rose-800">
-					<p className="text-left text-sm">{t('decryptedMessage.closeWindowNote')}</p>
-				</div>
-			)}
-
-			{/* buttons */}
-			<div className="flex justify-between gap-6 flex-wrap">
-				{ui.isCopied ? (
-					<Button type="button" variant="success" size="full" className="flex-1 gap-2">
-						{t('decryptedMessage.copied')}
-					</Button>
-				) : (
-					<Button
-						type="button"
-						variant="default"
-						size="full"
-						onClick={copyToClipboard}
-						title={t('decryptedMessage.tooltips.copyToClipboard')}
-						className="flex-1 gap-2"
-					>
-						{t('decryptedMessage.copyToClipboard')}
-						<svg width="24px" height="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-							<g id="SVGRepo_bgCarrier" strokeWidth="0"></g>
-							<g id="SVGRepo_tracerCarrier" strokeLinecap="round" strokeLinejoin="round"></g>
-							<g id="SVGRepo_iconCarrier">
-								{' '}
-								<path
-									fillRule="evenodd"
-									clipRule="evenodd"
-									d="M21 8C21 6.34315 19.6569 5 18 5H10C8.34315 5 7 6.34315 7 8V20C7 21.6569 8.34315 23 10 23H18C19.6569 23 21 21.6569 21 20V8ZM19 8C19 7.44772 18.5523 7 18 7H10C9.44772 7 9 7.44772 9 8V20C9 20.5523 9.44772 21 10 21H18C18.5523 21 19 20.5523 19 20V8Z"
-									fill="#fff"
-								></path>{' '}
-								<path
-									d="M6 3H16C16.5523 3 17 2.55228 17 2C17 1.44772 16.5523 1 16 1H6C4.34315 1 3 2.34315 3 4V18C3 18.5523 3.44772 19 4 19C4.55228 19 5 18.5523 5 18V4C5 3.44772 5.44772 3 6 3Z"
-									fill="#fff"
-								></path>{' '}
-							</g>
-						</svg>
-					</Button>
-				)}
 
 				{fileName && onDownloadFile && (
-					<Button
-						type="button"
-						variant="outline"
-						size="full"
-						onClick={handleDownload}
-						isLoading={ui.isDownloading}
-						disabled={ui.isDownloaded}
-						title={isOneTime ? t('decryptedMessage.tooltips.downloadFileOneTime') : t('decryptedMessage.tooltips.downloadFile')}
-						className="flex-1 gap-2"
-					>
-						{t('decryptedMessage.downloadFile')}
-					</Button>
+					<>
+						<div className="ov-drop is-filled">
+							<Icon name="file" size={22} className="shrink-0" />
+							<span className="flex min-w-0 flex-1 flex-col gap-0.5">
+								<span className="file">
+									{fileName}
+									{fileSize !== undefined && ` · ${formatFileSize(fileSize)}`}
+								</span>
+								{isOneTime && <span className="ov-help">{t('decryptedMessage.oneTimeFileWarning')}</span>}
+							</span>
+						</div>
+						<Button
+							variant="secondary"
+							onClick={handleDownload}
+							isLoading={ui.isDownloading}
+							disabled={ui.isDownloaded}
+							className="max-md:w-full"
+						>
+							{isOneTime ? t('decryptedMessage.downloadOnce') : t('decryptedMessage.downloadFile')}
+						</Button>
+					</>
 				)}
 
-				<Button
-					type="button"
-					variant="outline"
-					size="full"
-					onClick={() => navigate(UrlConfig.secret)}
-					title={t('decryptedMessage.tooltips.createSecret')}
-					className="flex-1 gap-2"
-				>
+				<Button variant="ghost" onClick={() => navigate(UrlConfig.secret)} className="self-start">
 					{t('decryptedMessage.createSecret')}
 				</Button>
 			</div>
-		</div>
+		</>
 	);
 };
 

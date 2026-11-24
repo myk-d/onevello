@@ -1,28 +1,41 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { Button, Input, ToastService } from 'perkslab-ui';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
-import ExpiredLink from '../components/Layouts/ExpiredLink';
+import SecretGone from '../components/Layouts/SecretGone';
+import SealedGate from '../components/Layouts/SealedGate';
+import { Alert, Button, PassphraseInput } from '../components/UI/kit';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
+import { FileMeta, resolveFileMeta } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const MAX_ATTEMPTS = 5;
 
 enum FetchStatus {
 	Loading = 'loading',
+	Gate = 'gate',
+	Gone = 'gone',
 	Expired = 'expired',
+	LockedOut = 'locked',
+	LoadError = 'error',
 	Ready = 'ready',
 }
 
-type FetchState = { status: FetchStatus.Loading } | { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
+type FetchState =
+	| { status: FetchStatus.Loading }
+	| { status: FetchStatus.Gate; message: MessageType }
+	| { status: FetchStatus.Gone }
+	| { status: FetchStatus.Expired }
+	| { status: FetchStatus.LockedOut }
+	| { status: FetchStatus.LoadError }
+	| { status: FetchStatus.Ready; message: MessageType };
 
 const SecretID = () => {
 	const { id } = useParams();
@@ -38,9 +51,19 @@ const SecretID = () => {
 		defaultValues: { passphrase: '' },
 	});
 
-	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired }));
+	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Gone }));
 	const [decryptedText, setDecryptedText] = useState<string | null>(null);
 	const [currentPassphrase, setCurrentPassphrase] = useState<string | null>(null);
+	const [fileMeta, setFileMeta] = useState<FileMeta | undefined>(undefined);
+
+	const [reloadKey, setReloadKey] = useState(0);
+	// Set after a wrong passphrase: shown as a danger alert next to the field, never as a toast.
+	const [wrongText, setWrongText] = useState<string | null>(null);
+
+	const handleRetry = () => {
+		setFetchState({ status: FetchStatus.Loading });
+		setReloadKey((k) => k + 1);
+	};
 
 	useEffect(() => {
 		if (!id) return;
@@ -53,23 +76,36 @@ const SecretID = () => {
 
 				if (cancelled) return;
 
-				if (!message || dayjs(message.expiration).isBefore(dayjs()) || (message.attempts ?? 0) >= MAX_ATTEMPTS) {
-					setFetchState({ status: FetchStatus.Expired });
-					if (message) {
+				// Only what the client knows: no document -> gone (opened or never existed), expiration passed -> expired,
+				// too many attempts -> locked out. A failed fetch is handled in the catch and never deletes anything.
+				if (!message) {
+					setFetchState({ status: FetchStatus.Gone });
+					return;
+				}
+
+				const isExpired = dayjs(message.expiration).isBefore(dayjs());
+				if (isExpired || (message.attempts ?? 0) >= MAX_ATTEMPTS) {
+					setFetchState({ status: isExpired ? FetchStatus.Expired : FetchStatus.LockedOut });
+					// Best-effort cleanup: a failure here must not turn this screen into a load error.
+					try {
 						await dbMessages.delete(message.id);
 						if (message.fileUrl) await deleteImageFromStorage(message.fileUrl);
+					} catch (cleanupError) {
+						if (NODE_ENV_DEV) console.error(cleanupError);
 					}
 					return;
 				}
 
+				// One-time secrets wait behind the sealed gate: loading the page must never delete them.
 				if (message.oneTime) {
-					await dbMessages.delete(message.id);
+					setFetchState({ status: FetchStatus.Gate, message });
+					return;
 				}
 
 				setFetchState({ status: FetchStatus.Ready, message });
 			} catch (error) {
 				if (NODE_ENV_DEV) console.error(error);
-				if (!cancelled) setFetchState({ status: FetchStatus.Expired });
+				if (!cancelled) setFetchState({ status: FetchStatus.LoadError });
 			}
 		};
 
@@ -78,15 +114,48 @@ const SecretID = () => {
 		return () => {
 			cancelled = true;
 		};
-	}, [id]);
+	}, [id, reloadKey]);
+
+	const [opening, setOpening] = useState(false);
+	const [openFailed, setOpenFailed] = useState(false);
+
+	// The only place a one-time secret is deleted before reveal. If the delete fails, stay at the gate with the secret intact.
+	const handleBreakSeal = async () => {
+		if (fetchState.status !== FetchStatus.Gate || opening) return;
+
+		const { message } = fetchState;
+		setOpening(true);
+		setOpenFailed(false);
+
+		let deleted: boolean;
+		try {
+			// Read and delete in one transaction: someone else may have already broken the seal.
+			deleted = await dbMessages.deleteIfExists(message.id);
+		} catch (error) {
+			if (NODE_ENV_DEV) console.error(error);
+			setOpenFailed(true);
+			setOpening(false);
+			return;
+		}
+
+		setOpening(false);
+		if (!deleted) {
+			setFetchState({ status: FetchStatus.Gone });
+			return;
+		}
+		setFetchState({ status: FetchStatus.Ready, message });
+	};
 
 	const onSubmit: SubmitHandler<PassphraseType> = async (data) => {
 		if (fetchState.status !== FetchStatus.Ready) return;
 
 		const { message } = fetchState;
+		setWrongText(null);
 
 		try {
 			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
+			// Text first: a wrong passphrase fails here and counts once. The file name and type are decrypted only afterwards.
+			setFileMeta(await resolveFileMeta(data.passphrase, message));
 			setDecryptedText(decryptedPkg);
 			setCurrentPassphrase(data.passphrase);
 
@@ -118,25 +187,37 @@ const SecretID = () => {
 						if (NODE_ENV_DEV) console.error('Failed to delete message:', deleteError);
 					}
 				}
-				setFetchState({ status: FetchStatus.Expired });
+				setFetchState({ status: FetchStatus.LockedOut });
 				return;
 			}
 
 			setFetchState({ status: FetchStatus.Ready, message: { ...message, attempts: newAttempts } });
 
 			const errMsg = error instanceof Error ? error.message : '';
-			ToastService.error(errMsg.includes('Too many failed attempts') ? errMsg : t('toasts.incorrectPassphrase'));
+			setWrongText(
+				errMsg.includes('Too many failed attempts') ? errMsg : t('secretId.pass.wrong', { count: MAX_ATTEMPTS - newAttempts }),
+			);
 			reset();
 		}
 	};
 
-	if (fetchState.status === FetchStatus.Expired) return <ExpiredLink />;
+	if (
+		fetchState.status === FetchStatus.Gone ||
+		fetchState.status === FetchStatus.Expired ||
+		fetchState.status === FetchStatus.LockedOut ||
+		fetchState.status === FetchStatus.LoadError
+	) {
+		return <SecretGone variant={fetchState.status} onRetry={handleRetry} />;
+	}
 	if (fetchState.status === FetchStatus.Loading) return <SecretIDLoader />;
+	if (fetchState.status === FetchStatus.Gate) {
+		return <SealedGate message={fetchState.message} opening={opening} failed={openFailed} onOpen={handleBreakSeal} />;
+	}
 
 	const { message } = fetchState;
 
 	const handleDownloadFile = async () => {
-		if (!message.fileUrl || !message.fileName || !currentPassphrase) return;
+		if (!message.fileUrl || !fileMeta || !currentPassphrase) return;
 
 		const response = await fetch(message.fileUrl);
 		const encryptedPkg = await response.json();
@@ -147,11 +228,11 @@ const SecretID = () => {
 		for (let i = 0; i < byteChars.length; i++) {
 			byteArr[i] = byteChars.charCodeAt(i);
 		}
-		const blob = new Blob([byteArr], { type: message.fileType });
+		const blob = new Blob([byteArr], { type: fileMeta.type });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = message.fileName;
+		link.download = fileMeta.name;
 		link.click();
 		URL.revokeObjectURL(url);
 
@@ -159,65 +240,49 @@ const SecretID = () => {
 	};
 
 	return (
-		<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
+		<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
 			{decryptedText ? (
 				<DecryptedMessage
 					message={decryptedText}
 					isOneTime={message.oneTime}
-					fileName={message.fileName}
+					fileName={fileMeta?.name}
+					fileSize={fileMeta?.size}
 					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
 				/>
 			) : (
-				<form onSubmit={handleSubmit(onSubmit)} className="w-full">
-					<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4">
-						<div className="flex justify-between gap-6 flex-wrap">
-							<div className="flex-1 flex flex-col items-start">
-								<label
-									className="block text-sm font-bold mb-2 uppercase tracking-wider"
-									title={t('secretId.tooltips.passphrase')}
-								>
-									{t('form.passphrase')}
-								</label>
-
-								<Input
-									type="password"
-									placeholder={t('form.passphrasePlaceholder')}
-									className={errors.passphrase ? 'border-red-500' : ''}
-									{...register('passphrase')}
-								/>
-								{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
-							</div>
+				<form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-5 text-left">
+					<div className="flex flex-col gap-2">
+						<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">{t('secretId.pass.title')}</h1>
+						<p className="text-muted">{t('secretId.pass.lead')}</p>
+					</div>
+					<div className="ov-card">
+						<div className="ov-field">
+							<label htmlFor="reveal-passphrase">{t('form.passphrase')}</label>
+							<PassphraseInput
+								id="reveal-passphrase"
+								autoComplete="off"
+								placeholder={t('form.passphrasePlaceholder')}
+								showLabel={t('form.show')}
+								hideLabel={t('form.hide')}
+								invalid={!!errors.passphrase || !!wrongText}
+								{...register('passphrase')}
+							/>
+							{errors.passphrase && <span className="ov-error">{errors.passphrase.message}</span>}
 						</div>
 
-						<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800 border-l-[3px] border-cyan-800">
-							<p className="text-left text-sm">{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}</p>
-						</div>
-
-						{(message.attempts ?? 0) > 0 && (
-							<div className="bg-amber-100 py-2 px-3 rounded-md italic text-amber-800 border-l-[3px] border-amber-500">
-								<p className="text-left text-sm">
-									{t('secretId.attemptsRemaining', { count: MAX_ATTEMPTS - (message.attempts ?? 0) })}
-								</p>
-							</div>
+						{wrongText && (
+							<Alert variant="danger" role="alert">
+								{wrongText} <span className="mono">{message.attempts ?? 0}/{MAX_ATTEMPTS}</span>
+							</Alert>
 						)}
 
-						<div className="flex justify-between gap-6 flex-wrap">
-							<Button
-								type="submit"
-								variant="default"
-								size="full"
-								className="flex-1 gap-2"
-								title={t('secretId.tooltips.preview', { max: MAX_ATTEMPTS })}
-							>
-								{t('secretId.preview')}
-								<svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M20.7071 8.07106C21.0976 7.68054 21.0976 7.04737 20.7071 6.65685L14.3431 0.292885C13.9526 -0.0976396 13.3195 -0.0976396 12.9289 0.292885C12.5384 0.683409 12.5384 1.31657 12.9289 1.7071L18.5858 7.36395L12.9289 13.0208C12.5384 13.4113 12.5384 14.0445 12.9289 14.435C13.3195 14.8255 13.9526 14.8255 14.3431 14.435L20.7071 8.07106ZM0 7.36395V8.36395H20V7.36395V6.36395H0V7.36395Z"
-										fill="white"
-									/>
-								</svg>
-							</Button>
-						</div>
+						<span className="ov-help">
+							{t('secretId.pass.attempts')} <span className="mono">{message.attempts ?? 0}/{MAX_ATTEMPTS}</span>
+						</span>
+
+						<Button type="submit" block>
+							{t('secretId.preview')}
+						</Button>
 					</div>
 				</form>
 			)}
