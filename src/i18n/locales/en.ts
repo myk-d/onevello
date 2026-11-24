@@ -64,7 +64,7 @@ const en = {
 			noTitle: 'Not protected',
 			no: [
 				'A weak or leaked passphrase. Anyone with the link can try passphrases offline, so use a long one.',
-				'Whoever opens the link first. A forwarded link burns a one-time secret.',
+				'Whoever breaks the seal first. If the link was forwarded, someone else may open the secret before you.',
 				'After it is opened, the secret is in the recipient’s hands. We delete it from the server, but can’t stop them copying the text or taking a screenshot.',
 				'Malware or a bad browser extension on either device.',
 			],
