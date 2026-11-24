@@ -243,10 +243,28 @@ const en = {
 			createAnother: 'Discard this link and create another secret.',
 		},
 	},
-	expiredLink: {
-		message: 'This secret is gone: it was opened or it expired.',
+	secretGone: {
+		gone: {
+			title: 'The seal is broken',
+			description:
+				'This secret was already opened and deleted, or the link is wrong. If it was not you who opened it, tell the sender: someone else may have opened the link. Otherwise check the link against the one you were sent.',
+		},
+		expired: {
+			title: 'This link has expired',
+			description: 'The secret was not opened in time and is deleted. Ask the sender for a new link.',
+		},
+		locked: {
+			title: 'Too many attempts',
+			description:
+				'After 5 wrong passphrases the secret was deleted. Ask the sender to create a new one and send the passphrase again.',
+		},
+		error: {
+			title: 'Couldn’t load the secret',
+			description: 'Check your connection and try again. Nothing was opened or deleted.',
+		},
+		retry: 'Try again',
+		createOwn: 'Create your own secret',
 		home: 'Home',
-		createSecret: 'Create a secret',
 	},
 	toasts: {
 		failedToCreate: 'Failed to create secret. Please try again.',

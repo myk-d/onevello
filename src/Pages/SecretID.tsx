@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useParams } from 'react-router';
 import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
-import ExpiredLink from '../components/Layouts/ExpiredLink';
+import SecretGone from '../components/Layouts/SecretGone';
 import SealedGate from '../components/Layouts/SealedGate';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
@@ -21,14 +21,21 @@ const MAX_ATTEMPTS = 5;
 enum FetchStatus {
 	Loading = 'loading',
 	Gate = 'gate',
+	Gone = 'gone',
 	Expired = 'expired',
+	LockedOut = 'locked',
+	LoadError = 'error',
 	Ready = 'ready',
 }
 
 type FetchState =
 	| { status: FetchStatus.Loading }
 	| { status: FetchStatus.Gate; message: MessageType }
-	| { status: FetchStatus.Expired } | { status: FetchStatus.Ready; message: MessageType };
+	| { status: FetchStatus.Gone }
+	| { status: FetchStatus.Expired }
+	| { status: FetchStatus.LockedOut }
+	| { status: FetchStatus.LoadError }
+	| { status: FetchStatus.Ready; message: MessageType };
 
 const SecretID = () => {
 	const { id } = useParams();
@@ -44,9 +51,16 @@ const SecretID = () => {
 		defaultValues: { passphrase: '' },
 	});
 
-	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Expired }));
+	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Gone }));
 	const [decryptedText, setDecryptedText] = useState<string | null>(null);
 	const [currentPassphrase, setCurrentPassphrase] = useState<string | null>(null);
+
+	const [reloadKey, setReloadKey] = useState(0);
+
+	const handleRetry = () => {
+		setFetchState({ status: FetchStatus.Loading });
+		setReloadKey((k) => k + 1);
+	};
 
 	useEffect(() => {
 		if (!id) return;
@@ -59,11 +73,22 @@ const SecretID = () => {
 
 				if (cancelled) return;
 
-				if (!message || dayjs(message.expiration).isBefore(dayjs()) || (message.attempts ?? 0) >= MAX_ATTEMPTS) {
-					setFetchState({ status: FetchStatus.Expired });
-					if (message) {
+				// Only what the client knows: no document -> gone (opened or never existed), expiration passed -> expired,
+				// too many attempts -> locked out. A failed fetch is handled in the catch and never deletes anything.
+				if (!message) {
+					setFetchState({ status: FetchStatus.Gone });
+					return;
+				}
+
+				const isExpired = dayjs(message.expiration).isBefore(dayjs());
+				if (isExpired || (message.attempts ?? 0) >= MAX_ATTEMPTS) {
+					setFetchState({ status: isExpired ? FetchStatus.Expired : FetchStatus.LockedOut });
+					// Best-effort cleanup: a failure here must not turn this screen into a load error.
+					try {
 						await dbMessages.delete(message.id);
 						if (message.fileUrl) await deleteImageFromStorage(message.fileUrl);
+					} catch (cleanupError) {
+						if (NODE_ENV_DEV) console.error(cleanupError);
 					}
 					return;
 				}
@@ -77,7 +102,7 @@ const SecretID = () => {
 				setFetchState({ status: FetchStatus.Ready, message });
 			} catch (error) {
 				if (NODE_ENV_DEV) console.error(error);
-				if (!cancelled) setFetchState({ status: FetchStatus.Expired });
+				if (!cancelled) setFetchState({ status: FetchStatus.LoadError });
 			}
 		};
 
@@ -86,7 +111,7 @@ const SecretID = () => {
 		return () => {
 			cancelled = true;
 		};
-	}, [id]);
+	}, [id, reloadKey]);
 
 	const [opening, setOpening] = useState(false);
 	const [openFailed, setOpenFailed] = useState(false);
@@ -150,7 +175,7 @@ const SecretID = () => {
 						if (NODE_ENV_DEV) console.error('Failed to delete message:', deleteError);
 					}
 				}
-				setFetchState({ status: FetchStatus.Expired });
+				setFetchState({ status: FetchStatus.LockedOut });
 				return;
 			}
 
@@ -162,7 +187,14 @@ const SecretID = () => {
 		}
 	};
 
-	if (fetchState.status === FetchStatus.Expired) return <ExpiredLink />;
+	if (
+		fetchState.status === FetchStatus.Gone ||
+		fetchState.status === FetchStatus.Expired ||
+		fetchState.status === FetchStatus.LockedOut ||
+		fetchState.status === FetchStatus.LoadError
+	) {
+		return <SecretGone variant={fetchState.status} onRetry={handleRetry} />;
+	}
 	if (fetchState.status === FetchStatus.Loading) return <SecretIDLoader />;
 	if (fetchState.status === FetchStatus.Gate) {
 		return <SealedGate message={fetchState.message} opening={opening} failed={openFailed} onOpen={handleBreakSeal} />;
