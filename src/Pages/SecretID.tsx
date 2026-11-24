@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { Button, Input, ToastService } from 'perkslab-ui';
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -9,11 +8,11 @@ import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import SecretGone from '../components/Layouts/SecretGone';
 import SealedGate from '../components/Layouts/SealedGate';
+import { Button, Input, toast } from '../components/UI/kit';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
-import { cn } from '../utils/cn';
 import { FileMeta, resolveFileMeta } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
@@ -192,7 +191,7 @@ const SecretID = () => {
 			setFetchState({ status: FetchStatus.Ready, message: { ...message, attempts: newAttempts } });
 
 			const errMsg = error instanceof Error ? error.message : '';
-			ToastService.error(errMsg.includes('Too many failed attempts') ? errMsg : t('toasts.incorrectPassphrase'));
+			toast.error(errMsg.includes('Too many failed attempts') ? errMsg : t('toasts.incorrectPassphrase'));
 			reset();
 		}
 	};
@@ -236,7 +235,7 @@ const SecretID = () => {
 	};
 
 	return (
-		<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
+		<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
 			{decryptedText ? (
 				<DecryptedMessage
 					message={decryptedText}
@@ -245,25 +244,22 @@ const SecretID = () => {
 					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
 				/>
 			) : (
-				<form onSubmit={handleSubmit(onSubmit)} className="w-full">
-					<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4">
-						<div className="flex justify-between gap-6 flex-wrap">
-							<div className="flex-1 flex flex-col items-start">
-								<label
-									className="block text-sm font-bold mb-2 uppercase tracking-wider"
-									title={t('secretId.tooltips.passphrase')}
-								>
-									{t('form.passphrase')}
-								</label>
-
-								<Input
-									type="password"
-									placeholder={t('form.passphrasePlaceholder')}
-									className={cn('font-mono', errors.passphrase && 'border-danger')}
-									{...register('passphrase')}
-								/>
-								{errors.passphrase && <span className="text-danger text-xs mt-1">{errors.passphrase.message}</span>}
-							</div>
+				<form onSubmit={handleSubmit(onSubmit)} className="w-full text-left">
+					<div className="ov-card">
+						<div className="ov-field">
+							<label htmlFor="reveal-passphrase" title={t('secretId.tooltips.passphrase')}>
+								{t('form.passphrase')}
+							</label>
+							<Input
+								id="reveal-passphrase"
+								type="password"
+								autoComplete="off"
+								placeholder={t('form.passphrasePlaceholder')}
+								className="font-mono"
+								invalid={!!errors.passphrase}
+								{...register('passphrase')}
+							/>
+							{errors.passphrase && <span className="ov-error">{errors.passphrase.message}</span>}
 						</div>
 
 						<div className="ov-alert ov-alert--info" role="status">
@@ -278,23 +274,15 @@ const SecretID = () => {
 							</div>
 						)}
 
-						<div className="flex justify-between gap-6 flex-wrap">
-							<Button
-								type="submit"
-								variant="default"
-								size="full"
-								className="flex-1 gap-2"
-								title={t('secretId.tooltips.preview', { max: MAX_ATTEMPTS })}
-							>
-								{t('secretId.preview')}
-								<svg width="21" height="15" viewBox="0 0 21 15" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path
-										d="M20.7071 8.07106C21.0976 7.68054 21.0976 7.04737 20.7071 6.65685L14.3431 0.292885C13.9526 -0.0976396 13.3195 -0.0976396 12.9289 0.292885C12.5384 0.683409 12.5384 1.31657 12.9289 1.7071L18.5858 7.36395L12.9289 13.0208C12.5384 13.4113 12.5384 14.0445 12.9289 14.435C13.3195 14.8255 13.9526 14.8255 14.3431 14.435L20.7071 8.07106ZM0 7.36395V8.36395H20V7.36395V6.36395H0V7.36395Z"
-										fill="currentColor"
-									/>
-								</svg>
-							</Button>
-						</div>
+						<Button type="submit" block title={t('secretId.tooltips.preview', { max: MAX_ATTEMPTS })}>
+							{t('secretId.preview')}
+							<svg width="18" height="14" viewBox="0 0 21 15" fill="none" aria-hidden="true">
+								<path
+									d="M20.7071 8.07106C21.0976 7.68054 21.0976 7.04737 20.7071 6.65685L14.3431 0.292885C13.9526 -0.0976396 13.3195 -0.0976396 12.9289 0.292885C12.5384 0.683409 12.5384 1.31657 12.9289 1.7071L18.5858 7.36395L12.9289 13.0208C12.5384 13.4113 12.5384 14.0445 12.9289 14.435C13.3195 14.8255 13.9526 14.8255 14.3431 14.435L20.7071 8.07106ZM0 7.36395V8.36395H20V7.36395V6.36395H0V7.36395Z"
+									fill="currentColor"
+								/>
+							</svg>
+						</Button>
 					</div>
 				</form>
 			)}

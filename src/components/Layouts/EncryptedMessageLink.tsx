@@ -1,10 +1,10 @@
 import dayjs from "dayjs";
-import { Button } from "perkslab-ui";
 import { useEffect, useRef, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { isSecretWasCreatedOnDeviceStorageKey } from "../../constants/constants";
 import { UrlConfig } from "../../constants/UrlConfig";
 import { buildSecretUrl, groupLinkId } from "../../utils/groupLinkId";
+import { Button } from "../UI/kit";
 
 export const COPIED_RESET_MS = 1500;
 
@@ -68,16 +68,16 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({
   ];
 
   return (
-    <div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-5 text-left">
+    <div className="ov-card text-left">
       <div>
-        <h1 className="text-2xl">{t("encryptedLink.title")}</h1>
-        <p className="text-muted">{t("encryptedLink.description")}</p>
+        <h1 className="text-2xl font-semibold leading-8">{t("encryptedLink.title")}</h1>
+        <p className="mt-1 text-muted">{t("encryptedLink.description")}</p>
       </div>
 
       {/* grouped link: display only, Copy uses the plain URL */}
       <div className="flex items-center justify-between gap-3">
         <p
-          className="ov-secret flex-1 min-w-0"
+          className="ov-secret min-w-0 flex-1"
           aria-label={t("encryptedLink.linkLabel")}
           data-testid="grouped-link"
         >
@@ -97,6 +97,7 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({
           target="_blank"
           rel="noreferrer"
           title={t("encryptedLink.tooltips.openLink")}
+          className="flex min-h-11 min-w-11 items-center justify-center text-primary"
           aria-label={t("encryptedLink.tooltips.openLink")}
         >
           <svg
@@ -125,11 +126,10 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({
 
       <Button
         type="button"
-        variant={isCopied ? "success" : "default"}
-        size="full"
+        variant={isCopied ? "success" : "primary"}
+        block
         onClick={copyToClipboard}
         title={t("encryptedLink.tooltips.copyToClipboard")}
-        className="gap-2"
       >
         {isCopied
           ? t("encryptedLink.copied")
@@ -216,8 +216,8 @@ const EncryptedMessageLink: React.FC<EncryptedMessageLinkProps> = ({
 
       <Button
         type="button"
-        variant="outline"
-        size="full"
+        variant="secondary"
+        block
         onClick={clearId}
         title={t("encryptedLink.tooltips.createAnother")}
       >

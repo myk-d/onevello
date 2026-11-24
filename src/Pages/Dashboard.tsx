@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
+import { Button } from '../components/UI/kit';
 import { dbMessages } from '../config/firebase.config';
 import { UrlConfig } from '../constants/UrlConfig';
 import { useAuth } from '../context/useAuth';
@@ -41,53 +42,45 @@ const Dashboard = () => {
 
 	if (!user) {
 		return (
-			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-6 mt-12">
-				<h1 className="text-2xl font-bold">{t('dashboard.signInRequired')}</h1>
+			<section className="mx-auto flex w-full max-w-[680px] flex-col items-center gap-4 px-4 py-12 text-center">
+				<h1 className="font-heading text-2xl font-semibold leading-8">{t('dashboard.signInRequired')}</h1>
 				<p className="text-sm text-muted">{t('dashboard.signInNote')}</p>
-				<button
-					onClick={signIn}
-					className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-brand text-brand font-medium hover:bg-brand hover:text-brand-fg transition-colors duration-200"
-				>
-					{t('header.nav.signIn')}
-				</button>
+				<Button onClick={signIn}>{t('header.nav.signIn')}</Button>
 			</section>
 		);
 	}
 
 	return (
-		<section className="m-auto max-w-7xl flex flex-col gap-6 mt-4 px-2">
+		<section className="mx-auto flex w-full max-w-[980px] flex-col gap-5 px-4 py-8 md:py-14">
 			<div className="flex items-center justify-between flex-wrap gap-3">
-				<h1 className="text-2xl font-bold">{t('dashboard.heading')}</h1>
-				<button
-					onClick={() => navigate(UrlConfig.secret)}
-					className="text-sm font-medium px-4 py-2 rounded-xl border border-brand text-brand hover:bg-brand hover:text-brand-fg transition-colors duration-200"
-				>
+				<h1 className="font-heading text-2xl font-semibold leading-8">{t('dashboard.heading')}</h1>
+				<Button variant="secondary" onClick={() => navigate(UrlConfig.secret)}>
 					{t('dashboard.createNew')}
-				</button>
+				</Button>
 			</div>
 
 			{messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (
-				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-muted">
+				<div className="ov-card is-empty items-center py-12 text-center text-muted">
 					<p className="text-sm">{t('dashboard.empty')}</p>
 				</div>
 			) : (
-				<div className="border rounded-2xl overflow-hidden">
-					<table className="w-full text-sm">
+				<div className="overflow-x-auto rounded-card border border-border bg-surface-raised">
+					<table className="w-full min-w-[560px] text-sm">
 						<thead>
 							<tr className="border-b text-left">
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.typeHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('dashboard.col.typeHint')}>
 									{t('dashboard.col.type')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs">{t('dashboard.col.file')}</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.expiresHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted">{t('dashboard.col.file')}</th>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('dashboard.col.expiresHint')}>
 									{t('dashboard.col.expires')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('dashboard.col.statusHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('dashboard.col.statusHint')}>
 									{t('dashboard.col.status')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs"></th>
+								<th className="py-3 px-4 font-semibold text-xs text-muted"></th>
 							</tr>
 						</thead>
 						<tbody>
@@ -164,7 +157,7 @@ const Dashboard = () => {
 											<button
 												onClick={() => copyLink(msg.id)}
 												title={t('dashboard.copyLinkHint')}
-												className="text-xs cursor-pointer text-brand hover:underline"
+												className="text-xs cursor-pointer min-h-11 text-primary hover:underline"
 											>
 												{t('dashboard.copyLink')}
 											</button>

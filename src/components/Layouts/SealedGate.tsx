@@ -1,8 +1,8 @@
 import dayjs from 'dayjs';
-import { Button } from 'perkslab-ui';
 import { useTranslation } from 'react-i18next';
 import { MessageType } from '../../models/Message/message';
 import LogoSvg from '../UI/SVG/LogoSvg';
+import { Button } from '../UI/kit';
 
 interface SealedGateProps {
 	message: Pick<MessageType, 'expiration' | 'fileUrl'>;
@@ -16,10 +16,10 @@ const SealedGate = ({ message, opening, failed, onOpen }: SealedGateProps) => {
 	const { t } = useTranslation();
 
 	return (
-		<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
-			<div className="border w-full rounded-2xl py-5 px-7 flex flex-col gap-4 items-center">
+		<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
+			<div className="ov-card items-center text-center">
 				<LogoSvg intact size={96} />
-				<h1 className="text-2xl">{t('secretId.gate.title')}</h1>
+				<h1 className="text-2xl font-semibold leading-8">{t('secretId.gate.title')}</h1>
 				<p className="text-muted">{t('secretId.gate.description')}</p>
 
 				<div className="flex flex-wrap justify-center gap-2">
@@ -38,7 +38,7 @@ const SealedGate = ({ message, opening, failed, onOpen }: SealedGateProps) => {
 					</div>
 				)}
 
-				<Button type="button" variant="default" size="full" disabled={opening} onClick={onOpen}>
+				<Button type="button" block disabled={opening} onClick={onOpen}>
 					{opening ? t('secretId.gate.opening') : t('secretId.gate.button')}
 				</Button>
 			</div>

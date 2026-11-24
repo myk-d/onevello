@@ -1,7 +1,7 @@
-import { Button } from 'perkslab-ui';
 import { useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { Button } from '../components/UI/kit';
 import LogoSvg from '../components/UI/SVG/LogoSvg';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { UrlConfig } from '../constants/UrlConfig';
@@ -67,10 +67,10 @@ const Home = () => {
 						</h1>
 						<p className="lead">{t('landing.hero.lead')}</p>
 						<div className="cta">
-							<Button type="button" variant="default" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
+							<Button type="button" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
 								{t('landing.hero.createSecret')}
 							</Button>
-							<Button type="button" variant="outline" size="lg" onClick={handleNavigate(UrlConfig.about)}>
+							<Button type="button" variant="secondary" size="lg" onClick={handleNavigate(UrlConfig.about)}>
 								{t('landing.hero.howItWorks')}
 							</Button>
 						</div>
@@ -215,7 +215,7 @@ const Home = () => {
 				<div className="lp-in">
 					<LogoSvg size={64} intact />
 					<h2>{t('landing.final.title')}</h2>
-					<Button type="button" variant="default" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
+					<Button type="button" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
 						{t('landing.final.button')}
 					</Button>
 				</div>

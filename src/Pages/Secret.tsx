@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { ToastService } from 'perkslab-ui';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -13,6 +12,7 @@ import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { encryptFileMeta, opaqueStorageName } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
+import { toast } from '../components/UI/kit';
 
 const fileToBase64 = (file: File): Promise<string> =>
 	new Promise((resolve, reject) => {
@@ -85,7 +85,7 @@ const Secret = () => {
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
-			ToastService.error(attachedFile ? t('toasts.fileUploadFailed') : t('toasts.failedToCreate'));
+			toast.error(attachedFile ? t('toasts.fileUploadFailed') : t('toasts.failedToCreate'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -102,12 +102,12 @@ const Secret = () => {
 
 		setValue('passphrase', passphrase);
 		navigator.clipboard.writeText(passphrase);
-		ToastService.success(t('toasts.passphraseCopied'));
+		toast.success(t('toasts.passphraseCopied'));
 	};
 
 	return (
 		<>
-			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
+			<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
 				{encryptedMessageId && summary ? (
 					<EncryptedMessageLink
 						id={encryptedMessageId}
@@ -120,7 +120,7 @@ const Secret = () => {
 						}}
 					/>
 				) : (
-					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
+					<form onSubmit={handleSubmit(onSubmit)} className="w-full text-left">
 						<EncryptedMessageForm
 							register={register}
 							errors={errors}

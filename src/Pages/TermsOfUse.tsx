@@ -17,7 +17,7 @@ const TermsOfUse = () => {
 		<PolicyLayout title={t('termsOfUse.title')}>
 			{sections.map((section) => (
 				<section key={section.title}>
-					<h2 className="text-xl font-bold text-brand uppercase mb-3">{section.title}</h2>
+					<h2 className="mb-3 font-heading text-xl font-semibold">{section.title}</h2>
 					{section.paragraph && <p>{section.paragraph}</p>}
 					{section.items && (
 						<ul className="list-disc pl-5 space-y-2">
@@ -29,10 +29,10 @@ const TermsOfUse = () => {
 				</section>
 			))}
 
-			<section className="p-6 bg-brand-bg rounded-2xl border border-brand/20">
-				<p className="text-sm italic font-medium">
+			<section className="ov-card">
+				<p className="text-sm">
 					{t('termsOfUse.footer')}
-					<Link to={UrlConfig.privacyPolicy} className="text-brand font-bold ml-1 hover:underline">
+					<Link to={UrlConfig.privacyPolicy} className="ml-1 font-semibold text-primary hover:underline">
 						{t('termsOfUse.footerLink')}
 					</Link>
 					.
