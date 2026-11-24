@@ -514,6 +514,6 @@ Source: `docs/product/brand/assets/brand.css`. The `--color-*` names move into `
 | [foundations.html](foundations.html) | Palette, live contrast, type, shape, motion, components in both themes, do / don't |
 | [logo.html](logo.html) | Final mark, app icon, favicon, lockups; the four other concepts for history |
 | [create.html](create.html) · [share.html](share.html) · [reveal.html](reveal.html) · [states.html](states.html) | Screens at 1440 and 390, light and dark |
-| [landing-uk.html](landing-uk.html) · [landing-en.html](landing-en.html) | Landings at 1440 and 390, light and dark, with the OG image |
+| [landing-uk.html](landing-uk.html) · [landing-en.html](landing-en.html) | Landings at 1440 and 390, light and dark; one English OG image (crawlers do not run JS) |
 | [directions.html](directions.html) | The three phase-1 directions |
-| `assets/` | `brand.css`, `brand.js`, `logo-mark{,-dark,-small}.svg`, `app-icon{,-small}.svg`, `favicon.svg`, `logo-lockup{,-dark}.svg`, `og-{uk,en}.svg` |
+| `assets/` | `brand.css`, `brand.js`, `logo-mark{,-dark,-small}.svg`, `app-icon{,-small}.svg`, `favicon.svg`, `logo-lockup{,-dark}.svg`, `og-en.svg` |
