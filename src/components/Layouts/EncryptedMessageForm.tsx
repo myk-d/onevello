@@ -1,5 +1,5 @@
 import dayjs from 'dayjs';
-import { Button, Checkbox, DateTimePicker, Input } from 'perkslab-ui';
+import { Button, DateTimePicker, Input } from 'perkslab-ui';
 import React, { useRef, useState } from 'react';
 import { Control, Controller, FieldErrors, UseFormRegister, useWatch } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -243,22 +243,14 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 			</div>
 
 			{/* one time access */}
-			<div className="flex items-center gap-3">
-				<Checkbox {...register('oneTime')} id="oneTimeCheckbox" title={t('form.tooltips.oneTimeAccess')} />
-
-				<label
-					htmlFor="oneTimeCheckbox"
-					className="block text-base font-bold uppe tracking-wider cursor-pointer"
-					title={t('form.tooltips.oneTimeAccess')}
-				>
-					{t('form.oneTimeAccess')}
-				</label>
-			</div>
-
-			{/* one time access message */}
-			<div className="ov-alert ov-alert--info" role="status">
-				<p className="text-left text-xs">{t('form.oneTimeNote')}</p>
-			</div>
+			<label className="ov-switch" title={t('form.tooltips.oneTimeAccess')}>
+				<input type="checkbox" role="switch" {...register('oneTime')} id="oneTimeSwitch" />
+				<span className="track" aria-hidden="true"></span>
+				<span className="text text-left">
+					<b>{t('form.oneTimeAccess')}</b>
+					<span>{t('form.oneTimeHelp')}</span>
+				</span>
+			</label>
 
 			{/* buttons */}
 			<div className="flex justify-between gap-6 flex-wrap">

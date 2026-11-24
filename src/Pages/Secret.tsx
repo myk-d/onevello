@@ -6,7 +6,7 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
 import { PasswordChannel } from 'secure-channel-sdk';
 import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
-import EncryptedMessageLink from '../components/Layouts/EncryptedMessageLink';
+import EncryptedMessageLink, { CreatedSecretSummary } from '../components/Layouts/EncryptedMessageLink';
 import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { useAuth } from '../context/useAuth';
@@ -47,6 +47,7 @@ const Secret = () => {
 	});
 
 	const [encryptedMessageId, setEncryptedMessageId] = useState<string | null>(null);
+	const [summary, setSummary] = useState<CreatedSecretSummary | null>(null);
 
 	const onSubmit: SubmitHandler<CreateMessageType> = async (data) => {
 		setIsSubmitting(true);
@@ -81,6 +82,7 @@ const Secret = () => {
 			const result = await dbMessages.create(messageToSave);
 
 			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
+			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName });
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
@@ -107,11 +109,13 @@ const Secret = () => {
 	return (
 		<>
 			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
-				{encryptedMessageId ? (
+				{encryptedMessageId && summary ? (
 					<EncryptedMessageLink
 						id={encryptedMessageId}
+						summary={summary}
 						clearId={() => {
 							setEncryptedMessageId(null);
+							setSummary(null);
 							setAttachedFile(null);
 							reset();
 						}}
