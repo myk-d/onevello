@@ -2,6 +2,7 @@ const en = {
 	header: {
 		nav: {
 			howItWorks: 'How it works',
+			security: 'Security',
 			home: 'Home',
 			privacyPolicy: 'Privacy Policy',
 			termsOfUse: 'Terms of Use',
@@ -17,37 +18,108 @@ const en = {
 			dark: 'Dark',
 		},
 	},
-	home: {
+	landing: {
 		hero: {
-			heading: 'Share <once>once.</once><br/>Trust <always>always.</always>',
-			subheading:
-				'Keep passwords and files out of chats and email. <bold>Encrypted in your browser, opened once.</bold>',
-			createSecret: 'Create a secret',
+			heading: 'Share <em>once.</em><br/>Trust always.',
+			lead: 'Send a password, a key or a small file as a sealed link. The link opens nothing without the passphrase, and the passphrase travels another way.',
+			createSecret: 'Create a secret link',
 			howItWorks: 'How it works',
+			facts: ['Encrypted in your browser', 'No account to send or open', 'Open source'],
+			visual: {
+				label: 'Link ready',
+				link: '…/secret/k7q2 9xmd 4wfa',
+				chips: ['Opens once', 'Expires in 24h'],
+				note: 'Send the passphrase another way.',
+			},
+		},
+		how: {
+			title: 'How it works',
+			lead: 'Three steps, and the order matters.',
+			steps: [
+				{
+					title: 'Write and seal',
+					desc: 'Type the secret or attach a file up to 5 MB, choose a passphrase, an expiry and whether it opens once. It is encrypted in your browser: AES-256-GCM with a key derived from the passphrase (PBKDF2-SHA256, 600 000 rounds).',
+				},
+				{
+					title: 'Send the link, then the passphrase',
+					desc: 'The link goes by chat or email. The passphrase goes another way: a call, SMS or a different messenger. Neither one opens the secret alone.',
+				},
+				{
+					title: 'The first opening breaks the seal',
+					desc: 'A one-time secret is deleted from our server when the recipient breaks the seal and opens it. Other secrets open until they expire. After 5 wrong passphrases the secret is deleted.',
+				},
+			],
+		},
+		protection: {
+			title: 'What is protected, and what isn’t',
+			lead: 'Every claim here is true in the code. The second list matters as much as the first.',
+			yesTitle: 'Protected',
+			yes: [
+				'The text and the file contents are encrypted before they leave your browser. We store only ciphertext.',
+				'The passphrase is not in the link, and we never store it.',
+				'A one-time secret is deleted from the server when the recipient breaks the seal and opens it.',
+				'An expired link stops working.',
+				'5 wrong passphrases delete the secret.',
+			],
+			noTitle: 'Not protected',
+			no: [
+				'A weak or leaked passphrase. Anyone with the link can try passphrases offline, so use a long one.',
+				'Whoever opens the link first. A forwarded link burns a one-time secret.',
+				'After it is opened, the secret is in the recipient’s hands. We delete it from the server, but can’t stop them copying the text or taking a screenshot.',
+				'Malware or a bad browser extension on either device.',
+			],
 		},
 		features: {
-			endToEnd: {
-				title: 'Encrypted in your browser',
-				description: 'Your text and files are encrypted in your browser before they are sent. The passphrase is not part of the link.',
-			},
-			selfDestructing: {
-				title: 'Opened once',
-				description: 'Opening a one-time link deletes the secret. Every secret also has an expiration date, checked when the link is opened.',
-			},
-			totalAnonymity: {
-				title: 'Account optional',
-				description:
-					'No account required to send or open a secret. Optionally sign in with Google to see your sent secrets in a personal dashboard — the content stays encrypted either way.',
-			},
+			title: 'What you get',
+			items: [
+				{ value: '10 000', label: 'characters of text per secret' },
+				{ value: '5 MB', label: 'one file, encrypted the same way' },
+				{ value: '1h · 24h · 7d · 30d', label: 'or any date you pick' },
+				{ value: '1 or ∞', label: 'opens once, or until it expires' },
+				{ value: '0', label: 'accounts needed to send or open' },
+				{ value: 'uk · en', label: 'light and dark' },
+			],
+			note: 'Optional: sign in with Google to see your sent secrets as Waiting, Opened or Expired. The content stays encrypted either way.',
 		},
-		trust: {
-			heading: 'Encrypted before it leaves your browser.',
-			body: 'OneVello uses AES-GCM encryption for text and file attachments. Decryption happens in the recipient’s browser, with the passphrase you share separately. If the passphrase is lost, the secret cannot be recovered.',
-			cta: 'Read the technical details',
+		faq: {
+			title: 'Questions',
+			items: [
+				{
+					q: 'Can OneVello read my secret?',
+					a: 'No. We store only ciphertext, and without the passphrase it can’t be decrypted. What else is stored next to it is listed in the Privacy Policy.',
+				},
+				{
+					q: 'Why isn’t the passphrase in the link?',
+					a: 'So that a leaked or forwarded link alone opens nothing. The cost is one extra step: the recipient types the passphrase.',
+				},
+				{
+					q: 'How long should the passphrase be?',
+					a: 'Longer is stronger: anyone who gets the link can try passphrases offline. Use 12+ characters or four random words. The generator gives a quick suggestion.',
+				},
+				{
+					q: 'I lost the passphrase. Can you recover the secret?',
+					a: 'No. Nobody can, including us. Create a new secret.',
+				},
+				{
+					q: 'What happens when a link expires?',
+					a: 'It stops working at once. The stored ciphertext is deleted the next time someone opens the link, or in a regular cleanup.',
+				},
+				{
+					q: 'Do I need an account?',
+					a: 'No, neither to send nor to open. Signing in with Google only adds a list of the secrets you sent.',
+				},
+			],
 		},
-		cta: {
-			heading: 'Ready to send a secret?',
-			button: 'Create a secret',
+		oss: {
+			title: 'Open source, open about security',
+			lead: 'The whole app, including the encryption, is on GitHub. If you find a weakness, write to us privately first.',
+			source: 'Source code',
+			policy: 'Security policy',
+			report: 'Report a vulnerability',
+		},
+		final: {
+			title: 'Something to send right now?',
+			button: 'Create a secret link',
 		},
 	},
 	howItWorks: {
