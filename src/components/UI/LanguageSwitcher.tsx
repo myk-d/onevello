@@ -16,7 +16,7 @@ const LanguageSwitcher = () => {
 					onClick={() => i18n.changeLanguage(lang)}
 					className={cn(
 						'text-xs cursor-pointer font-bold uppercase px-2 py-1 rounded transition-colors',
-						current === lang ? 'text-brand' : 'text-page-text/40 hover:text-page-text',
+						current === lang ? 'text-brand' : 'text-muted hover:text-page-text',
 					)}
 				>
 					{lang}

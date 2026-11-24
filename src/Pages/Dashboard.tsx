@@ -43,10 +43,10 @@ const Dashboard = () => {
 		return (
 			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-6 mt-12">
 				<h1 className="text-2xl font-bold">{t('dashboard.signInRequired')}</h1>
-				<p className="text-sm text-gray-500">{t('dashboard.signInNote')}</p>
+				<p className="text-sm text-muted">{t('dashboard.signInNote')}</p>
 				<button
 					onClick={signIn}
-					className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-brand text-brand font-medium hover:bg-brand hover:text-white transition-colors duration-200"
+					className="flex items-center gap-2 px-5 py-2.5 rounded-xl border border-brand text-brand font-medium hover:bg-brand hover:text-brand-fg transition-colors duration-200"
 				>
 					{t('header.nav.signIn')}
 				</button>
@@ -60,7 +60,7 @@ const Dashboard = () => {
 				<h1 className="text-2xl font-bold">{t('dashboard.heading')}</h1>
 				<button
 					onClick={() => navigate(UrlConfig.secret)}
-					className="text-sm font-medium px-4 py-2 rounded-xl border border-brand text-brand hover:bg-brand hover:text-white transition-colors duration-200"
+					className="text-sm font-medium px-4 py-2 rounded-xl border border-brand text-brand hover:bg-brand hover:text-brand-fg transition-colors duration-200"
 				>
 					{t('dashboard.createNew')}
 				</button>
@@ -69,7 +69,7 @@ const Dashboard = () => {
 			{messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (
-				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-gray-500">
+				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-muted">
 					<p className="text-sm">{t('dashboard.empty')}</p>
 				</div>
 			) : (
@@ -94,18 +94,18 @@ const Dashboard = () => {
 							{messages.map((msg) => {
 								const status = getStatus(msg);
 								return (
-									<tr key={msg.id} className="border-b last:border-0 hover:bg-gray-50 dark:hover:bg-white/5 transition-colors">
+									<tr key={msg.id} className="border-b last:border-0 hover:bg-surface-sunken transition-colors">
 										<td className="py-3 px-4">
 											{msg.oneTime ? (
 												<span
-													className="text-xs px-2 py-0.5 rounded-full bg-purple-100 text-purple-700 font-medium"
+													className="ov-chip ov-chip--info"
 													title={t('dashboard.oneTimeHint')}
 												>
 													{t('dashboard.oneTime')}
 												</span>
 											) : (
 												<span
-													className="text-xs px-2 py-0.5 rounded-full bg-blue-100 text-blue-700 font-medium"
+													className="ov-chip"
 													title={t('dashboard.regularHint')}
 												>
 													{t('dashboard.regular')}
@@ -114,7 +114,7 @@ const Dashboard = () => {
 										</td>
 										<td className="py-3 px-4">
 											{msg.fileName ? (
-												<span className="flex items-center gap-1.5 text-xs text-gray-600">
+												<span className="flex items-center gap-1.5 text-xs text-muted">
 													<svg
 														className="h-3.5 w-3.5 shrink-0"
 														viewBox="0 0 24 24"
@@ -128,16 +128,16 @@ const Dashboard = () => {
 													<span className="truncate max-w-[140px]">{msg.fileName}</span>
 												</span>
 											) : (
-												<span className="text-xs text-gray-400">—</span>
+												<span className="text-xs text-muted">—</span>
 											)}
 										</td>
-										<td className="py-3 px-4 text-xs text-gray-600 whitespace-nowrap">
+										<td className="py-3 px-4 text-xs text-muted whitespace-nowrap">
 											{dayjs(msg.expiration).format('MMM D, YYYY HH:mm')}
 										</td>
 										<td className="py-3 px-4">
 											{status === 'opened' && (
 												<span
-													className="text-xs px-2 py-0.5 rounded-full bg-green-100 text-green-700 font-medium"
+													className="ov-chip ov-chip--success"
 													title={t('dashboard.status.openedHint')}
 												>
 													{t('dashboard.status.opened')}
@@ -145,7 +145,7 @@ const Dashboard = () => {
 											)}
 											{status === 'expired' && (
 												<span
-													className="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-500 font-medium"
+													className="ov-chip"
 													title={t('dashboard.status.expiredHint')}
 												>
 													{t('dashboard.status.expired')}
@@ -153,7 +153,7 @@ const Dashboard = () => {
 											)}
 											{status === 'active' && (
 												<span
-													className="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 font-medium"
+													className="ov-chip ov-chip--warning"
 													title={t('dashboard.status.activeHint')}
 												>
 													{t('dashboard.status.active')}

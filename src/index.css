@@ -1,6 +1,287 @@
 @import 'tailwindcss';
 @import 'perkslab-ui/styles.css';
+@import '@fontsource/source-serif-4/cyrillic-600.css';
+@import '@fontsource/source-serif-4/latin-600.css';
+@import '@fontsource/ibm-plex-sans/cyrillic-400.css';
+@import '@fontsource/ibm-plex-sans/cyrillic-500.css';
+@import '@fontsource/ibm-plex-sans/cyrillic-600.css';
+@import '@fontsource/ibm-plex-sans/latin-400.css';
+@import '@fontsource/ibm-plex-sans/latin-500.css';
+@import '@fontsource/ibm-plex-sans/latin-600.css';
+@import '@fontsource/ibm-plex-mono/cyrillic-400.css';
+@import '@fontsource/ibm-plex-mono/cyrillic-500.css';
+@import '@fontsource/ibm-plex-mono/latin-400.css';
+@import '@fontsource/ibm-plex-mono/latin-500.css';
 
-body {
-	@apply transition-colors duration-300;
+/*
+ * OneVello brand tokens, direction B "Seal".
+ * Source of truth: docs/product/brand/assets/brand.css (names and values are identical).
+ * Registered with `@theme static` so every token is a CSS variable (var(--color-text)) AND a Tailwind
+ * utility (bg-bg, text-text, text-muted, border-border, bg-primary, rounded-card, shadow-card, font-mono, ...).
+ * Light values live here; dark values override them on the dark selectors below.
+ */
+@theme static {
+	--color-bg: #f6f2ea;
+	--color-surface: #fffcf6;
+	--color-surface-raised: #ffffff;
+	--color-surface-sunken: #ede7db;
+	--color-border: #ddd4c3;
+	--color-border-strong: #8e8370;
+	--color-text: #211c16;
+	--color-muted: #5e5548;
+	--color-primary: #1f3352;
+	--color-primary-hover: #2a4268;
+	--color-on-primary: #ffffff;
+	--color-accent: #7a2e4a;
+	--color-success: #2e6b3a;
+	--color-warning: #875600;
+	--color-danger: #b42318;
+	--color-on-danger: #ffffff;
+	--color-seal: #7a2e4a;
+	--color-focus: #1f3352;
+	--color-scrim: rgb(33 28 22 / 0.45);
+
+	--shadow-card: 0 1px 2px rgb(33 28 22 / 0.06), 0 8px 24px rgb(33 28 22 / 0.08);
+	--shadow-float: 0 2px 4px rgb(33 28 22 / 0.08), 0 16px 40px rgb(33 28 22 / 0.16);
+
+	--font-heading: "Source Serif 4", Georgia, "Times New Roman", serif;
+	--font-body: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+	--font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+
+	--text-xs: 12px; --leading-xs: 16px;
+	--text-sm: 14px; --leading-sm: 20px;
+	--text-md: 16px; --leading-md: 24px;
+	--text-lg: 18px; --leading-lg: 28px;
+	--text-xl: 24px; --leading-xl: 32px;
+	--text-2xl: 32px; --leading-2xl: 40px;
+	--text-3xl: 48px; --leading-3xl: 56px;
+	--text-4xl: 64px; --leading-4xl: 72px;
+
+	--radius-chip: 6px;
+	--radius-control: 10px;
+	--radius-card: 14px;
+	--radius-full: 999px;
+
+	--space-1: 4px; --space-2: 8px; --space-3: 12px; --space-4: 16px; --space-5: 24px; --space-6: 32px; --space-7: 48px; --space-8: 64px;
+
+	--duration-fast: 150ms;
+	--duration-base: 250ms;
+	--duration-slow: 400ms;
+	--ease-out: cubic-bezier(0.2, 0.7, 0.2, 1);
+	--ease-in-out: cubic-bezier(0.6, 0, 0.3, 1);
+}
+
+:root {
+	color-scheme: light;
+}
+
+/* ---------- tokens: dark ---------- */
+/* No-JS / before-hydration fallback: follow the system unless the user forced light. */
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--color-bg: #15120e;
+		--color-surface: #1e1a15;
+		--color-surface-raised: #28231c;
+		--color-surface-sunken: #0f0d0a;
+		--color-border: #383126;
+		--color-border-strong: #7a6f5d;
+		--color-text: #f0eadf;
+		--color-muted: #afa595;
+		--color-primary: #a9c1e6;
+		--color-primary-hover: #bfd2ef;
+		--color-on-primary: #14233a;
+		--color-accent: #e59ab6;
+		--color-success: #8ccb95;
+		--color-warning: #e6b65a;
+		--color-danger: #f38a7e;
+		--color-on-danger: #2a0a06;
+		--color-seal: #c9607f;
+		--color-focus: #a9c1e6;
+		--color-scrim: rgb(0 0 0 / 0.6);
+		--shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+		--shadow-float: 0 2px 4px rgb(0 0 0 / 0.5), 0 16px 40px rgb(0 0 0 / 0.55);
+		color-scheme: dark;
+	}
+}
+/* ThemeProvider always sets data-theme to the resolved "light" or "dark" (Auto resolves to the system setting). */
+:root[data-theme='dark'] {
+	--color-bg: #15120e;
+	--color-surface: #1e1a15;
+	--color-surface-raised: #28231c;
+	--color-surface-sunken: #0f0d0a;
+	--color-border: #383126;
+	--color-border-strong: #7a6f5d;
+	--color-text: #f0eadf;
+	--color-muted: #afa595;
+	--color-primary: #a9c1e6;
+	--color-primary-hover: #bfd2ef;
+	--color-on-primary: #14233a;
+	--color-accent: #e59ab6;
+	--color-success: #8ccb95;
+	--color-warning: #e6b65a;
+	--color-danger: #f38a7e;
+	--color-on-danger: #2a0a06;
+	--color-seal: #c9607f;
+	--color-focus: #a9c1e6;
+	--color-scrim: rgb(0 0 0 / 0.6);
+	--shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
+	--shadow-float: 0 2px 4px rgb(0 0 0 / 0.5), 0 16px 40px rgb(0 0 0 / 0.55);
+	color-scheme: dark;
+}
+
+/*
+ * perkslab-ui components read their own variables; point them at the brand tokens so they follow the theme.
+ * `:root[data-theme]` outranks perkslab's `[data-theme='...']` rules.
+ */
+:root,
+:root[data-theme],
+:root[data-ui] {
+	--brand-color: var(--color-primary);
+	--brand-hover: var(--color-primary-hover);
+	--brand-bg: var(--color-surface-sunken);
+	--brand-fg: var(--color-on-primary);
+	--bg-page: var(--color-bg);
+	--text-main: var(--color-text);
+	--text-secondary: var(--color-muted);
+	--text-muted: var(--color-muted);
+	--bg-panel: var(--color-surface);
+	--bg-elevated: var(--color-surface-raised);
+	--bg-subtle: var(--color-surface-sunken);
+	--bg-scrim: var(--color-scrim);
+	--panel-border: var(--color-border);
+	--c-danger: var(--color-danger);
+	--c-danger-fg: var(--color-on-danger);
+	--c-ok: var(--color-success);
+	--c-ok-fg: var(--color-bg);
+	--c-warning: var(--color-warning);
+	--c-warning-fg: var(--color-bg);
+	--c-info: var(--color-primary);
+	--c-info-fg: var(--color-on-primary);
+	--ui-font-heading: var(--font-heading);
+}
+
+@layer base {
+	html {
+		-webkit-text-size-adjust: 100%;
+	}
+	body {
+		background: var(--color-bg);
+		color: var(--color-text);
+		font: var(--text-md) / var(--leading-md) var(--font-body);
+		@apply transition-colors duration-300;
+	}
+	h1,
+	h2,
+	h3,
+	h4 {
+		font-family: var(--font-heading);
+		text-wrap: balance;
+	}
+	a {
+		text-underline-offset: 3px;
+	}
+	code,
+	kbd {
+		font-family: var(--font-mono);
+		font-size: 0.92em;
+	}
+	:focus-visible {
+		outline: 2px solid var(--color-focus);
+		outline-offset: 2px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
+/* ---------- shared components (ported from brand.css, prefix ov-) ---------- */
+@layer components {
+	.mono {
+		font-family: var(--font-mono);
+	}
+	/* Alerts: info / success / warning / danger. Markup: <div class="ov-alert ov-alert--info" role="status"> */
+	.ov-alert {
+		display: flex;
+		gap: var(--space-3);
+		align-items: flex-start;
+		padding: 12px 14px;
+		border-radius: var(--radius-control);
+		border: 1px solid var(--color-border);
+		background: var(--color-surface);
+		font-size: var(--text-sm);
+		line-height: var(--leading-sm);
+		color: var(--color-text);
+	}
+	.ov-alert svg {
+		flex: none;
+		margin-top: 2px;
+	}
+	.ov-alert b {
+		font-weight: 600;
+	}
+	.ov-alert--info {
+		border-color: var(--color-primary);
+	}
+	.ov-alert--info svg {
+		color: var(--color-primary);
+	}
+	.ov-alert--success {
+		border-color: var(--color-success);
+	}
+	.ov-alert--success svg {
+		color: var(--color-success);
+	}
+	.ov-alert--warning {
+		border-color: var(--color-warning);
+	}
+	.ov-alert--warning svg {
+		color: var(--color-warning);
+	}
+	.ov-alert--danger {
+		border-color: var(--color-danger);
+	}
+	.ov-alert--danger svg {
+		color: var(--color-danger);
+	}
+	/* Status chips for tables. Markup: <span class="ov-chip ov-chip--success"> */
+	.ov-chip {
+		display: inline-flex;
+		align-items: center;
+		gap: 6px;
+		font: 500 var(--text-xs) / 1 var(--font-body);
+		padding: 6px 10px;
+		border-radius: var(--radius-full);
+		background: var(--color-surface-sunken);
+		color: var(--color-text);
+		border: 1px solid var(--color-border);
+	}
+	.ov-chip--success {
+		border-color: var(--color-success);
+	}
+	.ov-chip--warning {
+		border-color: var(--color-warning);
+	}
+	.ov-chip--danger {
+		border-color: var(--color-danger);
+	}
+	.ov-chip--info {
+		border-color: var(--color-primary);
+	}
+	/* Secret link / passphrase display, always mono. */
+	.ov-secret {
+		background: var(--color-surface-sunken);
+		border: 1px solid var(--color-border-strong);
+		border-radius: var(--radius-control);
+		padding: 10px 12px;
+		font: 500 15px / 1.45 var(--font-mono);
+		color: var(--color-text);
+		word-break: break-all;
+	}
 }

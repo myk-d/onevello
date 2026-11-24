@@ -17,7 +17,7 @@ const Footer = () => {
 	return (
 		<footer className="mt-auto border-t border-brand py-8 px-7 transition-colors duration-300">
 			<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-				<div className="text-page-text/60 text-sm font-medium">
+				<div className="text-muted text-sm font-medium">
 					© {currentYear}{' '}
 					<a
 						href="https://myslennya.com"

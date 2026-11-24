@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { themeHexColors, ToastService, useAppTheme } from 'perkslab-ui';
+import { ToastService } from 'perkslab-ui';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -22,10 +22,8 @@ const fileToBase64 = (file: File): Promise<string> =>
 	});
 
 const Secret = () => {
-	const { theme } = useAppTheme();
 	const { t } = useTranslation();
 	const { user } = useAuth();
-	const currentHex = themeHexColors[theme as keyof typeof themeHexColors] || themeHexColors.default;
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [attachedFile, setAttachedFile] = useState<File | null>(null);
@@ -125,7 +123,6 @@ const Secret = () => {
 							errors={errors}
 							control={control}
 							generateRandomPassphrase={generateRandomPassphrase}
-							currentHex={currentHex}
 							attachedFile={attachedFile}
 							onFileChange={setAttachedFile}
 							isDisabled={isSubmitting}

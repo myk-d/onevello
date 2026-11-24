@@ -29,7 +29,7 @@ const HowItWorks = () => {
 						components={{ brand: <span className="text-brand" /> }}
 					/>
 				</h1>
-				<p className="text-lg text-page-text/70 max-w-2xl mx-auto font-medium">{t('howItWorks.hero.subheading')}</p>
+				<p className="text-lg text-muted max-w-2xl mx-auto font-medium">{t('howItWorks.hero.subheading')}</p>
 			</div>
 
 			<div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-16">

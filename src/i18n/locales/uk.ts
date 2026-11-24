@@ -10,6 +10,12 @@ const uk = {
 			dashboard: 'Мої секрети',
 			admin: 'Адмін',
 		},
+		theme: {
+			label: 'Тема',
+			auto: 'Авто',
+			light: 'Світла',
+			dark: 'Темна',
+		},
 	},
 	home: {
 		hero: {

@@ -19,7 +19,6 @@ interface EncryptedMessageFormProps {
 	errors: FieldErrors<CreateMessageType>;
 	generateRandomPassphrase: () => void;
 	control: Control<CreateMessageType>;
-	currentHex: string;
 	attachedFile: File | null;
 	onFileChange: (file: File | null) => void;
 	isDisabled?: boolean;
@@ -31,7 +30,6 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	errors,
 	generateRandomPassphrase,
 	control,
-	currentHex,
 	attachedFile,
 	onFileChange,
 	isDisabled = false,
@@ -61,8 +59,8 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	})();
 
 	const strengthLabel = passphraseStrength === 1 ? 'weak' : passphraseStrength === 2 ? 'fair' : 'strong';
-	const strengthColor = passphraseStrength === 1 ? 'bg-red-500' : passphraseStrength === 2 ? 'bg-yellow-500' : 'bg-green-500';
-	const strengthTextColor = passphraseStrength === 1 ? 'text-red-500' : passphraseStrength === 2 ? 'text-yellow-500' : 'text-green-500';
+	const strengthColor = passphraseStrength === 1 ? 'bg-danger' : passphraseStrength === 2 ? 'bg-warning' : 'bg-success';
+	const strengthTextColor = passphraseStrength === 1 ? 'text-danger' : passphraseStrength === 2 ? 'text-warning' : 'text-success';
 
 	const PRESETS = [
 		{ key: 'h1', amount: 1, unit: 'hour' as const },
@@ -89,15 +87,15 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 					{t('form.secretText')}
 				</label>
 				<textarea
-					className={cn('w-full border rounded-xl p-4 resize-none', errors.text ? 'border-red-500' : '')}
+					className={cn('w-full border rounded-xl p-4 resize-none', errors.text ? 'border-danger' : '')}
 					rows={10}
 					placeholder={t('form.secretTextPlaceholder')}
 					{...register('text')}
 				></textarea>
 				<div className="w-full flex justify-between items-center mt-1">
-					{errors.text ? <span className="text-red-500 text-xs">{errors.text.message}</span> : <span />}
+					{errors.text ? <span className="text-danger text-xs">{errors.text.message}</span> : <span />}
 					<span
-						className={cn('text-xs tabular-nums', isNearLimit ? 'text-red-500' : 'text-page-text/40')}
+						className={cn('text-xs tabular-nums', isNearLimit ? 'text-danger' : 'text-muted')}
 						title={t('form.tooltips.charCount')}
 					>
 						{charCount.toLocaleString()} / {MAX_SECRET_LENGTH.toLocaleString()}
@@ -115,7 +113,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 							<polyline points="14 2 14 8 20 8" />
 						</svg>
 						<span className="text-sm font-medium truncate flex-1">{attachedFile.name}</span>
-						<span className="text-xs text-page-text/40 shrink-0">{formatFileSize(attachedFile.size)}</span>
+						<span className="text-xs text-muted shrink-0">{formatFileSize(attachedFile.size)}</span>
 						<button
 							type="button"
 							onClick={() => {
@@ -123,7 +121,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 								if (fileInputRef.current) fileInputRef.current.value = '';
 							}}
 							title={t('form.tooltips.removeFile')}
-							className="text-xs font-bold text-page-text/40 hover:text-red-500 transition-colors shrink-0"
+							className="text-xs font-bold text-muted hover:text-danger transition-colors shrink-0"
 						>
 							{t('form.removeFile')}
 						</button>
@@ -133,12 +131,12 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 						type="button"
 						onClick={() => fileInputRef.current?.click()}
 						title={t('form.tooltips.attachFile')}
-						className="w-full border border-dashed rounded-xl px-4 py-3 text-sm text-page-text/40 hover:text-brand hover:border-brand transition-colors text-left"
+						className="w-full border border-dashed rounded-xl px-4 py-3 text-sm text-muted hover:text-brand hover:border-brand transition-colors text-left"
 					>
 						{t('form.attachFile')}
 					</button>
 				)}
-				{fileTooLarge && <span className="text-red-500 text-xs mt-1">{t('form.fileTooLarge')}</span>}
+				{fileTooLarge && <span className="text-danger text-xs mt-1">{t('form.fileTooLarge')}</span>}
 			</div>
 
 			<div className="flex justify-between gap-6 flex-wrap">
@@ -152,7 +150,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 						<Input
 							type="password"
 							placeholder={t('form.passphrasePlaceholder')}
-							className={errors.passphrase ? 'border-red-500' : ''}
+							className={cn('font-mono', errors.passphrase && 'border-danger')}
 							{...register('passphrase')}
 						/>
 
@@ -192,7 +190,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 							</span>
 						</div>
 					)}
-					{errors.passphrase && <span className="text-red-500 text-xs mt-1">{errors.passphrase.message}</span>}
+					{errors.passphrase && <span className="text-danger text-xs mt-1">{errors.passphrase.message}</span>}
 				</div>
 
 				{/* expiration time */}
@@ -219,8 +217,8 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 											className={cn(
 												'text-xs font-bold px-2.5 py-1 rounded-full border transition-colors',
 												activePreset === preset.key
-													? 'bg-brand text-white border-brand'
-													: 'text-page-text/60 border-page-text/20 hover:border-brand hover:text-brand',
+													? 'bg-brand text-brand-fg border-brand'
+													: 'text-muted border-page-text/20 hover:border-brand hover:text-brand',
 											)}
 										>
 											{t(`form.presets.${preset.key}`)}
@@ -258,19 +256,16 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 			</div>
 
 			{/* one time access message */}
-			<div className="bg-cyan-100 py-2 px-3 rounded-md italic text-cyan-800">
+			<div className="ov-alert ov-alert--info" role="status">
 				<p className="text-left text-xs">{t('form.oneTimeNote')}</p>
 			</div>
 
 			{/* buttons */}
 			<div className="flex justify-between gap-6 flex-wrap">
 				<div
-					className="flex-1 min-w-0 flex flex-col items-start py-4 px-6 text-brand bg-brand-bg rounded-xl transition-all duration-300"
-					style={{
-						backgroundImage: `url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='12' ry='12' stroke='%23${currentHex}' stroke-width='1.5' stroke-dasharray='12%2c 8' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e")`,
-					}}
+					className="flex-1 min-w-0 flex flex-col items-start py-4 px-6 text-brand bg-brand-bg rounded-xl border-[1.5px] border-dashed border-brand transition-all duration-300"
 				>
-					<p className="truncate w-full text-left font-bold">https://onevello.myslennya.com/secret/...</p>
+					<p className="truncate w-full text-left font-mono font-medium">https://onevello.myslennya.com/secret/...</p>
 				</div>
 
 				<Button type="submit" variant="default" size="full" className="flex-1" disabled={isDisabled} isLoading={isLoading}>
