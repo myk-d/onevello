@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="uk">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>OneVello Reveal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:opsz,wght@8..60,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="assets/brand.css">
+<link rel="icon" href="assets/favicon.svg">
+<script src="assets/brand.js" defer></script>
+</head>
+<body>
+<nav data-render="nav"></nav>
+<main class="page">
+	<section class="top">
+		<div class="eyebrow">ONE-2 · Screens · Reveal · v0.1 · 24 Nov 2026</div>
+		<h1>Open a secret</h1>
+		<p>Three steps for the recipient: a sealed gate before anything is deleted, the passphrase prompt, and the revealed secret. The gate needs an app change: today a one-time secret is deleted as soon as the link page loads (§8.6 of the doc).</p>
+	</section>
+	<section class="group"><header><h2>1 · Sealed gate</h2><p>Shown before the secret is opened. It reads the metadata only (one-time, expiry, whether a file is attached; the file name is encrypted) and explains that opening breaks the seal. An accidental open or a chat link preview that runs the page deletes nothing.</p></header><div data-render="screens" data-screens="gate::Sealed gate:needs app change"></div></section>
+	<section class="group"><header><h2>2 · Passphrase</h2><p>The counter is always visible in mono. A wrong passphrase shows the danger alert with the attempts left.</p></header><div data-render="screens" data-screens="pass:default:Passphrase|pass:wrong:Wrong passphrase" data-modes="dl,md"></div></section>
+	<section class="group"><header><h2>3 · Revealed</h2><p>The seal is broken. The text is in mono with one copy button; a one-time file can be downloaded once.</p></header><div data-render="screens" data-screens="revealed::Revealed"></div></section>
+</main>
+</body>
+</html>

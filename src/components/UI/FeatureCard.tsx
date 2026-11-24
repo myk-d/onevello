@@ -15,21 +15,16 @@ interface FeatureCardProps extends FeatureItem {
 
 const FeatureCard = ({ title, description, icon, details, className, iconClassName }: FeatureCardProps) => {
 	return (
-		<div
-			className={cn(
-				'p-8 rounded-3xl border border-brand/10 bg-brand-bg/20 flex flex-col transition-all hover:border-brand/30',
-				className,
-			)}
-		>
-			<div className={cn('text-brand mb-5 p-3 bg-brand/10 rounded-2xl self-start', iconClassName)}>{icon}</div>
-			<h3 className="text-xl font-bold text-page-text mb-3 uppercase tracking-tight">{title}</h3>
-			<p className="text-page-text/60 text-sm leading-relaxed">{description}</p>
+		<div className={cn('ov-card gap-3', className)}>
+			<div className={cn('self-start rounded-control border border-border bg-surface-sunken p-2.5 text-primary', iconClassName)}>{icon}</div>
+			<h3>{title}</h3>
+			<p className="text-sm leading-6 text-muted">{description}</p>
 
 			{details && (
-				<ul className="mt-4 space-y-2">
+				<ul className="mt-1 space-y-2">
 					{details.map((detail) => (
-						<li key={detail} className="flex items-start gap-2 text-xs text-page-text/60 italic">
-							<span className="text-brand font-bold">•</span>
+						<li key={detail} className="flex items-start gap-2 text-sm text-muted">
+							<span aria-hidden="true" className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-seal" />
 							{detail}
 						</li>
 					))}
