@@ -1,11 +1,39 @@
 import { Button } from 'perkslab-ui';
 import { useCallback, useEffect } from 'react';
 import { Trans, useTranslation } from 'react-i18next';
-import { Link, useNavigate } from 'react-router';
-import FeatureCard from '../components/UI/FeatureCard';
+import { useNavigate } from 'react-router';
+import LogoSvg from '../components/UI/SVG/LogoSvg';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { UrlConfig } from '../constants/UrlConfig';
-import { homeFeatureIcons, homeFeatureKeys } from '../content/home';
+
+const SECURITY_POLICY_URL = `${UrlConfig.repoURL}/blob/master/SECURITY.md`;
+const SECURITY_EMAIL = 'security@myslennya.com';
+
+const CheckIcon = () => (
+	<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+		<path d="M5 12.5l4.5 4.5L19 7.5" />
+	</svg>
+);
+
+const WarnIcon = () => (
+	<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+		<path d="M12 4l9 16H3z" />
+		<path d="M12 10v4M12 17h.01" />
+	</svg>
+);
+
+interface Step {
+	title: string;
+	desc: string;
+}
+interface Feature {
+	value: string;
+	label: string;
+}
+interface FaqItem {
+	q: string;
+	a: string;
+}
 
 const Home = () => {
 	const navigate = useNavigate();
@@ -20,83 +48,175 @@ const Home = () => {
 		}
 	}, [navigate]);
 
-	const features = homeFeatureKeys.map((key) => ({
-		key,
-		icon: homeFeatureIcons[key],
-		title: t(`home.features.${key}.title`),
-		description: t(`home.features.${key}.description`),
-	}));
+	const list = <T,>(key: string) => t(key, { returnObjects: true }) as T[];
+	const facts = list<string>('landing.hero.facts');
+	const chips = list<string>('landing.hero.visual.chips');
+	const steps = list<Step>('landing.how.steps');
+	const yes = list<string>('landing.protection.yes');
+	const no = list<string>('landing.protection.no');
+	const features = list<Feature>('landing.features.items');
+	const faq = list<FaqItem>('landing.faq.items');
 
 	return (
-		<div className="flex flex-col gap-24 py-12">
-			{/* Hero Section */}
-			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 min-h-[60dvh]">
-				<h1 className="text-5xl md:text-7xl font-black text-page-text uppercase tracking-tighter leading-none">
-					<Trans
-						i18nKey="home.hero.heading"
-						components={{
-							once: <span className="text-brand italic" />,
-							always: <span className="text-brand italic" />,
-							br: <br />,
-						}}
-					/>
-				</h1>
-
-				<p className="text-xl md:text-2xl max-w-3xl text-page-text font-medium">
-					<Trans
-						i18nKey="home.hero.subheading"
-						components={{ bold: <span className="text-brand font-bold" /> }}
-					/>
-				</p>
-
-				<div className="flex flex-col sm:flex-row gap-4 mt-4">
-					<Button type="button" onClick={handleNavigate(UrlConfig.secret)} variant="default" size="lg" className="gap-3 group">
-						{t('home.hero.createSecret')}
-						<svg
-							className="w-5 h-5 transition-transform group-hover:translate-x-1"
-							fill="none"
-							stroke="currentColor"
-							viewBox="0 0 24 24"
-							strokeWidth="2.5"
-						>
-							<path d="M13 7l5 5m0 0l-5 5m5-5H6" strokeLinecap="round" strokeLinejoin="round" />
-						</svg>
-					</Button>
-
-					<Button type="button" variant="outline" size="lg" onClick={handleNavigate(UrlConfig.about)}>
-						{t('home.hero.howItWorks')}
-					</Button>
-				</div>
-			</section>
-
-			{/* Features Section */}
-			<section className="max-w-7xl mx-auto w-full px-7">
-				<div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-					{features.map(({ key, ...rest }) => (
-						<FeatureCard key={key} {...rest} className="items-center text-center" iconClassName="self-center" />
-					))}
-				</div>
-			</section>
-
-			{/* Trust Section */}
-			<section className="bg-brand text-page-bg py-20 px-7">
-				<div className="max-w-5xl mx-auto text-center flex flex-col items-center gap-8">
-					<h2 className="text-3xl md:text-5xl font-black uppercase tracking-tighter">{t('home.trust.heading')}</h2>
-					<p className="text-lg opacity-80 max-w-2xl font-medium">{t('home.trust.body')}</p>
-					<Link to={UrlConfig.about}>
-						<span className="text-sm font-bold uppercase tracking-widest underline underline-offset-8 hover:opacity-70 transition-opacity">
-							{t('home.trust.cta')}
+		<div className="lp">
+			<section className="lp-hero">
+				<div className="lp-in">
+					<div>
+						<h1>
+							<Trans i18nKey="landing.hero.heading" components={{ em: <em />, br: <br /> }} />
+						</h1>
+						<p className="lead">{t('landing.hero.lead')}</p>
+						<div className="cta">
+							<Button type="button" variant="default" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
+								{t('landing.hero.createSecret')}
+							</Button>
+							<Button type="button" variant="outline" size="lg" onClick={handleNavigate(UrlConfig.about)}>
+								{t('landing.hero.howItWorks')}
+							</Button>
+						</div>
+						<ul className="facts">
+							{facts.map((f) => (
+								<li key={f}>{f}</li>
+							))}
+						</ul>
+					</div>
+					<div className="lp-visual" aria-hidden="true">
+						<div className="lp-card">
+							<span className="label">{t('landing.hero.visual.label')}</span>
+							<div className="ov-secret">{t('landing.hero.visual.link')}</div>
+							<div className="chips">
+								{chips.map((c) => (
+									<span key={c} className="ov-chip ov-chip--info">
+										{c}
+									</span>
+								))}
+							</div>
+							<p>{t('landing.hero.visual.note')}</p>
+						</div>
+						<span className="seal-badge">
+							<LogoSvg size={96} />
 						</span>
-					</Link>
+					</div>
 				</div>
 			</section>
 
-			{/* Bottom CTA */}
-			<section className="max-w-7xl mx-auto w-full px-7 text-center mb-12">
-				<div className="border-2 border-dashed border-brand/20 rounded-[40px] py-16 px-6">
-					<h2 className="text-3xl font-black text-page-text mb-6 uppercase">{t('home.cta.heading')}</h2>
-					<Button type="button" onClick={handleNavigate(UrlConfig.secret)} variant="default" size="lg" className="px-12">
-						{t('home.cta.button')}
+			<section className="lp-sec" id="how">
+				<div className="lp-in">
+					<div>
+						<h2>{t('landing.how.title')}</h2>
+						<p className="sec-lead">{t('landing.how.lead')}</p>
+					</div>
+					<ol className="lp-steps">
+						{steps.map((s, i) => (
+							<li key={s.title}>
+								<span className="n">0{i + 1}</span>
+								<h3>{s.title}</h3>
+								<p>{s.desc}</p>
+							</li>
+						))}
+					</ol>
+				</div>
+			</section>
+
+			<section className="lp-sec">
+				<div className="lp-in">
+					<div>
+						<h2>{t('landing.protection.title')}</h2>
+						<p className="sec-lead">{t('landing.protection.lead')}</p>
+					</div>
+					<div className="lp-prot">
+						<div className="yes">
+							<h3>{t('landing.protection.yesTitle')}</h3>
+							<ul>
+								{yes.map((x) => (
+									<li key={x}>
+										<CheckIcon />
+										<span>{x}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+						<div className="no">
+							<h3>{t('landing.protection.noTitle')}</h3>
+							<ul data-testid="not-protected">
+								{no.map((x) => (
+									<li key={x}>
+										<WarnIcon />
+										<span>{x}</span>
+									</li>
+								))}
+							</ul>
+						</div>
+					</div>
+				</div>
+			</section>
+
+			<section className="lp-sec">
+				<div className="lp-in">
+					<h2>{t('landing.features.title')}</h2>
+					<ul className="lp-feat">
+						{features.map((f) => (
+							<li key={f.value}>
+								<span className="v">{f.value}</span>
+								<p>{f.label}</p>
+							</li>
+						))}
+					</ul>
+					<p className="sec-lead m-0">{t('landing.features.note')}</p>
+				</div>
+			</section>
+
+			<section className="lp-sec">
+				<div className="lp-in">
+					<h2>{t('landing.faq.title')}</h2>
+					<div className="lp-faq">
+						{faq.map((item) => (
+							<details key={item.q}>
+								<summary>{item.q}</summary>
+								<p>{item.a}</p>
+							</details>
+						))}
+					</div>
+				</div>
+			</section>
+
+			<section className="lp-sec">
+				<div className="lp-in">
+					<div className="lp-oss">
+						<div>
+							<h2>{t('landing.oss.title')}</h2>
+							<p className="sec-lead">{t('landing.oss.lead')}</p>
+						</div>
+						<ul className="links">
+							<li>
+								<a href={UrlConfig.repoURL} target="_blank" rel="noopener noreferrer">
+									<b>{t('landing.oss.source')}</b>
+									<span className="mono">github.com/myk-d/onevello</span>
+								</a>
+							</li>
+							<li>
+								<a href={SECURITY_POLICY_URL} target="_blank" rel="noopener noreferrer">
+									<b>{t('landing.oss.policy')}</b>
+									<span className="mono">SECURITY.md</span>
+								</a>
+							</li>
+							<li>
+								<a href={`mailto:${SECURITY_EMAIL}`}>
+									<b>{t('landing.oss.report')}</b>
+									<span className="mono">{SECURITY_EMAIL}</span>
+								</a>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+
+			<section className="lp-final">
+				<div className="lp-in">
+					<LogoSvg size={64} intact />
+					<h2>{t('landing.final.title')}</h2>
+					<Button type="button" variant="default" size="lg" onClick={handleNavigate(UrlConfig.secret)}>
+						{t('landing.final.button')}
 					</Button>
 				</div>
 			</section>

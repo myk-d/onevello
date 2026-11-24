@@ -29,7 +29,7 @@ const Footer = () => {
 					</a>
 				</div>
 
-				<nav className="flex items-center gap-8">
+				<nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
 					{NAV_LINKS.map(({ key, to }) => (
 						<Link
 							key={key}
@@ -39,6 +39,15 @@ const Footer = () => {
 							{t(key)}
 						</Link>
 					))}
+
+					<a
+						href={`${UrlConfig.repoURL}/blob/master/SECURITY.md`}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
+					>
+						{t('header.nav.security')}
+					</a>
 
 					<Link to={UrlConfig.repoURL} target="_blank" title="GitHub Repository">
 						<GitHubSVG className="h-8 w-8" />
