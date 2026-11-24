@@ -674,6 +674,31 @@
 		box-shadow: none;
 		border-style: dashed;
 	}
+	.ov-card.is-sealing {
+		position: relative;
+	}
+	.ov-card.is-sealing > :not(.sealing-veil) {
+		opacity: 0.4;
+	}
+	.sealing-veil {
+		position: absolute;
+		inset: 0;
+		display: grid;
+		place-items: center;
+	}
+	.sealing-veil > div {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: 10px;
+		padding: 20px 28px;
+		border-radius: var(--radius-card);
+		background: var(--color-surface-raised);
+		border: 1px solid var(--color-border);
+		box-shadow: var(--shadow-float);
+		font-size: var(--text-sm);
+		color: var(--color-text);
+	}
 	.ov-card .center {
 		text-align: center;
 		align-items: center;

@@ -67,7 +67,7 @@ const Dashboard = () => {
 				</div>
 			) : (
 				<div className="overflow-x-auto rounded-card border border-border bg-surface-raised">
-					<table className="w-full min-w-[560px] text-sm">
+					<table className="w-full min-w-[680px] text-sm">
 						<thead>
 							<tr className="border-b text-left">
 								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('dashboard.col.typeHint')}>

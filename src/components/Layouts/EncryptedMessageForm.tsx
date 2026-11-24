@@ -5,7 +5,8 @@ import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
 import { formatFileSize } from '../../utils/formatFileSize';
-import { Button, DateTimeField, PassphraseInput } from '../UI/kit';
+import { Button, DateTimeField, Icon, PassphraseInput } from '../UI/kit';
+import LogoSvg from '../UI/SVG/LogoSvg';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -75,7 +76,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	};
 
 	return (
-		<fieldset className="ov-card" disabled={isDisabled}>
+		<fieldset className={cn('ov-card', isLoading && 'is-sealing')} disabled={isDisabled} aria-busy={isLoading || undefined}>
 			<div className="ov-field">
 				<label htmlFor="secret-text" title={t('form.tooltips.secretText')}>
 					{t('form.secretText')}
@@ -83,13 +84,13 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				<textarea
 					id="secret-text"
 					className="ov-textarea"
-					rows={8}
+					rows={5}
 					placeholder={t('form.secretTextPlaceholder')}
 					aria-invalid={errors.text ? true : undefined}
 					{...register('text')}
 				></textarea>
 				<div className="flex items-start justify-between gap-3">
-					{errors.text ? <span className="ov-error">{errors.text.message}</span> : <span />}
+					{errors.text ? <span className="ov-error">{errors.text.message}</span> : <span className="ov-help">{t('form.secretHelp')}</span>}
 					<span className={cn('ov-counter', isNearLimit && 'is-over')} title={t('form.tooltips.charCount')}>
 						{charCount.toLocaleString()} / {MAX_SECRET_LENGTH.toLocaleString()}
 					</span>
@@ -101,27 +102,31 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 				<input ref={fileInputRef} type="file" className="hidden" onChange={handleFileInputChange} />
 				{attachedFile ? (
 					<div className="ov-drop is-filled">
-						<svg className="h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-							<polyline points="14 2 14 8 20 8" />
-						</svg>
-						<span className="file">{attachedFile.name}</span>
-						<span className="mono shrink-0 text-xs text-muted">{formatFileSize(attachedFile.size)}</span>
-						<button
-							type="button"
+						<Icon name="file" size={22} className="shrink-0" />
+						<span className="flex min-w-0 flex-1 flex-col gap-0.5">
+							<span className="file">
+								{attachedFile.name} · {formatFileSize(attachedFile.size)}
+							</span>
+							<span className="ov-help">{t('form.fileName')}</span>
+						</span>
+						<Button
+							variant="ghost"
+							className="shrink-0"
 							onClick={() => {
 								onFileChange(null);
 								if (fileInputRef.current) fileInputRef.current.value = '';
 							}}
 							title={t('form.tooltips.removeFile')}
-							className="min-h-11 shrink-0 cursor-pointer px-1 text-xs font-semibold text-muted hover:text-danger"
 						>
 							{t('form.removeFile')}
-						</button>
+						</Button>
 					</div>
 				) : (
 					<button type="button" onClick={() => fileInputRef.current?.click()} title={t('form.tooltips.attachFile')} className="ov-drop">
-						{t('form.attachFile')}
+						<Icon name="file" size={22} className="shrink-0" />
+						<span>
+							<b>{t('form.attach')}</b> · {t('form.attachHelp')}
+						</span>
 					</button>
 				)}
 				{fileTooLarge && <span className="ov-error">{t('form.fileTooLarge')}</span>}
@@ -155,7 +160,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 								<i />
 							</div>
 							<div className="ov-meter-label">
-								<span title={t('form.tooltips.passphraseStrength')}>{t('form.passphrase')}</span>
+								<span title={t('form.tooltips.passphraseStrength')}>{t('form.strength.label')}</span>
 								<b className={strengthTextColor}>{t(`form.strength.${strengthLabel}`)}</b>
 							</div>
 						</>
@@ -200,6 +205,7 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 										</button>
 									))}
 								</div>
+								<span className="ov-help">{t('form.expiresAt', { date: dayjs(field.value).format('DD.MM.YYYY HH:mm') })}</span>
 							</div>
 						)}
 					/>
@@ -218,8 +224,17 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 
 			{/* submit */}
 			<Button type="submit" block disabled={isDisabled} isLoading={isLoading}>
-				{t('form.createLink')}
+				{isLoading ? t('form.creating') : t('form.createLink')}
 			</Button>
+
+			{isLoading && (
+				<div className="sealing-veil" aria-live="polite">
+					<div>
+						<LogoSvg intact size={64} />
+						<span>{t('form.sealing')}</span>
+					</div>
+				</div>
+			)}
 		</fieldset>
 	);
 };
