@@ -1,7 +1,7 @@
 import { act, fireEvent, render, screen } from '@testing-library/react';
 import dayjs from 'dayjs';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { Button, Card, DateTimeField, Input, SupportButton, ThemeProvider, ToastRegion, clearToasts, toast, useAppTheme } from '..';
+import { Alert, Button, Card, DateTimeField, Input, SupportButton, ThemeProvider, ToastRegion, clearToasts, toast, useAppTheme } from '..';
 
 describe('Button', () => {
 	it('renders brand classes per variant and size', () => {
@@ -110,5 +110,21 @@ describe('DateTimeField', () => {
 		fireEvent.change(input, { target: { value: '2030-02-03T10:00' } });
 		expect(onChange).toHaveBeenCalledTimes(1);
 		expect(onChange.mock.calls[0][0].format('YYYY-MM-DDTHH:mm')).toBe('2030-02-03T10:00');
+	});
+});
+
+describe('Alert', () => {
+	it('renders icon, bold title and body; danger is role=alert, others status', () => {
+		const { container, rerender } = render(
+			<Alert variant="danger" title="Oops.">
+				Body
+			</Alert>,
+		);
+		const el = screen.getByRole('alert');
+		expect(el).toHaveClass('ov-alert', 'ov-alert--danger');
+		expect(container.querySelector('svg')).not.toBeNull();
+		expect(screen.getByText('Oops.').tagName).toBe('B');
+		rerender(<Alert variant="info">Hi</Alert>);
+		expect(screen.getByRole('status')).toHaveClass('ov-alert--info');
 	});
 });

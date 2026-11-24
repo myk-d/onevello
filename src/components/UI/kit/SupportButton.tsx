@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { Icon } from './Icon';
 
 interface SupportButtonProps {
 	supportEmail: string;
@@ -42,17 +43,7 @@ export const SupportButton: React.FC<SupportButtonProps> = ({ supportEmail, titl
 				</div>
 			)}
 			<button type="button" className="fab" aria-label={label} aria-expanded={open} onClick={() => setOpen((v) => !v)}>
-				<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-					{open ? (
-						<path d="M6 6l12 12M18 6L6 18" strokeLinecap="round" />
-					) : (
-						<path
-							d="M21 12c0 4.4-4 8-9 8a9.9 9.9 0 0 1-4.3-.95L3 20l1.4-3.7C3.5 15 3 13.6 3 12c0-4.4 4-8 9-8s9 3.6 9 8z"
-							strokeLinecap="round"
-							strokeLinejoin="round"
-						/>
-					)}
-				</svg>
+				<Icon name={open ? 'close' : 'chat'} size={22} />
 			</button>
 		</div>
 	);

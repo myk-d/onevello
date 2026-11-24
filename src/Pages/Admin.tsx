@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
-import { Button, toast } from '../components/UI/kit';
+import { Alert, Button, toast } from '../components/UI/kit';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { UrlConfig } from '../constants/UrlConfig';
@@ -109,10 +109,9 @@ const Admin = () => {
 			</div>
 
 			{permissionDenied ? (
-				<div className="ov-alert ov-alert--warning flex-col items-center gap-2 px-6 py-8 text-center" role="alert">
-					<p className="text-sm font-medium">{t('admin.permissionDenied.title')}</p>
-					<p className="text-xs max-w-md">{t('admin.permissionDenied.hint')}</p>
-				</div>
+				<Alert variant="warning" role="alert" title={t('admin.permissionDenied.title')}>
+					{t('admin.permissionDenied.hint')}
+				</Alert>
 			) : messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (

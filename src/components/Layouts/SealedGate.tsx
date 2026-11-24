@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import { useTranslation } from 'react-i18next';
 import { MessageType } from '../../models/Message/message';
 import LogoSvg from '../UI/SVG/LogoSvg';
-import { Button } from '../UI/kit';
+import { Alert, Button, Icon } from '../UI/kit';
 
 interface SealedGateProps {
 	message: Pick<MessageType, 'expiration' | 'fileUrl'>;
@@ -25,17 +25,22 @@ const SealedGate = ({ message, opening, failed, onOpen }: SealedGateProps) => {
 				<div className="flex flex-wrap justify-center gap-2">
 					<span className="ov-chip">{t('secretId.gate.oneTime')}</span>
 					<span className="ov-chip mono">{t('secretId.gate.expires', { date: dayjs(message.expiration).format('DD.MM HH:mm') })}</span>
-					{message.fileUrl && <span className="ov-chip">{t('secretId.gate.fileAttached')}</span>}
+					{message.fileUrl && (
+						<span className="ov-chip">
+							<Icon name="file" size={14} />
+							{t('secretId.gate.fileAttached')}
+						</span>
+					)}
 				</div>
 
-				<div className="ov-alert ov-alert--warning w-full" role="status">
-					<p className="text-left text-sm">{t('secretId.gate.warning')}</p>
-				</div>
+				<Alert variant="warning" className="w-full text-left">
+					{t('secretId.gate.warning')}
+				</Alert>
 
 				{failed && (
-					<div className="ov-alert ov-alert--danger w-full" role="alert">
-						<p className="text-left text-sm">{t('secretId.gate.error')}</p>
-					</div>
+					<Alert variant="danger" className="w-full text-left">
+						{t('secretId.gate.error')}
+					</Alert>
 				)}
 
 				<Button type="button" block disabled={opening} onClick={onOpen}>

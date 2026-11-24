@@ -7,6 +7,7 @@ import { useAuth } from '../../context/useAuth';
 import { cn } from '../../utils/cn';
 import LogoSvg from '../UI/SVG/LogoSvg';
 import LanguageSwitcher from '../UI/LanguageSwitcher';
+import { Icon } from '../UI/kit';
 import ThemeSwitcher from '../UI/ThemeSwitcher';
 
 const NAV_ITEM = 'flex min-h-11 cursor-pointer items-center text-sm font-medium text-muted hover:text-text transition-colors md:min-h-0';
@@ -41,9 +42,7 @@ const Header = () => {
 					aria-label={open ? t('header.menuClose') : t('header.menu')}
 					onClick={() => setOpen((v) => !v)}
 				>
-					<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" aria-hidden="true">
-						{open ? <path d="M6 6l12 12M18 6L6 18" /> : <path d="M4 7h16M4 12h16M4 17h16" />}
-					</svg>
+					<Icon name={open ? 'close' : 'menu'} size={20} />
 				</button>
 
 				<div
