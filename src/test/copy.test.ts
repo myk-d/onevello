@@ -47,4 +47,24 @@ describe('brand copy', () => {
 		const offenders = [...enFlat, ...ukFlat].filter(([, text]) => text.includes('!')).map(([k]) => k);
 		expect(offenders).toEqual([]);
 	});
+
+	it('explains code trust on How it works in both languages', () => {
+		for (const locale of [en, uk]) {
+			const text = locale.howItWorks.sections.codeTrust.details.join(' ');
+			expect(text).toContain('github.com/myk-d/onevello');
+		}
+	});
+
+	it('lists stored data and states deletion timing in the privacy policy', () => {
+		for (const locale of [en, uk]) {
+			const sections = locale.privacyPolicy.sections as { title: string; items?: string[] }[];
+			expect(sections[1].items).toHaveLength(5);
+			expect(sections[4].items).toHaveLength(3);
+		}
+	});
+
+	it('keeps the zero-knowledge wording', () => {
+		expect(en.howItWorks.sections.zeroKnowledge.title).toContain('Zero-Knowledge');
+		expect(en.privacyPolicy.sections[0].title).toContain('Zero-Knowledge');
+	});
 });
