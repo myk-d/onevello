@@ -84,7 +84,7 @@ describe('SecretID sealed gate', () => {
 
 		fireEvent.click(await screen.findByRole('button', { name: 'secretId.gate.button' }));
 
-		expect(await screen.findByText('expiredLink.message')).toBeInTheDocument();
+		expect(await screen.findByText('secretGone.gone.title')).toBeInTheDocument();
 		expect(screen.queryByPlaceholderText('form.passphrasePlaceholder')).not.toBeInTheDocument();
 	});
 

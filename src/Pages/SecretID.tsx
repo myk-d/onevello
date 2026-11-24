@@ -137,7 +137,7 @@ const SecretID = () => {
 
 		setOpening(false);
 		if (!deleted) {
-			setFetchState({ status: FetchStatus.Expired });
+			setFetchState({ status: FetchStatus.Gone });
 			return;
 		}
 		setFetchState({ status: FetchStatus.Ready, message });
