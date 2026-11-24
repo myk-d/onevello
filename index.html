@@ -10,22 +10,19 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<title>OneVello</title>
 		<meta name="description" content="Share a secret once. The link opens nothing without the passphrase." />
-		<!--
-			TODO(ONE-4): og:image / og:url need an ABSOLUTE URL; crawlers do not resolve root-relative paths.
-			https://onevello.example is a PLACEHOLDER origin: replace with the production origin before release.
-			Static meta is English only (crawlers do not run JS); public/og-uk.png is kept for a later per-language solution.
-		-->
+		<!-- og:image needs an absolute URL. Static meta is English only (crawlers do not run JS); public/og-uk.png is kept for later. -->
 		<meta property="og:type" content="website" />
+		<meta property="og:url" content="https://onevello.myslennya.com/" />
 		<meta property="og:site_name" content="OneVello" />
 		<meta property="og:title" content="OneVello" />
 		<meta property="og:description" content="Share once. Trust always. The link opens nothing without the passphrase." />
-		<meta property="og:image" content="https://onevello.example/og-en.png" />
+		<meta property="og:image" content="https://onevello.myslennya.com/og-en.png" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:title" content="OneVello" />
 		<meta name="twitter:description" content="Share once. Trust always. The link opens nothing without the passphrase." />
-		<meta name="twitter:image" content="https://onevello.example/og-en.png" />
+		<meta name="twitter:image" content="https://onevello.myslennya.com/og-en.png" />
 		<script>
 			// Apply the saved theme before first paint (no flash). Keep the key in sync with src/constants/theme.ts.
 			(function () {
