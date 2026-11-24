@@ -126,8 +126,10 @@ const SecretID = () => {
 		setOpening(true);
 		setOpenFailed(false);
 
+		let deleted: boolean;
 		try {
-			await dbMessages.delete(message.id);
+			// Read and delete in one transaction: someone else may have already broken the seal.
+			deleted = await dbMessages.deleteIfExists(message.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
 			setOpenFailed(true);
@@ -136,6 +138,10 @@ const SecretID = () => {
 		}
 
 		setOpening(false);
+		if (!deleted) {
+			setFetchState({ status: FetchStatus.Gone });
+			return;
+		}
 		setFetchState({ status: FetchStatus.Ready, message });
 	};
 
