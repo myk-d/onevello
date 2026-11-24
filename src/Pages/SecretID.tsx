@@ -14,6 +14,7 @@ import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
 import { PassphraseSchema, PassphraseType } from '../models/Passphrase/passphrase';
 import { cn } from '../utils/cn';
+import { FileMeta, resolveFileMeta } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const MAX_ATTEMPTS = 5;
@@ -54,6 +55,7 @@ const SecretID = () => {
 	const [fetchState, setFetchState] = useState<FetchState>(() => (id ? { status: FetchStatus.Loading } : { status: FetchStatus.Gone }));
 	const [decryptedText, setDecryptedText] = useState<string | null>(null);
 	const [currentPassphrase, setCurrentPassphrase] = useState<string | null>(null);
+	const [fileMeta, setFileMeta] = useState<FileMeta | undefined>(undefined);
 
 	const [reloadKey, setReloadKey] = useState(0);
 
@@ -144,6 +146,8 @@ const SecretID = () => {
 
 		try {
 			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
+			// Text first: a wrong passphrase fails here and counts once. The file name and type are decrypted only afterwards.
+			setFileMeta(await resolveFileMeta(data.passphrase, message));
 			setDecryptedText(decryptedPkg);
 			setCurrentPassphrase(data.passphrase);
 
@@ -203,7 +207,7 @@ const SecretID = () => {
 	const { message } = fetchState;
 
 	const handleDownloadFile = async () => {
-		if (!message.fileUrl || !message.fileName || !currentPassphrase) return;
+		if (!message.fileUrl || !fileMeta || !currentPassphrase) return;
 
 		const response = await fetch(message.fileUrl);
 		const encryptedPkg = await response.json();
@@ -214,11 +218,11 @@ const SecretID = () => {
 		for (let i = 0; i < byteChars.length; i++) {
 			byteArr[i] = byteChars.charCodeAt(i);
 		}
-		const blob = new Blob([byteArr], { type: message.fileType });
+		const blob = new Blob([byteArr], { type: fileMeta.type });
 		const url = URL.createObjectURL(blob);
 		const link = document.createElement('a');
 		link.href = url;
-		link.download = message.fileName;
+		link.download = fileMeta.name;
 		link.click();
 		URL.revokeObjectURL(url);
 
@@ -231,7 +235,7 @@ const SecretID = () => {
 				<DecryptedMessage
 					message={decryptedText}
 					isOneTime={message.oneTime}
-					fileName={message.fileName}
+					fileName={fileMeta?.name}
 					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
 				/>
 			) : (

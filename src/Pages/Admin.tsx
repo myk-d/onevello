@@ -145,9 +145,9 @@ const Admin = () => {
 											{msg.id}
 										</td>
 										<td className="py-3 px-4">
-											{msg.fileName ? (
-												<span className="truncate max-w-[140px] text-xs text-muted" title={msg.fileName}>
-													{msg.fileName}
+											{msg.fileUrl ? (
+												<span className="truncate max-w-[140px] text-xs text-muted">
+													{t('admin.hasAttachment')}
 												</span>
 											) : (
 												<span className="text-xs text-muted" title={t('admin.col.noFileHint')}>

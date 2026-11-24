@@ -5,7 +5,7 @@ import { MessageType } from '../../models/Message/message';
 import LogoSvg from '../UI/SVG/LogoSvg';
 
 interface SealedGateProps {
-	message: Pick<MessageType, 'expiration' | 'fileName' | 'fileUrl'>;
+	message: Pick<MessageType, 'expiration' | 'fileUrl'>;
 	opening: boolean;
 	failed: boolean;
 	onOpen: () => void;
@@ -25,7 +25,7 @@ const SealedGate = ({ message, opening, failed, onOpen }: SealedGateProps) => {
 				<div className="flex flex-wrap justify-center gap-2">
 					<span className="ov-chip">{t('secretId.gate.oneTime')}</span>
 					<span className="ov-chip mono">{t('secretId.gate.expires', { date: dayjs(message.expiration).format('DD.MM HH:mm') })}</span>
-					{message.fileUrl && <span className="ov-chip mono">{message.fileName}</span>}
+					{message.fileUrl && <span className="ov-chip">{t('secretId.gate.fileAttached')}</span>}
 				</div>
 
 				<div className="ov-alert ov-alert--warning w-full" role="status">

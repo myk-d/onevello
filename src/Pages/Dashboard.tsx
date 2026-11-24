@@ -113,7 +113,7 @@ const Dashboard = () => {
 											)}
 										</td>
 										<td className="py-3 px-4">
-											{msg.fileName ? (
+											{msg.fileUrl ? (
 												<span className="flex items-center gap-1.5 text-xs text-muted">
 													<svg
 														className="h-3.5 w-3.5 shrink-0"
@@ -125,7 +125,7 @@ const Dashboard = () => {
 														<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
 														<polyline points="14 2 14 8 20 8" />
 													</svg>
-													<span className="truncate max-w-[140px]">{msg.fileName}</span>
+													<span className="truncate max-w-[140px]">{t('dashboard.hasAttachment')}</span>
 												</span>
 											) : (
 												<span className="text-xs text-muted">—</span>

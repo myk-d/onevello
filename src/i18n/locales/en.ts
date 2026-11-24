@@ -142,7 +142,7 @@ const en = {
 				title: '2. Storage and transmission',
 				description: 'Once encrypted, text is stored in our database and file attachments in cloud storage — both unreadable without your passphrase.',
 				details: [
-					'Encrypted Bundles: The secret content is stored as encrypted blobs that look like random characters even to our administrators. Dates, the one-time flag, and a file name and type are stored next to it in plain text; see the Privacy Policy for the full list.',
+					'Encrypted Bundles: The secret content is stored as encrypted blobs that look like random characters even to our administrators. Dates and the one-time flag are stored next to it in plain text; a file name and type are encrypted with your passphrase. See the Privacy Policy for the full list.',
 					'Encrypted channel: Data is transmitted over an encrypted connection to prevent interception.',
 				],
 			},
@@ -193,7 +193,7 @@ const en = {
 				items: [
 					'The creation date and the expiration date.',
 					'Whether the secret is one-time.',
-					'For a file: its original name and type, in plain text. The file itself is kept in cloud storage under a name that includes the original file name.',
+					'For a file: only that one is attached. Its name and type are encrypted with your passphrase, and the file sits in cloud storage under a random name. Files attached before this change were stored with the name and type in plain text.',
 					'A counter of failed attempts to open a regular (not one-time) secret.',
 					'If you were signed in when creating it: your account ID and whether the secret has been opened.',
 				],
@@ -304,6 +304,7 @@ const en = {
 			warning: 'It can be opened once. Opening breaks the seal and deletes it from the server, so have somewhere ready to save it.',
 			button: 'Break the seal and open',
 			opening: 'Opening…',
+			fileAttached: 'File attached',
 			error: 'Could not break the seal. The secret is still sealed and intact. Check the connection and try again.',
 		},
 		preview: 'Open',
@@ -406,6 +407,7 @@ const en = {
 		oneTimeHint: 'Deleted when opened once, even before it expires.',
 		regular: 'Regular',
 		regularHint: 'Can be opened multiple times until it expires.',
+		hasAttachment: 'Has attachment',
 		copyLink: 'Copy link',
 		copyLinkHint: 'Copy this secret’s link to your clipboard.',
 		col: {
@@ -437,11 +439,12 @@ const en = {
 		deleteAll: 'Delete all',
 		deleteAllHint: 'Permanently deletes every expired secret listed below, and their files. This cannot be undone.',
 		confirmDeleteAll: 'Delete {{count}} expired secret(s)? This cannot be undone.',
+		hasAttachment: 'Has attachment',
 		col: {
 			id: 'ID',
 			idHint: 'The secret’s document ID in the database.',
 			file: 'File',
-			fileHint: 'The attached file name, if the secret included one.',
+			fileHint: 'Whether the secret has an attached file. Its name is encrypted, so it is not shown.',
 			noFileHint: 'This secret has no attached file.',
 			expired: 'Expired',
 			expiredHint: 'The date and time the secret stopped being accessible.',
