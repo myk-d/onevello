@@ -70,7 +70,7 @@ const Secret = () => {
 				const blob = new Blob([JSON.stringify(encryptedFile)], { type: 'application/json' });
 				const fileObj = new File([blob], storageName, { type: 'application/json' });
 				fileUrl = await uploadImageToStorage(firebaseStorageDirectories.messageMedia, fileObj, storageName);
-				fileMeta = await encryptFileMeta(data.passphrase, { name: attachedFile.name, type: attachedFile.type });
+				fileMeta = await encryptFileMeta(data.passphrase, { name: attachedFile.name, type: attachedFile.type, size: attachedFile.size });
 			}
 
 			const messageToSave: Omit<MessageType, 'id'> = {

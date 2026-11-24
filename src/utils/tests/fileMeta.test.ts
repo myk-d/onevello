@@ -21,6 +21,13 @@ describe('fileMeta', () => {
 		expect(await resolveFileMeta('pw', { fileUrl: 'u', fileMeta })).toEqual({ name: 'tax.pdf', type: 'application/pdf' });
 	});
 
+	it('round-trips the size; legacy meta without a size returns none', async () => {
+		const withSize = await encryptFileMeta('pw', { name: 'a.txt', type: 't', size: 12 });
+		expect(await resolveFileMeta('pw', { fileUrl: 'u', fileMeta: withSize })).toEqual({ name: 'a.txt', type: 't', size: 12 });
+		const legacy = await encryptFileMeta('pw', { name: 'a.txt', type: 't' });
+		expect(await resolveFileMeta('pw', { fileUrl: 'u', fileMeta: legacy })).not.toHaveProperty('size');
+	});
+
 	it('falls back to a generic name when the meta cannot be decrypted', async () => {
 		const fileMeta = await encryptFileMeta('pw', { name: 'a', type: 'b' });
 		expect(await resolveFileMeta('other', { fileUrl: 'u', fileMeta })).toEqual({ name: 'file', type: '' });

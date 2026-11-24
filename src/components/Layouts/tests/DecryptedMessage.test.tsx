@@ -30,6 +30,14 @@ describe('DecryptedMessage', () => {
 		expect(screen.getByRole('heading', { level: 1, name: 'decryptedMessage.titleRegular' })).toBeInTheDocument();
 	});
 
+	it('shows name and size on the file row, name only for legacy', () => {
+		const { unmount } = renderIt({ fileName: 'a.txt', fileSize: 12, onDownloadFile: async () => {} });
+		expect(screen.getByText('a.txt · 12 B')).toBeInTheDocument();
+		unmount();
+		renderIt({ fileName: 'a.txt', onDownloadFile: async () => {} });
+		expect(screen.getByText('a.txt')).toBeInTheDocument();
+	});
+
 	it('has a ghost "create your own secret" button', () => {
 		renderIt();
 		expect(screen.getByRole('button', { name: 'decryptedMessage.createSecret' })).toHaveClass('ov-btn--ghost');

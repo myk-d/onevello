@@ -4,9 +4,11 @@ import { MessageType } from '../models/Message/message';
 export interface FileMeta {
 	name: string;
 	type: string;
+	/** Bytes. Absent on secrets created before sizes were stored. */
+	size?: number;
 }
 
-// File name and type are encrypted with the secret's passphrase (same scheme as the text) and stored as one JSON string.
+// File name, type and size are encrypted with the secret's passphrase (same scheme as the text) and stored as one JSON string.
 export const encryptFileMeta = async (passphrase: string, meta: FileMeta): Promise<string> => {
 	const pkg = await PasswordChannel.encrypt(passphrase, JSON.stringify(meta));
 	return JSON.stringify(pkg);
@@ -23,7 +25,11 @@ export const resolveFileMeta = async (
 	if (message.fileMeta) {
 		try {
 			const parsed = JSON.parse(await PasswordChannel.decrypt(passphrase, JSON.parse(message.fileMeta)));
-			if (typeof parsed?.name === 'string') return { name: parsed.name, type: typeof parsed.type === 'string' ? parsed.type : '' };
+			if (typeof parsed?.name === 'string') return {
+					name: parsed.name,
+					type: typeof parsed.type === 'string' ? parsed.type : '',
+					...(typeof parsed.size === 'number' ? { size: parsed.size } : {}),
+				};
 		} catch {
 			// fall through: the file stays downloadable under a generic name
 		}

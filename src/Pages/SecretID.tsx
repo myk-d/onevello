@@ -246,6 +246,7 @@ const SecretID = () => {
 					message={decryptedText}
 					isOneTime={message.oneTime}
 					fileName={fileMeta?.name}
+					fileSize={fileMeta?.size}
 					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
 				/>
 			) : (

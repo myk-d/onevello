@@ -519,6 +519,8 @@
 		resize: vertical;
 	}
 	.ov-counter {
+		white-space: nowrap;
+		flex: none;
 		align-self: flex-end;
 		font: var(--text-xs) var(--font-mono);
 		color: var(--color-muted);
@@ -780,8 +782,8 @@
 	.ov-support {
 		position: fixed;
 		z-index: 50;
-		right: 16px;
-		bottom: 16px;
+		right: max(16px, env(safe-area-inset-right, 0px));
+		bottom: max(16px, env(safe-area-inset-bottom, 0px));
 		display: flex;
 		flex-direction: column;
 		align-items: flex-end;

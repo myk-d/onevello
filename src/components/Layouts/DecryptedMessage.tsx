@@ -2,16 +2,18 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
+import { formatFileSize } from '../../utils/formatFileSize';
 import { Alert, Button, Icon } from '../UI/kit';
 
 interface DecryptedMessageProps {
 	message: string;
 	isOneTime?: boolean;
 	fileName?: string;
+	fileSize?: number;
 	onDownloadFile?: () => Promise<void>;
 }
 
-const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime, fileName, onDownloadFile }) => {
+const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime, fileName, fileSize, onDownloadFile }) => {
 	const navigate = useNavigate();
 	const { t } = useTranslation();
 
@@ -72,7 +74,10 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 						<div className="ov-drop is-filled">
 							<Icon name="file" size={22} className="shrink-0" />
 							<span className="flex min-w-0 flex-1 flex-col gap-0.5">
-								<span className="file">{fileName}</span>
+								<span className="file">
+									{fileName}
+									{fileSize !== undefined && ` · ${formatFileSize(fileSize)}`}
+								</span>
 								{isOneTime && <span className="ov-help">{t('decryptedMessage.oneTimeFileWarning')}</span>}
 							</span>
 						</div>

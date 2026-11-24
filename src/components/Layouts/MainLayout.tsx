@@ -12,8 +12,9 @@ const MainLayout = () => {
 	// The landing page brings its own header and footer.
 	const isLanding = useLocation().pathname === UrlConfig.home;
 
+	// Bottom padding keeps the floating support button (48px + 16px offset + gap) off the footer text and controls.
 	return (
-		<div className="flex flex-col min-h-screen transition-colors duration-300">
+		<div className="flex min-h-screen flex-col pb-[calc(80px+env(safe-area-inset-bottom,0px))] transition-colors duration-300">
 			{!isLanding && <Header />}
 
 			{leftBanner && (
