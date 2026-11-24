@@ -101,13 +101,13 @@ What is stored next to the ciphertext (that a secret exists, its dates, the acco
 
 en:
 - A weak or leaked passphrase. Use the generator, and never send the link and the passphrase in the same message.
-- Whoever opens the link first. A forwarded link or an early open burns a one-time secret.
+- Whoever breaks the seal first. If the link was forwarded, someone else may open the secret before you.
 - After it is opened, the secret is in the recipient's hands. We delete it from the server, but can't stop them copying the text or taking a screenshot.
 - Malware or a bad browser extension on either device.
 
 uk:
 - Слабка або викрадена парольна фраза. Скористайтеся генератором і ніколи не надсилайте посилання та парольну фразу в одному повідомленні.
-- Той, хто відкриє посилання першим. Якщо посилання переслали або відкрили зарано, одноразовий секрет згорає.
+- Той, хто першим зламає печатку. Якщо посилання переслали, хтось інший може відкрити секрет раніше за вас.
 - Після відкриття секрет у руках одержувача. Ми видаляємо його із сервера, але не можемо завадити скопіювати текст чи зробити знімок екрана.
 - Шкідливе програмне забезпечення чи небезпечне розширення браузера на будь-якому з пристроїв.
 

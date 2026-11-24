@@ -459,7 +459,7 @@
 			],
 			noT: 'Not protected', no: [
 				'A weak or leaked passphrase. Anyone with the link can try passphrases offline, so use a long one.',
-				'Whoever opens the link first. A forwarded link burns a one-time secret.',
+				'Whoever breaks the seal first. If the link was forwarded, someone else may open the secret before you.',
 				'After it is opened, the secret is in the recipient’s hands. We delete it from the server, but can’t stop them copying the text or taking a screenshot.',
 				'Malware or a bad browser extension on either device.',
 			],
@@ -503,7 +503,7 @@
 			],
 			noT: 'Не захищено', no: [
 				'Слабка або викрадена парольна фраза. Хто має посилання, може підбирати її офлайн, тож обирайте довгу.',
-				'Той, хто відкриє посилання першим. Переслане посилання спалює одноразовий секрет.',
+				'Той, хто першим зламає печатку. Якщо посилання переслали, хтось інший може відкрити секрет раніше за вас.',
 				'Після відкриття секрет у руках одержувача. Ми видаляємо його із сервера, але не можемо завадити скопіювати текст чи зробити знімок екрана.',
 				'Шкідливе програмне забезпечення чи небезпечне розширення браузера на будь-якому пристрої.',
 			],
