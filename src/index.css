@@ -161,6 +161,12 @@
 }
 
 @layer base {
+	/* Tailwind 4 borders default to currentColor; keep every border on the brand border token. */
+	*,
+	::before,
+	::after {
+		border-color: var(--color-border);
+	}
 	html {
 		-webkit-text-size-adjust: 100%;
 	}

@@ -14,9 +14,10 @@ const LanguageSwitcher = () => {
 					key={lang}
 					type="button"
 					onClick={() => i18n.changeLanguage(lang)}
+					aria-pressed={current === lang}
 					className={cn(
-						'text-xs cursor-pointer font-bold uppercase px-2 py-1 rounded transition-colors',
-						current === lang ? 'text-brand' : 'text-muted hover:text-page-text',
+						'min-h-11 min-w-11 cursor-pointer rounded-control px-2 text-xs font-semibold uppercase transition-colors md:min-h-8 md:min-w-8',
+						current === lang ? 'text-primary' : 'text-muted hover:text-text',
 					)}
 				>
 					{lang}

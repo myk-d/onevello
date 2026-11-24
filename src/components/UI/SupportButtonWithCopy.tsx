@@ -1,32 +1,30 @@
-import { SupportButton, ToastService } from 'perkslab-ui';
-import React from 'react';
 import { useTranslation } from 'react-i18next';
+import { SupportButton, toast } from './kit';
 
 interface SupportButtonWithCopyProps {
 	supportEmail: string;
 }
 
-// SupportButton (perkslab-ui) renders the support email as a plain `mailto:` link inside a Portal.
-// React synthetic events bubble through portals, so handling onClick on the wrapper captures clicks
-// on the mailto link and copies the address to the clipboard alongside the mailto action.
+// Clicking the mailto link also copies the address, so it is not lost when no mail client is set up.
 const SupportButtonWithCopy = ({ supportEmail }: SupportButtonWithCopyProps) => {
 	const { t } = useTranslation();
 
-	const handleClick = (event: React.MouseEvent<HTMLDivElement>) => {
-		const target = event.target as HTMLElement;
-		const link = target.closest<HTMLAnchorElement>(`a[href="mailto:${supportEmail}"]`);
-		if (!link) return;
-
+	const handleEmailClick = () => {
 		navigator.clipboard
 			.writeText(supportEmail)
-			.then(() => ToastService.success(t('support.emailCopied')))
+			.then(() => toast.success(t('support.emailCopied')))
 			.catch(() => {});
 	};
 
 	return (
-		<div onClick={handleClick}>
-			<SupportButton supportEmail={supportEmail} />
-		</div>
+		<SupportButton
+			supportEmail={supportEmail}
+			label={t('support.label')}
+			title={t('support.title')}
+			description={t('support.description')}
+			note={t('support.note')}
+			onEmailClick={handleEmailClick}
+		/>
 	);
 };
 

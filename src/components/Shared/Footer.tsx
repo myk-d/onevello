@@ -15,26 +15,26 @@ const Footer = () => {
 	const { t } = useTranslation();
 
 	return (
-		<footer className="mt-auto border-t border-brand py-8 px-7 transition-colors duration-300">
-			<div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center justify-between gap-6">
-				<div className="text-muted text-sm font-medium">
+		<footer className="mt-auto border-t border-border px-4 py-6 md:px-12">
+			<div className="mx-auto flex max-w-[1120px] flex-col items-center justify-between gap-4 md:flex-row">
+				<div className="text-xs text-muted">
 					© {currentYear}{' '}
 					<a
 						href="https://myslennya.com"
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-brand font-bold hover:underline underline-offset-4"
+						className="text-primary hover:underline underline-offset-4"
 					>
 						myslennya.com
 					</a>
 				</div>
 
-				<nav className="flex flex-wrap items-center justify-center gap-x-8 gap-y-3">
+				<nav className="flex flex-wrap items-center justify-center gap-x-6 gap-y-1">
 					{NAV_LINKS.map(({ key, to }) => (
 						<Link
 							key={key}
 							to={to}
-							className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
+							className="inline-flex min-h-11 items-center text-xs text-muted transition-colors hover:text-text"
 						>
 							{t(key)}
 						</Link>
@@ -44,13 +44,13 @@ const Footer = () => {
 						href={`${UrlConfig.repoURL}/blob/master/SECURITY.md`}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="text-sm font-bold uppercase tracking-widest text-page-text hover:text-brand transition-colors"
+						className="inline-flex min-h-11 items-center text-xs text-muted transition-colors hover:text-text"
 					>
 						{t('header.nav.security')}
 					</a>
 
-					<Link to={UrlConfig.repoURL} target="_blank" title="GitHub Repository">
-						<GitHubSVG className="h-8 w-8" />
+					<Link to={UrlConfig.repoURL} target="_blank" title="GitHub Repository" aria-label="GitHub" className="inline-flex min-h-11 min-w-11 items-center justify-center text-text">
+						<GitHubSVG className="h-6 w-6" />
 					</Link>
 				</nav>
 			</div>

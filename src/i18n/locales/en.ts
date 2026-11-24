@@ -17,6 +17,8 @@ const en = {
 			light: 'Light',
 			dark: 'Dark',
 		},
+		menu: 'Menu',
+		menuClose: 'Close menu',
 	},
 	landing: {
 		hero: {
@@ -395,6 +397,10 @@ const en = {
 		incorrectPassphrase: 'Wrong passphrase. Try again.',
 	},
 	support: {
+		label: 'Support',
+		title: 'Need help?',
+		description: 'Write to us by email:',
+		note: 'Describe the problem in detail for a faster answer. Never send a secret or a passphrase.',
 		emailCopied: 'Support email copied to clipboard.',
 	},
 	dashboard: {

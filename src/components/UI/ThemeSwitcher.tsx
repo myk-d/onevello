@@ -1,6 +1,6 @@
-import { useAppTheme } from 'perkslab-ui';
 import { useTranslation } from 'react-i18next';
 import { cn } from '../../utils/cn';
+import { useAppTheme } from './kit';
 
 export const THEME_OPTIONS = ['system', 'light', 'dark'] as const;
 export type ThemeOption = (typeof THEME_OPTIONS)[number];
@@ -18,7 +18,7 @@ const ThemeSwitcher = () => {
 	const current: ThemeOption = THEME_OPTIONS.find((o) => o === theme) ?? 'system';
 
 	return (
-		<div role="radiogroup" aria-label={t('header.theme.label')} className="inline-flex rounded-full border border-border bg-surface p-0.5">
+		<div role="radiogroup" aria-label={t('header.theme.label')} className="inline-flex rounded-full border border-border bg-surface p-0.5 shrink-0">
 			{THEME_OPTIONS.map((option) => (
 				<button
 					key={option}
@@ -27,7 +27,7 @@ const ThemeSwitcher = () => {
 					aria-checked={current === option}
 					onClick={() => setTheme(option)}
 					className={cn(
-						'cursor-pointer rounded-full px-3 py-1.5 text-xs font-semibold transition-colors duration-150',
+						'cursor-pointer rounded-full min-h-8 px-3 py-1.5 text-xs font-semibold transition-colors duration-150',
 						current === option ? 'bg-text text-bg' : 'text-muted hover:text-text',
 					)}
 				>
