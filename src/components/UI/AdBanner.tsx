@@ -10,8 +10,6 @@ interface AdBannerProps {
 const AdBanner = ({ banner, className }: AdBannerProps) => {
 	const { i18n, t } = useTranslation();
 
-	console.log(banner);
-
 	const locale: BannerLocale = i18n.language.startsWith('uk') ? 'uk' : 'en';
 
 	return (
@@ -20,15 +18,15 @@ const AdBanner = ({ banner, className }: AdBannerProps) => {
 			target="_blank"
 			rel="noopener noreferrer"
 			className={cn(
-				'group flex flex-col items-center justify-center text-center gap-4 rounded-2xl border p-5 overflow-hidden relative bg-cover bg-left transition-transform hover:scale-[1.01]',
+				'group flex flex-col items-center justify-center text-center gap-4 rounded-card border p-5 overflow-hidden relative bg-cover bg-left transition-transform hover:scale-[1.01]',
 				className,
 			)}
 			style={{ backgroundImage: `url(${banner.imageUrl[locale]})` }}
 		>
-			<div className="relative flex flex-col items-center gap-4 bg-page-bg/90 backdrop-blur-sm rounded-xl px-4 py-5 transition-colors duration-300">
-				<p className="text-page-text font-bold text-lg leading-snug">{banner.text[locale]}</p>
+			<div className="relative flex flex-col items-center gap-4 bg-bg/90 backdrop-blur-sm rounded-control px-4 py-5">
+				<p className="text-text font-semibold text-lg leading-snug">{banner.text[locale]}</p>
 
-				<span className="px-4 py-2 rounded-xl bg-brand text-brand-fg text-sm font-bold uppercase tracking-wider group-hover:opacity-90 transition-opacity">
+				<span className="px-4 py-2 rounded-control bg-primary text-on-primary text-sm font-semibold group-hover:opacity-90 transition-opacity">
 					{t('banner.cta', { appName: banner.appName })}
 				</span>
 			</div>

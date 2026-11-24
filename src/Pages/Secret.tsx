@@ -1,6 +1,5 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import dayjs from 'dayjs';
-import { ToastService } from 'perkslab-ui';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { useTranslation } from 'react-i18next';
@@ -9,10 +8,14 @@ import EncryptedMessageForm from '../components/Layouts/EncryptedMessageForm';
 import EncryptedMessageLink, { CreatedSecretSummary } from '../components/Layouts/EncryptedMessageLink';
 import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '../config/firebase.config';
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
+import { useNavigate } from 'react-router';
+import { UrlConfig } from '../constants/UrlConfig';
 import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
 import { encryptFileMeta, opaqueStorageName } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
+import { cn } from '../utils/cn';
+import { toast } from '../components/UI/kit';
 
 const fileToBase64 = (file: File): Promise<string> =>
 	new Promise((resolve, reject) => {
@@ -25,6 +28,7 @@ const fileToBase64 = (file: File): Promise<string> =>
 const Secret = () => {
 	const { t } = useTranslation();
 	const { user } = useAuth();
+	const navigate = useNavigate();
 
 	const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
 	const [attachedFile, setAttachedFile] = useState<File | null>(null);
@@ -66,7 +70,7 @@ const Secret = () => {
 				const blob = new Blob([JSON.stringify(encryptedFile)], { type: 'application/json' });
 				const fileObj = new File([blob], storageName, { type: 'application/json' });
 				fileUrl = await uploadImageToStorage(firebaseStorageDirectories.messageMedia, fileObj, storageName);
-				fileMeta = await encryptFileMeta(data.passphrase, { name: attachedFile.name, type: attachedFile.type });
+				fileMeta = await encryptFileMeta(data.passphrase, { name: attachedFile.name, type: attachedFile.type, size: attachedFile.size });
 			}
 
 			const messageToSave: Omit<MessageType, 'id'> = {
@@ -81,11 +85,11 @@ const Secret = () => {
 			const result = await dbMessages.create(messageToSave);
 
 			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
-			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName: attachedFile?.name });
+			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName: attachedFile?.name, fileSize: attachedFile?.size });
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);
-			ToastService.error(attachedFile ? t('toasts.fileUploadFailed') : t('toasts.failedToCreate'));
+			toast.error(attachedFile ? t('toasts.fileUploadFailed') : t('toasts.failedToCreate'));
 		} finally {
 			setIsSubmitting(false);
 		}
@@ -102,16 +106,17 @@ const Secret = () => {
 
 		setValue('passphrase', passphrase);
 		navigator.clipboard.writeText(passphrase);
-		ToastService.success(t('toasts.passphraseCopied'));
+		toast.success(t('toasts.passphraseCopied'));
 	};
 
 	return (
 		<>
-			<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
+			<section className={cn("mx-auto flex w-full flex-col gap-5 px-4 py-8 md:py-14", encryptedMessageId && summary ? "max-w-[680px]" : "max-w-[960px]")}>
 				{encryptedMessageId && summary ? (
 					<EncryptedMessageLink
 						id={encryptedMessageId}
 						summary={summary}
+						onShowMine={user ? () => navigate(UrlConfig.dashboard) : undefined}
 						clearId={() => {
 							setEncryptedMessageId(null);
 							setSummary(null);
@@ -120,7 +125,11 @@ const Secret = () => {
 						}}
 					/>
 				) : (
-					<form onSubmit={handleSubmit(onSubmit)} className="w-full">
+					<form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-5 text-left">
+						<div className="flex flex-col gap-2">
+							<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">{t('form.title')}</h1>
+							<p className="text-muted">{t('form.lead')}</p>
+						</div>
 						<EncryptedMessageForm
 							register={register}
 							errors={errors}

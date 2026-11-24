@@ -1,9 +1,9 @@
-import { Button } from 'perkslab-ui';
 import { useEffect, useRef } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
 import LogoSvg from '../UI/SVG/LogoSvg';
+import { Button } from '../UI/kit';
 
 export type SecretGoneVariant = 'gone' | 'expired' | 'locked' | 'error';
 
@@ -56,28 +56,28 @@ const SecretGone = ({ variant, onRetry }: SecretGoneProps) => {
 	}, [variant]);
 
 	return (
-		<section className="m-auto max-w-7xl text-center flex flex-col items-center justify-center gap-9 mt-4">
-			<div className="border border-dashed w-full rounded-2xl py-5 px-7 flex flex-col gap-4 items-center" data-variant={variant}>
+		<section className="mx-auto flex w-full max-w-[680px] flex-col gap-5 px-4 py-8 md:py-14">
+			<div className="ov-card is-empty items-center text-center" data-variant={variant}>
 				<Glyph variant={variant} />
 
 				<div role={variant === 'error' ? 'alert' : 'status'} className="flex flex-col gap-2 items-center">
-					<h1 ref={headingRef} tabIndex={-1} className="text-2xl outline-none">
+					<h1 ref={headingRef} tabIndex={-1} className="text-2xl font-semibold leading-8 outline-none">
 						{t(`secretGone.${variant}.title`)}
 					</h1>
-					<p className="text-muted">{t(`secretGone.${variant}.description`)}</p>
+					<p className="max-w-[46ch] text-muted">{t(`secretGone.${variant}.description`)}</p>
 				</div>
 
-				<div className="flex justify-center gap-6 flex-wrap w-full">
+				<div className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
 					{variant === 'error' ? (
-						<Button type="button" variant="default" size="full" onClick={onRetry} className="flex-1 gap-2">
+						<Button type="button" onClick={onRetry} className="max-sm:w-full">
 							{t('secretGone.retry')}
 						</Button>
 					) : (
 						<>
-							<Button type="button" variant="default" size="full" onClick={() => navigate(UrlConfig.secret)} className="flex-1 gap-2">
+							<Button type="button" onClick={() => navigate(UrlConfig.secret)} className="max-sm:w-full">
 								{t('secretGone.createOwn')}
 							</Button>
-							<Button type="button" variant="outline" size="full" onClick={() => navigate(UrlConfig.home)} className="flex-1 gap-2">
+							<Button type="button" variant="ghost" onClick={() => navigate(UrlConfig.home)} className="max-sm:w-full">
 								{t('secretGone.home')}
 							</Button>
 						</>

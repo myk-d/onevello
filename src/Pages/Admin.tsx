@@ -1,10 +1,10 @@
 import { FirebaseError } from 'firebase/app';
 import { where } from 'firebase/firestore';
 import dayjs from 'dayjs';
-import { Button, ToastService } from 'perkslab-ui';
 import { useCallback, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate } from 'react-router';
+import { Alert, Button, toast } from '../components/UI/kit';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { UrlConfig } from '../constants/UrlConfig';
@@ -32,7 +32,7 @@ const Admin = () => {
 			if (error instanceof FirebaseError && error.code === 'permission-denied') {
 				setPermissionDenied(true);
 			} else {
-				ToastService.error(t('admin.toasts.loadFailed'));
+				toast.error(t('admin.toasts.loadFailed'));
 			}
 			setMessages([]);
 		}
@@ -51,7 +51,7 @@ const Admin = () => {
 			setMessages((prev) => (prev ? prev.filter((m) => m.id !== message.id) : prev));
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
-			ToastService.error(t('admin.toasts.deleteFailed'));
+			toast.error(t('admin.toasts.deleteFailed'));
 		} finally {
 			setDeletingIds((prev) => {
 				const next = new Set(prev);
@@ -74,10 +74,10 @@ const Admin = () => {
 				}),
 			);
 			setMessages([]);
-			ToastService.success(t('admin.toasts.deleteAllSuccess'));
+			toast.success(t('admin.toasts.deleteAllSuccess'));
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error(error);
-			ToastService.error(t('admin.toasts.deleteFailed'));
+			toast.error(t('admin.toasts.deleteFailed'));
 			loadExpired();
 		} finally {
 			setDeletingAll(false);
@@ -89,11 +89,11 @@ const Admin = () => {
 	if (!user || !isAdmin) return <Navigate to={UrlConfig.home} replace />;
 
 	return (
-		<section className="m-auto max-w-7xl flex flex-col gap-6 mt-4 px-2">
+		<section className="mx-auto flex w-full max-w-[980px] flex-col gap-5 px-4 py-8 md:py-14">
 			<div className="flex items-center justify-between flex-wrap gap-3">
 				<div>
-					<h1 className="text-2xl font-bold">{t('admin.heading')}</h1>
-					<p className="text-sm text-muted mt-1 max-w-2xl">{t('admin.description')}</p>
+					<h1 className="font-heading text-2xl font-semibold leading-8">{t('admin.heading')}</h1>
+					<p className="mt-1 max-w-2xl text-sm text-muted">{t('admin.description')}</p>
 				</div>
 				{messages !== null && messages.length > 0 && (
 					<Button
@@ -109,31 +109,30 @@ const Admin = () => {
 			</div>
 
 			{permissionDenied ? (
-				<div className="ov-alert ov-alert--warning rounded-2xl py-8 px-6 flex-col items-center gap-2 text-center" role="alert">
-					<p className="text-sm font-medium">{t('admin.permissionDenied.title')}</p>
-					<p className="text-xs max-w-md">{t('admin.permissionDenied.hint')}</p>
-				</div>
+				<Alert variant="warning" role="alert" title={t('admin.permissionDenied.title')}>
+					{t('admin.permissionDenied.hint')}
+				</Alert>
 			) : messages === null ? (
 				<SecretIDLoader />
 			) : messages.length === 0 ? (
-				<div className="border rounded-2xl py-12 flex flex-col items-center gap-3 text-muted">
+				<div className="ov-card is-empty items-center py-12 text-center text-muted">
 					<p className="text-sm">{t('admin.empty')}</p>
 				</div>
 			) : (
-				<div className="border rounded-2xl overflow-hidden">
-					<table className="w-full text-sm">
+				<div className="overflow-x-auto rounded-card border border-border bg-surface-raised">
+					<table className="w-full min-w-[680px] text-sm">
 						<thead>
 							<tr className="border-b text-left">
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.idHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('admin.col.idHint')}>
 									{t('admin.col.id')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.fileHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('admin.col.fileHint')}>
 									{t('admin.col.file')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs" title={t('admin.col.expiredHint')}>
+								<th className="py-3 px-4 font-semibold text-xs text-muted" title={t('admin.col.expiredHint')}>
 									{t('admin.col.expired')}
 								</th>
-								<th className="py-3 px-4 font-semibold uppercase tracking-wider text-xs"></th>
+								<th className="py-3 px-4 font-semibold text-xs text-muted"></th>
 							</tr>
 						</thead>
 						<tbody>

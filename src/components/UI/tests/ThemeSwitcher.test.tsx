@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react';
-import { ThemeProvider } from 'perkslab-ui';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { THEME_DEFAULT, THEME_STORAGE_KEY } from '../../../constants/theme';
 import '../../../i18n';
+import { ThemeProvider } from '../kit';
 import ThemeSwitcher from '../ThemeSwitcher';
 
 const mockSystemDark = (dark: boolean) => {
