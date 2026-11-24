@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-@import 'perkslab-ui/styles.css';
 @import '@fontsource/source-serif-4/cyrillic-600.css';
 @import '@fontsource/source-serif-4/latin-600.css';
 @import '@fontsource/ibm-plex-sans/cyrillic-400.css';
@@ -103,7 +102,7 @@
 		color-scheme: dark;
 	}
 }
-/* ThemeProvider always sets data-theme to the resolved "light" or "dark" (Auto resolves to the system setting). */
+/* ThemeProvider (src/components/UI/kit/Theme.tsx) always sets data-theme to the resolved "light" or "dark" (Auto resolves to the system setting). */
 :root[data-theme='dark'] {
 	--color-bg: #15120e;
 	--color-surface: #1e1a15;
@@ -127,37 +126,6 @@
 	--shadow-card: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.35);
 	--shadow-float: 0 2px 4px rgb(0 0 0 / 0.5), 0 16px 40px rgb(0 0 0 / 0.55);
 	color-scheme: dark;
-}
-
-/*
- * perkslab-ui components read their own variables; point them at the brand tokens so they follow the theme.
- * `:root[data-theme]` outranks perkslab's `[data-theme='...']` rules.
- */
-:root,
-:root[data-theme],
-:root[data-ui] {
-	--brand-color: var(--color-primary);
-	--brand-hover: var(--color-primary-hover);
-	--brand-bg: var(--color-surface-sunken);
-	--brand-fg: var(--color-on-primary);
-	--bg-page: var(--color-bg);
-	--text-main: var(--color-text);
-	--text-secondary: var(--color-muted);
-	--text-muted: var(--color-muted);
-	--bg-panel: var(--color-surface);
-	--bg-elevated: var(--color-surface-raised);
-	--bg-subtle: var(--color-surface-sunken);
-	--bg-scrim: var(--color-scrim);
-	--panel-border: var(--color-border);
-	--c-danger: var(--color-danger);
-	--c-danger-fg: var(--color-on-danger);
-	--c-ok: var(--color-success);
-	--c-ok-fg: var(--color-bg);
-	--c-warning: var(--color-warning);
-	--c-warning-fg: var(--color-bg);
-	--c-info: var(--color-primary);
-	--c-info-fg: var(--color-on-primary);
-	--ui-font-heading: var(--font-heading);
 }
 
 @layer base {
