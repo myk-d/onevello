@@ -6,6 +6,7 @@ export type { ButtonProps, ButtonVariant } from './Button';
 export { Card } from './Card';
 export { DateTimeField } from './DateTimeField';
 export { Input, Textarea } from './Input';
+export { PassphraseInput } from './PassphraseInput';
 export { SupportButton } from './SupportButton';
 export { ThemeProvider, useAppTheme } from './Theme';
 export type { ThemeChoice } from './Theme';

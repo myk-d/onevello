@@ -22,6 +22,7 @@ vi.mock('../../config/firebase.config', () => ({
 vi.mock('secure-channel-sdk', () => ({ PasswordChannel: { decrypt: vi.fn() } }));
 vi.mock('react-i18next', () => ({ useTranslation: () => ({ t: (k: string) => k }) }));
 
+import { getToasts } from '../../components/UI/kit/toastStore';
 import SecretID from '../SecretID';
 
 const base = { id: 'abc', expiration: dayjs().add(1, 'day').toISOString(), attempts: 0 };
@@ -129,6 +130,35 @@ describe('SecretID failure states', () => {
 		renderPage();
 
 		expect(await screen.findByRole('heading', { name: 'secretGone.locked.title' })).toBeInTheDocument();
+	});
+
+	it('wrong passphrase: danger alert next to a red field with the attempts count, and no toast', async () => {
+		const { PasswordChannel } = await import('secure-channel-sdk');
+		vi.mocked(PasswordChannel.decrypt).mockRejectedValue(new Error('bad'));
+		getById.mockResolvedValue({ ...base, attempts: 1, oneTime: false });
+		update.mockResolvedValue(undefined);
+		renderPage();
+
+		expect(await screen.findByRole('heading', { level: 1, name: 'secretId.pass.title' })).toBeInTheDocument();
+		fireEvent.change(await screen.findByPlaceholderText('form.passphrasePlaceholder'), { target: { value: 'wrong-pass-1' } });
+		fireEvent.click(screen.getByRole('button', { name: /secretId.preview/ }));
+
+		const alert = await screen.findByRole('alert');
+		expect(alert).toHaveClass('ov-alert--danger');
+		expect(alert).toHaveTextContent('secretId.pass.wrong');
+		expect(alert).toHaveTextContent('2/5');
+		expect(document.querySelector('.ov-pass')).toHaveAttribute('data-invalid', 'true');
+		expect(getToasts()).toHaveLength(0);
+	});
+
+	it('passphrase screen shows the Show toggle and the attempts row', async () => {
+		getById.mockResolvedValue({ ...base, oneTime: false });
+		renderPage();
+		const input = await screen.findByPlaceholderText('form.passphrasePlaceholder');
+		expect(input).toHaveAttribute('type', 'password');
+		fireEvent.click(screen.getByRole('button', { name: 'form.show' }));
+		expect(input).toHaveAttribute('type', 'text');
+		expect(screen.getByText('secretId.pass.attempts').textContent).toContain('0/5');
 	});
 
 	it('shows locked out after the 5th wrong passphrase', async () => {

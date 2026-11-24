@@ -5,7 +5,7 @@ import { useTranslation } from 'react-i18next';
 import { CreateMessageType, MAX_SECRET_LENGTH } from '../../models/Message/message';
 import { cn } from '../../utils/cn';
 import { formatFileSize } from '../../utils/formatFileSize';
-import { Button, DateTimeField } from '../UI/kit';
+import { Button, DateTimeField, PassphraseInput } from '../UI/kit';
 
 const MAX_FILE_SIZE = 5 * 1024 * 1024;
 
@@ -39,7 +39,6 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 	const charCount = textValue.length;
 	const isNearLimit = charCount > MAX_SECRET_LENGTH * 0.9;
 	const [activePreset, setActivePreset] = useState<string>('d1');
-	const [showPassphrase, setShowPassphrase] = useState(false);
 
 	const passphraseStrength = (() => {
 		if (passphraseValue.length < 3) return 0;
@@ -134,27 +133,20 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 					<label htmlFor="secret-passphrase" title={t('form.tooltips.passphrase')}>
 						{t('form.passphrase')}
 					</label>
-					<div className="ov-pass" data-invalid={errors.passphrase ? 'true' : undefined}>
-						<input
-							id="secret-passphrase"
-							type={showPassphrase ? 'text' : 'password'}
-							autoComplete="new-password"
-							placeholder={t('form.passphrasePlaceholder')}
-							aria-invalid={errors.passphrase ? true : undefined}
-							{...register('passphrase')}
-						/>
-						<button
-							type="button"
-							aria-pressed={showPassphrase}
-							aria-controls="secret-passphrase"
-							onClick={() => setShowPassphrase((v) => !v)}
-						>
-							{showPassphrase ? t('form.hide') : t('form.show')}
-						</button>
-						<button type="button" title={t('form.tooltips.randomPassphrase')} onClick={generateRandomPassphrase}>
-							{t('form.generate')}
-						</button>
-					</div>
+					<PassphraseInput
+						id="secret-passphrase"
+						autoComplete="new-password"
+						placeholder={t('form.passphrasePlaceholder')}
+						showLabel={t('form.show')}
+						hideLabel={t('form.hide')}
+						invalid={!!errors.passphrase}
+						actions={
+							<button type="button" title={t('form.tooltips.randomPassphrase')} onClick={generateRandomPassphrase}>
+								{t('form.generate')}
+							</button>
+						}
+						{...register('passphrase')}
+					/>
 					{passphraseValue.length >= 3 && (
 						<>
 							<div className="ov-meter" data-level={passphraseStrength}>

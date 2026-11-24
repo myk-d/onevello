@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { UrlConfig } from '../../constants/UrlConfig';
-import { Button } from '../UI/kit';
+import { Alert, Button, Icon } from '../UI/kit';
 
 interface DecryptedMessageProps {
 	message: string;
@@ -40,81 +40,59 @@ const DecryptedMessage: React.FC<DecryptedMessageProps> = ({ message, isOneTime,
 	};
 
 	return (
-		<div className="ov-card text-left">
-			<div className="ov-field">
-				<label htmlFor="revealed-secret" title={t('decryptedMessage.tooltips.label')}>
-					{t('decryptedMessage.label')}
-				</label>
-				<textarea
-					id="revealed-secret"
-					className="ov-textarea font-mono"
-					rows={12}
-					value={message}
-					readOnly
-					placeholder={t('decryptedMessage.label')}
-				></textarea>
+		<>
+			<div className="flex flex-col gap-2 text-left">
+				<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">
+					{isOneTime ? t('decryptedMessage.title') : t('decryptedMessage.titleRegular')}
+				</h1>
 			</div>
+			<div className="ov-card text-left">
+				{isOneTime && <Alert variant="info">{t('decryptedMessage.oneTimeWarning')}</Alert>}
 
-			{fileName && onDownloadFile && (
-				<div className="flex flex-col gap-1.5">
-					<div className="ov-drop is-filled">
-						<svg className="h-5 w-5 shrink-0 text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-							<path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-							<polyline points="14 2 14 8 20 8" />
-						</svg>
-						<span className="file">{fileName}</span>
-					</div>
-					{isOneTime && <p className="ov-help text-warning">{t('decryptedMessage.oneTimeFileWarning')}</p>}
+				<div className="secret-box" role="textbox" aria-readonly="true" aria-label={t('decryptedMessage.label')} tabIndex={0}>
+					{message}
 				</div>
-			)}
 
-			{isOneTime && (
-				<div className="ov-alert ov-alert--info" role="status">
-					<p className="text-left text-sm">{t('decryptedMessage.oneTimeWarning')}</p>
+				<div className="flex">
+					{ui.isCopied ? (
+						<Button variant="secondary" className="is-copied max-md:w-full">
+							<Icon name="check" size={16} />
+							{t('decryptedMessage.copied')}
+						</Button>
+					) : (
+						<Button onClick={copyToClipboard} className="max-md:w-full">
+							<Icon name="copy" size={16} />
+							{t('decryptedMessage.copyToClipboard')}
+						</Button>
+					)}
 				</div>
-			)}
-
-			{/* Neutral reminder, not an error: it must not look like a failure. */}
-			{isOneTime && (
-				<div className="ov-alert" role="status">
-					<p className="text-left text-sm">{t('decryptedMessage.closeWindowNote')}</p>
-				</div>
-			)}
-
-			{/* buttons */}
-			<div className="flex flex-col gap-3 sm:flex-row sm:flex-wrap">
-				{ui.isCopied ? (
-					<Button variant="success" className="flex-1">
-						{t('decryptedMessage.copied')}
-					</Button>
-				) : (
-					<Button onClick={copyToClipboard} title={t('decryptedMessage.tooltips.copyToClipboard')} className="flex-1">
-						{t('decryptedMessage.copyToClipboard')}
-						<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" aria-hidden="true">
-							<rect x="9" y="9" width="11" height="12" rx="2" />
-							<path d="M5 15V5a2 2 0 0 1 2-2h8" strokeLinecap="round" />
-						</svg>
-					</Button>
-				)}
 
 				{fileName && onDownloadFile && (
-					<Button
-						variant="secondary"
-						onClick={handleDownload}
-						isLoading={ui.isDownloading}
-						disabled={ui.isDownloaded}
-						title={isOneTime ? t('decryptedMessage.tooltips.downloadFileOneTime') : t('decryptedMessage.tooltips.downloadFile')}
-						className="flex-1"
-					>
-						{t('decryptedMessage.downloadFile')}
-					</Button>
+					<>
+						<div className="ov-drop is-filled">
+							<Icon name="file" size={22} className="shrink-0" />
+							<span className="flex min-w-0 flex-1 flex-col gap-0.5">
+								<span className="file">{fileName}</span>
+								{isOneTime && <span className="ov-help">{t('decryptedMessage.oneTimeFileWarning')}</span>}
+							</span>
+						</div>
+						<Button
+							variant="secondary"
+							onClick={handleDownload}
+							isLoading={ui.isDownloading}
+							disabled={ui.isDownloaded}
+							className="max-md:w-full"
+						>
+							{isOneTime ? t('decryptedMessage.downloadOnce') : t('decryptedMessage.downloadFile')}
+						</Button>
+					</>
 				)}
 
-				<Button variant="secondary" onClick={() => navigate(UrlConfig.secret)} title={t('decryptedMessage.tooltips.createSecret')} className="flex-1">
+				<Button variant="ghost" onClick={() => navigate(UrlConfig.secret)} className="self-start">
 					{t('decryptedMessage.createSecret')}
 				</Button>
 			</div>
-		</div>
+		</>
 	);
 };
 

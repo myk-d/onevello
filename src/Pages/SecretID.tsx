@@ -8,7 +8,7 @@ import { PasswordChannel } from 'secure-channel-sdk';
 import DecryptedMessage from '../components/Layouts/DecryptedMessage';
 import SecretGone from '../components/Layouts/SecretGone';
 import SealedGate from '../components/Layouts/SealedGate';
-import { Button, Input, toast } from '../components/UI/kit';
+import { Alert, Button, PassphraseInput } from '../components/UI/kit';
 import { SecretIDLoader } from '../components/UI/SecretIDLoader';
 import { dbMessages, deleteImageFromStorage } from '../config/firebase.config';
 import { MessageType } from '../models/Message/message';
@@ -57,6 +57,8 @@ const SecretID = () => {
 	const [fileMeta, setFileMeta] = useState<FileMeta | undefined>(undefined);
 
 	const [reloadKey, setReloadKey] = useState(0);
+	// Set after a wrong passphrase: shown as a danger alert next to the field, never as a toast.
+	const [wrongText, setWrongText] = useState<string | null>(null);
 
 	const handleRetry = () => {
 		setFetchState({ status: FetchStatus.Loading });
@@ -148,6 +150,7 @@ const SecretID = () => {
 		if (fetchState.status !== FetchStatus.Ready) return;
 
 		const { message } = fetchState;
+		setWrongText(null);
 
 		try {
 			const decryptedPkg = await PasswordChannel.decrypt(data.passphrase, message);
@@ -191,7 +194,9 @@ const SecretID = () => {
 			setFetchState({ status: FetchStatus.Ready, message: { ...message, attempts: newAttempts } });
 
 			const errMsg = error instanceof Error ? error.message : '';
-			toast.error(errMsg.includes('Too many failed attempts') ? errMsg : t('toasts.incorrectPassphrase'));
+			setWrongText(
+				errMsg.includes('Too many failed attempts') ? errMsg : t('secretId.pass.wrong', { count: MAX_ATTEMPTS - newAttempts }),
+			);
 			reset();
 		}
 	};
@@ -244,44 +249,38 @@ const SecretID = () => {
 					onDownloadFile={message.fileUrl ? handleDownloadFile : undefined}
 				/>
 			) : (
-				<form onSubmit={handleSubmit(onSubmit)} className="w-full text-left">
+				<form onSubmit={handleSubmit(onSubmit)} className="flex w-full flex-col gap-5 text-left">
+					<div className="flex flex-col gap-2">
+						<h1 className="font-heading text-xl font-semibold leading-8 md:text-[32px] md:leading-10">{t('secretId.pass.title')}</h1>
+						<p className="text-muted">{t('secretId.pass.lead')}</p>
+					</div>
 					<div className="ov-card">
 						<div className="ov-field">
-							<label htmlFor="reveal-passphrase" title={t('secretId.tooltips.passphrase')}>
-								{t('form.passphrase')}
-							</label>
-							<Input
+							<label htmlFor="reveal-passphrase">{t('form.passphrase')}</label>
+							<PassphraseInput
 								id="reveal-passphrase"
-								type="password"
 								autoComplete="off"
 								placeholder={t('form.passphrasePlaceholder')}
-								className="font-mono"
-								invalid={!!errors.passphrase}
+								showLabel={t('form.show')}
+								hideLabel={t('form.hide')}
+								invalid={!!errors.passphrase || !!wrongText}
 								{...register('passphrase')}
 							/>
 							{errors.passphrase && <span className="ov-error">{errors.passphrase.message}</span>}
 						</div>
 
-						<div className="ov-alert ov-alert--info" role="status">
-							<p className="text-left text-sm">{message.oneTime ? t('secretId.oneTimeWarning') : t('secretId.regularWarning')}</p>
-						</div>
-
-						{(message.attempts ?? 0) > 0 && (
-							<div className="ov-alert ov-alert--warning" role="alert">
-								<p className="text-left text-sm">
-									{t('secretId.attemptsRemaining', { count: MAX_ATTEMPTS - (message.attempts ?? 0) })}
-								</p>
-							</div>
+						{wrongText && (
+							<Alert variant="danger" role="alert">
+								{wrongText} <span className="mono">{message.attempts ?? 0}/{MAX_ATTEMPTS}</span>
+							</Alert>
 						)}
 
-						<Button type="submit" block title={t('secretId.tooltips.preview', { max: MAX_ATTEMPTS })}>
+						<span className="ov-help">
+							{t('secretId.pass.attempts')} <span className="mono">{message.attempts ?? 0}/{MAX_ATTEMPTS}</span>
+						</span>
+
+						<Button type="submit" block>
 							{t('secretId.preview')}
-							<svg width="18" height="14" viewBox="0 0 21 15" fill="none" aria-hidden="true">
-								<path
-									d="M20.7071 8.07106C21.0976 7.68054 21.0976 7.04737 20.7071 6.65685L14.3431 0.292885C13.9526 -0.0976396 13.3195 -0.0976396 12.9289 0.292885C12.5384 0.683409 12.5384 1.31657 12.9289 1.7071L18.5858 7.36395L12.9289 13.0208C12.5384 13.4113 12.5384 14.0445 12.9289 14.435C13.3195 14.8255 13.9526 14.8255 14.3431 14.435L20.7071 8.07106ZM0 7.36395V8.36395H20V7.36395V6.36395H0V7.36395Z"
-									fill="currentColor"
-								/>
-							</svg>
 						</Button>
 					</div>
 				</form>

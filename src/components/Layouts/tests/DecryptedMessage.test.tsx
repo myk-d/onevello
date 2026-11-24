@@ -14,20 +14,33 @@ const renderIt = (props: Partial<React.ComponentProps<typeof DecryptedMessage>> 
 	);
 
 describe('DecryptedMessage', () => {
-	it('shows the close-window note as a neutral alert, not as an error', () => {
+	it('one-time: title, the "no longer on the server" info alert, mono secret box, no close-window note', () => {
 		renderIt();
-		const note = screen.getByText('decryptedMessage.closeWindowNote').closest('.ov-alert');
-		expect(note).not.toBeNull();
-		expect(note).not.toHaveClass('ov-alert--danger');
-		expect(note).toHaveAttribute('role', 'status');
+		expect(screen.getByRole('heading', { level: 1, name: 'decryptedMessage.title' })).toBeInTheDocument();
+		const alert = screen.getByText('decryptedMessage.oneTimeWarning').closest('.ov-alert');
+		expect(alert).toHaveClass('ov-alert--info');
+		expect(screen.getByRole('textbox', { name: 'decryptedMessage.label' })).toHaveTextContent('hello');
+		expect(screen.queryByText('decryptedMessage.closeWindowNote')).toBeNull();
+		expect(document.querySelector('.ov-alert--danger')).toBeNull();
+	});
+
+	it('regular secret: no "removed from the server" claim', () => {
+		renderIt({ isOneTime: false });
+		expect(screen.queryByText('decryptedMessage.oneTimeWarning')).toBeNull();
+		expect(screen.getByRole('heading', { level: 1, name: 'decryptedMessage.titleRegular' })).toBeInTheDocument();
+	});
+
+	it('has a ghost "create your own secret" button', () => {
+		renderIt();
+		expect(screen.getByRole('button', { name: 'decryptedMessage.createSecret' })).toHaveClass('ov-btn--ghost');
 	});
 
 	it('offers a download button only when the secret has a file', () => {
 		const { unmount } = renderIt();
-		expect(screen.queryByRole('button', { name: 'decryptedMessage.downloadFile' })).toBeNull();
+		expect(screen.queryByRole('button', { name: 'decryptedMessage.downloadOnce' })).toBeNull();
 		unmount();
 		renderIt({ fileName: 'a.txt', onDownloadFile: async () => {} });
-		expect(screen.getByRole('button', { name: 'decryptedMessage.downloadFile' })).toBeInTheDocument();
+		expect(screen.getByRole('button', { name: 'decryptedMessage.downloadOnce' })).toBeInTheDocument();
 		expect(screen.getByText('a.txt')).toBeInTheDocument();
 	});
 });

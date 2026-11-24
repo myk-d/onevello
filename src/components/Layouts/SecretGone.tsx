@@ -67,17 +67,17 @@ const SecretGone = ({ variant, onRetry }: SecretGoneProps) => {
 					<p className="max-w-[46ch] text-muted">{t(`secretGone.${variant}.description`)}</p>
 				</div>
 
-				<div className="flex w-full flex-col gap-3 sm:flex-row">
+				<div className="flex w-full flex-col items-center justify-center gap-3 sm:flex-row">
 					{variant === 'error' ? (
-						<Button type="button" onClick={onRetry} className="flex-1">
+						<Button type="button" onClick={onRetry} className="max-sm:w-full">
 							{t('secretGone.retry')}
 						</Button>
 					) : (
 						<>
-							<Button type="button" onClick={() => navigate(UrlConfig.secret)} className="flex-1">
+							<Button type="button" onClick={() => navigate(UrlConfig.secret)} className="max-sm:w-full">
 								{t('secretGone.createOwn')}
 							</Button>
-							<Button type="button" variant="secondary" onClick={() => navigate(UrlConfig.home)} className="flex-1">
+							<Button type="button" variant="ghost" onClick={() => navigate(UrlConfig.home)} className="max-sm:w-full">
 								{t('secretGone.home')}
 							</Button>
 						</>
