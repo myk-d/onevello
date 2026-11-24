@@ -155,7 +155,7 @@
 		create: ['Seal and create link', 'Запечатати й створити посилання'], creating: ['Sealing…', 'Запечатуємо…'],
 		copy: ['Copy link', 'Копіювати'], copied: ['Copied', 'Скопійовано'],
 		attach: ['Attach a file', 'Додати файл'], attachHelp: ['up to 5 MB, encrypted the same way', 'до 5 МБ, шифрується так само'],
-		fileName: ['Note: the file name and type are not encrypted.', 'Зверніть увагу: назва й тип файлу не шифруються.'],
+		fileName: ['Encrypted the same way, file name included.', 'Шифрується так само, разом із назвою файлу.'],
 		remove: ['Remove', 'Прибрати'],
 		aInfoT: ['Send the passphrase separately.', 'Парольну фразу надішліть окремо.'], aInfo: ['It isn’t in the link. Use a different chat, a call or SMS.', 'Її немає в посиланні. Скористайтеся іншим чатом, дзвінком чи SMS.'],
 		aOkT: ['Link ready.', 'Посилання готове.'], aOk: ['One-time, expires 25 Nov, 14:00.', 'Одноразове, спливає 25 листопада о 14:00.'],
@@ -243,7 +243,7 @@
 			['18 / 28 · 400', 'body', 18, 28, 'Без парольної фрази посилання нічого не відкриє.'],
 			['16 / 24 · 400', 'body', 16, 24, 'Текст шифрується в цьому браузері ще до надсилання. Text is encrypted in this browser before it is sent.'],
 			['14 / 20 · 500', 'body', 14, 20, 'Одноразове · спливає 25 листопада о 14:00'],
-			['12 / 16 · 400', 'body', 12, 16, 'Назва й тип файлу не шифруються.'],
+			['12 / 16 · 400', 'body', 12, 16, 'Файл шифрується так само, разом із назвою.'],
 			['mono 15 · 500', 'mono', 15, 22, 'onevello.example/secret/Xk7Q m2pL r9vT'],
 			['mono 16 · 500', 'mono', 16, 24, 'mK4#tr9-Lq2v · 3/5 · 10 000'],
 		];
@@ -402,7 +402,7 @@
 		gate(mode, m) {
 			return `<div class="col"><div class="ov-card"><div class="center">${sealImg(mode, m ? 72 : 96, true)}
 				<h3>${s('gotT')}</h3><p>${s('gotP')}</p></div>
-				${chips(fileChip)}
+				${chips(`<span class="ov-chip">${icon('file', 14)}${lang === 'en' ? 'File attached' : 'Є файл'}</span>`)}
 				<div class="ov-alert ov-alert--warning">${icon('alert')}<span>${t('dlg')}</span></div>
 				<button type="button" class="ov-btn ov-btn--primary ov-btn--block">${s('gotBtn')}</button></div></div>`;
 		},

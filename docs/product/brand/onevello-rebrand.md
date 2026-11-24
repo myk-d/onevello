@@ -42,7 +42,7 @@ Not supported, so we do not market it: large files, team vaults, shared editing,
   - `howItWorks.sections.localDecryption.details[1]`: "No Trace: ... permanently removed with no logs left behind." Firebase keeps its own logs; not verifiable. Also expired secrets are deleted only when someone opens the link or an admin cleans up.
   - `privacyPolicy.sections[1].paragraph`: "We do not collect IP addresses or any other tracking data." Hosting infrastructure may log them; not verifiable from the repo.
   - `home.features.selfDestructing.description`: "disappear forever after ... a specific time." Expiry is checked on open, not at the moment.
-  - `home.features.endToEnd.title` "End-to-End Security" and `.description` "your text and files are encrypted": file name and type are stored in plain text.
+  - `home.features.endToEnd.title` "End-to-End Security" and `.description` "your text and files are encrypted": file name and type were stored in plain text (fixed in ONE-11: they are now encrypted with the same passphrase and the storage name is random).
   - `home.hero.subheading`: "securely and effortlessly". "Securely" is a promise that depends on the passphrase (minimum 3 characters).
   - `home.cta.heading` / `howItWorks.cta.heading`: "Ready to send a secure link?" The link is not what is secure; the passphrase is.
   - `home.trust.body`: "industry-standard AES-GCM" is true; "you hold the keys" is true only if the passphrase is strong. Keep, add the caveat.
@@ -97,7 +97,7 @@ Sources are in the header; "not verified" means the page I read did not say. Not
 
 **What OneVello can't protect against (ready for the landing)**
 
-What is stored next to the ciphertext (that a secret exists, its dates, the file name and type, the account link) is not on the landing: by the owner's decision it belongs in the Privacy Policy (see the follow-up stories). The same goes for trust in the served code (the browser loads the encrypting code from the site on every visit; open source lets anyone check the repo, but not that the served build matches it): it belongs on the How it works page or in SECURITY.md, not the landing.
+What is stored next to the ciphertext (that a secret exists, its dates, the account link; for files attached before ONE-11 also the file name and type) is not on the landing: by the owner's decision it belongs in the Privacy Policy (see the follow-up stories). The same goes for trust in the served code (the browser loads the encrypting code from the site on every visit; open source lets anyone check the repo, but not that the served build matches it): it belongs on the How it works page or in SECURITY.md, not the landing.
 
 en:
 - A weak or leaked passphrase. Use the generator, and never send the link and the passphrase in the same message.
@@ -464,6 +464,7 @@ Rule: motion explains a state change; it never fills time. Encryption is one rea
 - **Shape:** radius 6 / 10 / 14 / full. One card per screen with the paper-lift shadow; dialogs and toasts float.
 - **Motion:** five moments only. Sealing (tied to the real encrypt call), copied, reveal, burned and wrong passphrase, each with a reduced-motion fallback (see foundations.html).
 - **Voice:** courteous and exact. It says what happens and in which order, and names the limit next to the promise. No "military-grade", "unhackable", "100% secure" or "no trace".
+- **File names:** encrypted with the same passphrase since ONE-11; the gate shows only "File attached".
 - **Product changes the design depends on** (see §8.6 and the follow-up stories):
   - a sealed gate before a one-time secret is opened;
   - separate failure states;
