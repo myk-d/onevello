@@ -6,6 +6,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 const getById = vi.fn();
 const del = vi.fn();
+const deleteIfExists = vi.fn();
 const update = vi.fn();
 const deleteImage = vi.fn();
 
@@ -13,6 +14,7 @@ vi.mock('../../config/firebase.config', () => ({
 	dbMessages: {
 		getById: (...a: unknown[]) => getById(...a),
 		delete: (...a: unknown[]) => del(...a),
+		deleteIfExists: (...a: unknown[]) => deleteIfExists(...a),
 		update: (...a: unknown[]) => update(...a),
 	},
 	deleteImageFromStorage: (...a: unknown[]) => deleteImage(...a),
@@ -36,6 +38,7 @@ describe('SecretID sealed gate', () => {
 	beforeEach(() => {
 		vi.clearAllMocks();
 		del.mockResolvedValue(undefined);
+		deleteIfExists.mockResolvedValue(true);
 	});
 
 	it('shows the gate for a one-time secret and deletes nothing on load or unmount', async () => {
@@ -47,6 +50,7 @@ describe('SecretID sealed gate', () => {
 		unmount();
 
 		expect(del).not.toHaveBeenCalled();
+		expect(deleteIfExists).not.toHaveBeenCalled();
 		expect(deleteImage).not.toHaveBeenCalled();
 	});
 
@@ -57,13 +61,13 @@ describe('SecretID sealed gate', () => {
 		fireEvent.click(await screen.findByRole('button', { name: 'secretId.gate.button' }));
 
 		expect(await screen.findByPlaceholderText('form.passphrasePlaceholder')).toBeInTheDocument();
-		expect(del).toHaveBeenCalledTimes(1);
-		expect(del).toHaveBeenCalledWith('abc');
+		expect(deleteIfExists).toHaveBeenCalledTimes(1);
+		expect(deleteIfExists).toHaveBeenCalledWith('abc');
 	});
 
 	it('does not reveal when the delete fails and keeps the gate with an error', async () => {
 		getById.mockResolvedValue({ ...base, oneTime: true });
-		del.mockRejectedValue(new Error('offline'));
+		deleteIfExists.mockRejectedValue(new Error('offline'));
 		renderPage();
 
 		fireEvent.click(await screen.findByRole('button', { name: 'secretId.gate.button' }));
@@ -73,6 +77,17 @@ describe('SecretID sealed gate', () => {
 		await waitFor(() => expect(screen.getByRole('button', { name: 'secretId.gate.button' })).toBeEnabled());
 	});
 
+	it('does not reveal when the secret was already deleted by someone else', async () => {
+		getById.mockResolvedValue({ ...base, oneTime: true });
+		deleteIfExists.mockResolvedValue(false);
+		renderPage();
+
+		fireEvent.click(await screen.findByRole('button', { name: 'secretId.gate.button' }));
+
+		expect(await screen.findByText('expiredLink.message')).toBeInTheDocument();
+		expect(screen.queryByPlaceholderText('form.passphrasePlaceholder')).not.toBeInTheDocument();
+	});
+
 	it('skips the gate for regular secrets and deletes nothing', async () => {
 		getById.mockResolvedValue({ ...base, oneTime: false });
 		renderPage();
@@ -80,6 +95,7 @@ describe('SecretID sealed gate', () => {
 		expect(await screen.findByPlaceholderText('form.passphrasePlaceholder')).toBeInTheDocument();
 		expect(screen.queryByText('secretId.gate.button')).not.toBeInTheDocument();
 		expect(del).not.toHaveBeenCalled();
+		expect(deleteIfExists).not.toHaveBeenCalled();
 	});
 });
 

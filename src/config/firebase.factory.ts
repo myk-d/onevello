@@ -11,6 +11,7 @@ import {
 	getDoc,
 	getDocs,
 	query,
+	runTransaction,
 	updateDoc,
 } from 'firebase/firestore';
 interface ObjectWithId {
@@ -83,6 +84,17 @@ export class FirebaseFactory<T extends ObjectWithId> {
 	delete: Delete<T> = async (id) => {
 		const ref = doc(this.firestore, this.collectionName, id);
 		return deleteDoc(ref);
+	};
+
+	// Reads and deletes in one transaction. Resolves false (and deletes nothing) if the document is already gone.
+	deleteIfExists = async (id: T['id']): Promise<boolean> => {
+		const ref = doc(this.firestore, this.collectionName, id);
+		return runTransaction(this.firestore, async (tx) => {
+			const snapshot = await tx.get(ref);
+			if (!snapshot.exists()) return false;
+			tx.delete(ref);
+			return true;
+		});
 	};
 
 	query: Query<T> = async (filter) => {
