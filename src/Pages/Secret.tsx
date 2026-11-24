@@ -11,6 +11,7 @@ import { dbMessages, firebaseStorageDirectories, uploadImageToStorage } from '..
 import { isSecretWasCreatedOnDeviceStorageKey } from '../constants/constants';
 import { useAuth } from '../context/useAuth';
 import { CreateMessageSchema, CreateMessageType, MessageType } from '../models/Message/message';
+import { encryptFileMeta, opaqueStorageName } from '../utils/fileMeta';
 import { NODE_ENV_DEV } from '../utils/NODE_ENV';
 
 const fileToBase64 = (file: File): Promise<string> =>
@@ -56,18 +57,16 @@ const Secret = () => {
 			const encryptedPkg = await PasswordChannel.encrypt(data.passphrase, data.text);
 
 			let fileUrl: string | undefined;
-			let fileName: string | undefined;
-			let fileType: string | undefined;
+			let fileMeta: string | undefined;
 
 			if (attachedFile) {
 				const base64 = await fileToBase64(attachedFile);
 				const encryptedFile = await PasswordChannel.encrypt(data.passphrase, base64);
-				const storageName = `${Date.now()}_${attachedFile.name}`;
+				const storageName = opaqueStorageName();
 				const blob = new Blob([JSON.stringify(encryptedFile)], { type: 'application/json' });
 				const fileObj = new File([blob], storageName, { type: 'application/json' });
 				fileUrl = await uploadImageToStorage(firebaseStorageDirectories.messageMedia, fileObj, storageName);
-				fileName = attachedFile.name;
-				fileType = attachedFile.type;
+				fileMeta = await encryptFileMeta(data.passphrase, { name: attachedFile.name, type: attachedFile.type });
 			}
 
 			const messageToSave: Omit<MessageType, 'id'> = {
@@ -75,14 +74,14 @@ const Secret = () => {
 				createdAt: data.createdAt,
 				expiration: data.expiration || dayjs().add(1, 'day').toISOString(),
 				oneTime: data.oneTime,
-				...(fileUrl ? { fileUrl, fileName, fileType } : {}),
+				...(fileUrl ? { fileUrl, fileMeta } : {}),
 				...(user ? { userId: user.uid, opened: false } : {}),
 			};
 
 			const result = await dbMessages.create(messageToSave);
 
 			localStorage.setItem(isSecretWasCreatedOnDeviceStorageKey, 'true');
-			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName });
+			setSummary({ oneTime: data.oneTime, expiration: messageToSave.expiration, fileName: attachedFile?.name });
 			setEncryptedMessageId(result.id);
 		} catch (error) {
 			if (NODE_ENV_DEV) console.error('Error:', error);

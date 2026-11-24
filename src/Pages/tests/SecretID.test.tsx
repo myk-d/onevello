@@ -160,3 +160,82 @@ describe('SecretID failure states', () => {
 		expect(del).not.toHaveBeenCalled();
 	});
 });
+
+describe('SecretID attachment metadata', () => {
+	const open = async () => {
+		fireEvent.change(await screen.findByPlaceholderText('form.passphrasePlaceholder'), { target: { value: 'right-pass' } });
+		fireEvent.click(screen.getByRole('button', { name: /secretId.preview/ }));
+	};
+
+	beforeEach(async () => {
+		vi.clearAllMocks();
+		del.mockResolvedValue(undefined);
+		const { PasswordChannel } = await import('secure-channel-sdk');
+		// Stand-in package: { p: passphrase, t: plaintext }
+		vi.mocked(PasswordChannel.decrypt).mockImplementation(async (pass: string, pkg: unknown) => {
+			const { p, t } = pkg as { p: string; t: string };
+			if (p !== pass) throw new Error('bad');
+			return t;
+		});
+		vi.stubGlobal(
+			'fetch',
+			vi.fn(async () => ({ json: async () => ({ p: 'right-pass', t: btoa('hello') }) })),
+		);
+		URL.createObjectURL = vi.fn(() => 'blob:x');
+		URL.revokeObjectURL = vi.fn();
+	});
+
+	it('gate shows only that a file is attached, never a name', async () => {
+		getById.mockResolvedValue({ ...base, oneTime: true, fileUrl: 'https://s/1_uuid', fileName: 'legacy-name.pdf' });
+		renderPage();
+
+		expect(await screen.findByText('secretId.gate.fileAttached')).toBeInTheDocument();
+		expect(screen.queryByText('legacy-name.pdf')).not.toBeInTheDocument();
+	});
+
+	it('new secret: shows the decrypted name and downloads under it', async () => {
+		const fileMeta = JSON.stringify({ p: 'right-pass', t: JSON.stringify({ name: 'secret-plan.pdf', type: 'application/pdf' }) });
+		getById.mockResolvedValue({
+			...base,
+			oneTime: false,
+			fileUrl: 'https://s/1_uuid',
+			fileMeta,
+			p: 'right-pass',
+			t: 'the text',
+		});
+		let downloadName = '';
+		const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+			downloadName = this.download;
+		});
+		renderPage();
+
+		await open();
+		expect(await screen.findByText('secret-plan.pdf')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: 'decryptedMessage.downloadFile' }));
+		await waitFor(() => expect(downloadName).toBe('secret-plan.pdf'));
+		click.mockRestore();
+	});
+
+	it('legacy secret with plain fileName still opens and downloads', async () => {
+		getById.mockResolvedValue({
+			...base,
+			oneTime: false,
+			fileUrl: 'https://s/123_old.txt',
+			fileName: 'old.txt',
+			fileType: 'text/plain',
+			p: 'right-pass',
+			t: 'legacy text',
+		});
+		let downloadName = '';
+		const click = vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (this: HTMLAnchorElement) {
+			downloadName = this.download;
+		});
+		renderPage();
+
+		await open();
+		expect(await screen.findByText('old.txt')).toBeInTheDocument();
+		fireEvent.click(screen.getByRole('button', { name: 'decryptedMessage.downloadFile' }));
+		await waitFor(() => expect(downloadName).toBe('old.txt'));
+		click.mockRestore();
+	});
+});
