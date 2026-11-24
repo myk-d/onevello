@@ -16,6 +16,6 @@ describe('index.html meta and icons', () => {
 		const hrefs = [...html.matchAll(/<link rel="(?:icon|apple-touch-icon)"[^>]*href="\/([^"]+)"/g)].map((m) => m[1]);
 		expect(hrefs).toEqual(expect.arrayContaining(['favicon.svg', 'icon-32.png', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png']));
 		for (const h of hrefs) expect(existsSync(resolve(root, 'public', h))).toBe(true);
-		expect(existsSync(resolve(root, 'public/og-uk.png'))).toBe(true);
+		expect(existsSync(resolve(root, 'public/og-en.png'))).toBe(true);
 	});
 });
