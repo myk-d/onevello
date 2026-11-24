@@ -1,16 +1,33 @@
+import { useId } from 'react';
 import { CustomSVGProps } from '../../../models/Shared/props';
 
-const LogoSvg: React.FC<CustomSVGProps> = ({ color, ...rest }) => {
-	const strokeColor = color ?? 'currentColor';
+// Broken seal mark (docs/product/brand/assets/logo-mark.svg). The wax follows the theme token --color-seal;
+// pass `color` to override. The gap between the halves shows whatever is behind the mark.
+const DISC =
+	'M56.89 32.00L56.69 33.62L56.30 35.20L55.79 36.73L55.21 38.22L54.62 39.68L54.04 41.13L53.47 42.59L52.90 44.07L52.27 45.54L51.54 46.99L50.66 48.36L49.60 49.60L48.37 50.67L46.98 51.52L45.48 52.17L43.91 52.63L42.34 52.96L40.79 53.22L39.29 53.47L37.83 53.76L36.40 54.11L34.97 54.53L33.51 54.97L32.00 55.37L30.45 55.69L28.86 55.85L27.26 55.82L25.68 55.59L24.14 55.16L22.65 54.57L21.22 53.85L19.84 53.06L18.50 52.21L17.17 51.33L15.86 50.40L14.58 49.42L13.36 48.35L12.23 47.17L11.25 45.86L10.45 44.44L9.85 42.92L9.44 41.34L9.21 39.74L9.10 38.14L9.05 36.56L9.03 35.02L8.98 33.51L8.89 32.00L8.79 30.48L8.71 28.93L8.71 27.37L8.85 25.80L9.16 24.25L9.69 22.76L10.42 21.36L11.33 20.07L12.36 18.88L13.46 17.77L14.57 16.72L15.66 15.66L16.72 14.58L17.76 13.44L18.81 12.26L19.91 11.06L21.11 9.91L22.42 8.87L23.86 8.02L25.41 7.40L27.03 7.04L28.70 6.94L30.37 7.07L32.00 7.37L33.59 7.79L35.13 8.26L36.63 8.75L38.10 9.23L39.57 9.71L41.02 10.22L42.45 10.80L43.84 11.49L45.16 12.30L46.39 13.25L47.51 14.32L48.52 15.48L49.45 16.70L50.32 17.95L51.16 19.20L52.02 20.44L52.90 21.69L53.79 22.97L54.66 24.31L55.46 25.71L56.13 27.20L56.62 28.76L56.88 30.37Z';
+
+const LogoSvg: React.FC<CustomSVGProps> = ({ color, size, ...rest }) => {
+	const id = useId().replace(/:/g, '');
+	const wax = color ?? 'var(--color-seal)';
 
 	return (
-		<svg width="57" height="31" viewBox="0 0 57 31" fill="none" xmlns="http://www.w3.org/2000/svg" {...rest}>
-			<line y1="15.6702" x2="56.8948" y2="15.6702" stroke={strokeColor} strokeWidth="2" />
-			<path d="M0 1H20.1885L36.6126 29.4474H56.8948" stroke={strokeColor} strokeWidth="2" />
-			<path d="M0 8.34126H20.1885L36.6126 23.0238H56.8948" stroke={strokeColor} strokeWidth="2" />
-			<path d="M0 23.0238H20.1885L36.6126 8.34126H56.8948" stroke={strokeColor} strokeWidth="2" />
-			<path d="M0 29.4474H20.1885L36.6126 1H56.8948" stroke={strokeColor} strokeWidth="2" />
-			<line x1="28.1788" y1="0.102898" x2="28.1788" y2="30.3355" stroke={strokeColor} strokeWidth="2" />
+		<svg width={size ?? 64} height={size ?? 64} viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" {...rest}>
+			<defs>
+				<clipPath id={`${id}l`}>
+					<path d="M0 0 L34 0 L29.5 21 L35 31 L28.5 43 L33 64 L0 64Z" />
+				</clipPath>
+				<clipPath id={`${id}r`}>
+					<path d="M64 0 L34 0 L29.5 21 L35 31 L28.5 43 L33 64 L64 64Z" />
+				</clipPath>
+			</defs>
+			<g clipPath={`url(#${id}l)`} transform="translate(-1.8 0.54) rotate(-3 32 32)">
+				<path d={DISC} fill={wax} />
+				<circle cx="32" cy="32" r="14.5" fill="none" stroke="var(--color-surface)" strokeOpacity=".55" strokeWidth="2" />
+			</g>
+			<g clipPath={`url(#${id}r)`} transform="translate(1.8 -0.54) rotate(3 32 32)">
+				<path d={DISC} fill={wax} />
+				<circle cx="32" cy="32" r="14.5" fill="none" stroke="var(--color-surface)" strokeOpacity=".55" strokeWidth="2" />
+			</g>
 		</svg>
 	);
 };
