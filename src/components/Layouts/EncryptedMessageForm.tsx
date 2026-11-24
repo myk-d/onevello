@@ -187,6 +187,16 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 						defaultValue={dayjs().toISOString()}
 						render={({ field }) => (
 							<div className="flex flex-col gap-2">
+								<DateTimeField
+									id="secret-expiration"
+									value={dayjs(field.value)}
+									onChange={(date) => {
+										field.onChange(date.toISOString());
+										setActivePreset('');
+									}}
+									onBlur={field.onBlur}
+									ref={field.ref}
+								/>
 								<div className="ov-presets">
 									{PRESETS.map((preset) => (
 										<button
@@ -203,16 +213,6 @@ const EncryptedMessageForm: React.FC<EncryptedMessageFormProps> = ({
 										</button>
 									))}
 								</div>
-								<DateTimeField
-									id="secret-expiration"
-									value={dayjs(field.value)}
-									onChange={(date) => {
-										field.onChange(date.toISOString());
-										setActivePreset('');
-									}}
-									onBlur={field.onBlur}
-									ref={field.ref}
-								/>
 							</div>
 						)}
 					/>
