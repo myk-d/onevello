@@ -70,7 +70,7 @@ const en = {
 				title: '2. Storage and transmission',
 				description: 'Once encrypted, text is stored in our database and file attachments in cloud storage — both unreadable without your passphrase.',
 				details: [
-					'Encrypted Bundles: We only store encrypted blobs that look like random characters even to our administrators.',
+					'Encrypted Bundles: The secret content is stored as encrypted blobs that look like random characters even to our administrators. Dates, the one-time flag, and a file name and type are stored next to it in plain text; see the Privacy Policy for the full list.',
 					'Encrypted channel: Data is transmitted over an encrypted connection to prevent interception.',
 				],
 			},
@@ -78,7 +78,7 @@ const en = {
 				title: '3. Controlled Access',
 				description: 'You decide exactly how and when your information can be accessed.',
 				details: [
-					'One-time link: A one-time secret is deleted when its link is opened for the first time.',
+					'One-time link: A one-time secret is deleted when the recipient clicks "Break the seal and open". Merely loading the link does not delete it.',
 					'Expiration date: After this date the link stops working. An expired secret is deleted the next time someone opens its link.',
 					'Personal Dashboard: Sign in with Google to track the status of your sent secrets — see which have been opened, which are still waiting, and when they expire.',
 				],
@@ -88,7 +88,16 @@ const en = {
 				description: 'To read the secret or download the file, the recipient must have the link and the correct passphrase.',
 				details: [
 					'Recipient-Side: The decryption process happens entirely in the recipient browser.',
-					'Deletion: A one-time secret is deleted when it is opened. An expired secret is deleted when someone opens its link, or during an admin cleanup.',
+					'Deletion: A one-time secret is deleted when the recipient breaks the seal. A file of a one-time secret is deleted after its first download. An expired secret is deleted when someone opens its link, or during an admin cleanup.',
+				],
+			},
+			codeTrust: {
+				title: '5. Trusting the Code',
+				description: 'The encryption runs in code that your browser downloads from this site.',
+				details: [
+					'Loaded on every visit: Your browser loads the encrypting and decrypting code from the site each time you open it, so you rely on the site serving the code it should.',
+					'Open source: The code is public at github.com/myk-d/onevello, so anyone can read it and check how your secret is encrypted.',
+					'The limit: From inside the browser you cannot verify that the code served to you is identical to the code in the repository.',
 				],
 			},
 		},
@@ -106,25 +115,43 @@ const en = {
 					"Our core philosophy is that we shouldn't know anything about your secrets. All encryption and decryption happen locally in your browser.",
 			},
 			{
-				title: '2. Information We Collect',
+				title: '2. Stored Next to Your Secret',
 				paragraph:
-					'When you use OneVello anonymously, we store only encrypted blobs of your secret content — completely unreadable to us. If you choose to sign in with Google, we receive your Google account ID, display name, and profile picture from Google\'s authentication service. This information is used solely to associate your created secrets with your account so you can review them in your personal dashboard. Our hosting providers may process technical data, such as IP addresses, to serve the site.',
-			},
-			{
-				title: '3. Data Retention',
-				paragraph: 'Encrypted secrets and file attachments are stored temporarily. They are deleted from our servers when:',
+					'The encrypted text or file content is stored unreadable to us. Next to it, in plain text, we store:',
 				items: [
-					'The recipient opens the link (if "One-time link" is enabled).',
-					'The link is opened after the expiration time set by the sender, or an admin cleanup removes the expired secret.',
+					'The creation date and the expiration date.',
+					'Whether the secret is one-time.',
+					'For a file: its original name and type, in plain text. The file itself is kept in cloud storage under a name that includes the original file name.',
+					'A counter of failed attempts to open a regular (not one-time) secret.',
+					'If you were signed in when creating it: your account ID and whether the secret has been opened.',
 				],
 			},
 			{
-				title: '4. Cookies & Local Storage',
+				title: '3. Google Sign-In',
+				paragraph:
+					'If you choose to sign in with Google, we receive your Google account ID, display name, and profile picture from Google\'s authentication service. This information is used to associate your created secrets with your account so you can review them in your personal dashboard.',
+			},
+			{
+				title: '4. Hosting and Logs',
+				paragraph:
+					'OneVello runs on Firebase infrastructure. Our hosting providers may process or log technical data, such as IP addresses, when they serve the site and handle requests. We cannot verify or control what they keep.',
+			},
+			{
+				title: '5. Data Retention',
+				paragraph: 'Encrypted secrets and file attachments are stored temporarily. They are deleted from our servers when:',
+				items: [
+					'A one-time secret: the recipient clicks "Break the seal and open".',
+					'A file attached to a one-time secret: after its first download.',
+					'An expired secret: the next time someone opens its link, or when an admin cleanup runs. It is not deleted at the exact moment it expires.',
+				],
+			},
+			{
+				title: '6. Cookies & Local Storage',
 				paragraph:
 					'We do not use tracking or advertising cookies. Local storage is used to save your theme preferences and, if you sign in with Google, to maintain your authentication session between visits.',
 			},
 			{
-				title: '5. Contact Us',
+				title: '7. Contact Us',
 				paragraph: 'If you have questions about this policy, contact us at',
 				email: 'support@myslennya.com',
 			},
@@ -255,7 +282,7 @@ const en = {
 			step2: 'Send the passphrase another way',
 			step2Desc: 'A call, SMS or a different messenger. Never in the same message.',
 			step3OneTime: 'The first opening breaks the seal',
-			step3OneTimeDesc: 'The secret is deleted when the link is opened. If nobody opens it, the link stops working on {{date}}.',
+			step3OneTimeDesc: 'The secret is deleted when the recipient clicks "Break the seal and open". If nobody opens it, the link stops working on {{date}}.',
 			step3: 'The link works until it expires',
 			step3Desc: 'It can be opened more than once. After {{date}} it stops working and is deleted the next time anyone opens it.',
 		},
