@@ -197,6 +197,16 @@ const en = {
 		},
 	},
 	secretId: {
+		gate: {
+			title: 'You were sent a secret',
+			description: 'It is sealed. Nothing has been opened or deleted yet.',
+			oneTime: 'One-time',
+			expires: 'Expires {{date}}',
+			warning: 'It can be opened once. Opening breaks the seal and deletes it from the server, so have somewhere ready to save it.',
+			button: 'Break the seal and open',
+			opening: 'Opening…',
+			error: 'Could not break the seal. The secret is still sealed and intact. Check the connection and try again.',
+		},
 		preview: 'Open',
 		oneTimeWarning: 'This secret can be opened once. Opening this page has already destroyed it, so copy what you need before you close it.',
 		regularWarning: 'This secret can be opened until it expires.',
